@@ -1,0 +1,8 @@
+.DS_Store
+.idea/
+*.pyc
+*.lock
+instance/
+mini_web/static/gen/
+mini_web/static/.webassets-cache/
+*.log
