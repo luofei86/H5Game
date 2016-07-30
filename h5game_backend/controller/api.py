@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import render_template,jsonify,Blueprint,url_for,redirect,request,session,g
 import re
 import random
@@ -7,8 +9,12 @@ import uuid
 
 import os
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-os.sys.path.insert(0,parentdir) 
-from services import GameInfoService
+os.sys.path.insert(0,parentdir)
+from services import GameQuestionInfoService
+from services import UserShareLimitInfoService
+from services import UserShareInfoService
+from services import GameActiveInfoService
+from services import GameBizService
 from models import *
 from utils import *
 
@@ -29,8 +35,11 @@ from utils import *
 
 api = Blueprint("api", __name__)
 
-
-gameInfoService = GameInfoService.GameInfoService()
+gameActiveInfoService = GameActiveInfoService.GameActiveInfoService()
+gameQuestionInfoService = GameQuestionInfoService.GameQuestionInfoService()
+userShareInfoService = UserShareInfoService.UserShareInfoService()
+userShareLimitInfoService = UserShareLimitInfoService.UserShareLimitInfoService()
+gameBizService = GameBizService.GameBizService()
 # def make_cache_key(*args, **kwargs):
 #     path = request.path
 #     items = request.args.items()
@@ -142,6 +151,17 @@ gameInfoService = GameInfoService.GameInfoService()
 #         resp.set_cookie('sessionid',str(session['client']), max_age = 864000)
 
 
+
+
+####
+@api.route("/game/homepage/<string:signWord>")
+def homepage(signWord):
+    if not signWord:
+        return jsonify(reslut=None)
+    result = gameBizService.gameHomepageInfo(1, signWord)
+    return jsonify(result = result)
+
+
 ##init all cache 
 ##if it's the first time to run this or ur cache crash  call it/
 @api.route("/game/init/<string:pwd>")
@@ -149,7 +169,7 @@ def init(pwd):
     if(pwd != "h5gameforquarter"):
         return jsonify(done=False)
     ##init cache
-    ##load all gameinfo 
+    ##load all gameinfo
     return jsonify(done=True)
 
 @api.route("/game/next/<string:token>/<int:id>/<int:step>")
@@ -158,7 +178,61 @@ def nextGame(token, id, step=0):
     return jsonify(username="controller",pwd=123)
 @api.route("/game/infos/<int:id>")
 def gameInfos(id=0):
-	if(id == 0):
-		return jsonify(infos=gameInfoService.getAllInfos())
-	return jsonify(infos=gameInfoService.getAllInfos())
+	# if(id == 0):
+	# 	return jsonify(infos=gameQuestionInfoService.getAllInfos())
+	return jsonify(infos=gameQuestionInfoService.getAllInfos())
+
+@api.route("/game/question/check/<int:id>/<int:answerId>")
+def checkAnswer(id, answerId):
+    if(id <= 0 or answerId <= 0):
+        return False
+    result =  gameQuestionInfoService.checkAnswer(id, answerId)
+    return jsonify(result=result)
+
+
+#####game active api#####
+####获取活动信息，在用户同意授权后，显示游戏首页
+@api.route("/game/active/info/<string:key>/")
+def getActiveInfo(key):
+    if(key is None):
+        return None
+    if key.isdigit():
+        result = gameActiveInfoService.getInfo(int(key))
+    else:
+        result = gameActiveInfoService.getInfo(key)
+    return jsonify(result = result)
+
+#####share api#####
+######判断此用户在当前活动还可以再分享吗
+@api.route("/game/share/count/check/<int:userId>/<int:activeId>")
+def checkShareLimit(userId, activeId):
+    if(id <= 0 or activeId <= 0):
+        return False
+    result = userShareLimitInfoService.incrAndcheckLimit(userId, activeId)
+    return jsonify(result=result)
+
+######获取用户分享时要展示的内容
+@api.route("/game/share/content/gen/<int:userId><int:activeId>")
+def genShareContent(userId, activeId):
+    if(userId <= 0 and activeId <=0):
+        return None
+    #获取用户token传递或者其它数据库//
+
+    ##获取活动的地址
+
+
+    ##userId, userToken, activeId, activeUrl):
+    result = userShareInfoService.genShareInfo(userId, userToken, activeId, activeUrl)
+    return jsonify(result=result)
+####share api####
+#####在用户分享后将分享结果回传，用来决定用户是继续玩还是不能玩
+@api.route("/game/share/feedback/<string:shareCode>/<int:result>")
+def shareFeedback(shareCode, result):
+    if result is None:
+        return jsonify(result=False)
+    if int(result) != 1 and int(result) != -1:
+        return jsonify(result=False)
+    shared = userShareInfoService.afterShare(shareCode, result)
+    return jsonify(result=shared)
+
 
