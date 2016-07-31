@@ -9,37 +9,68 @@ import uuid
 
 import os
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-os.sys.path.insert(0, parentdir)
+os.sys.path.insert(0,parentdir)
 from services import GameQuestionInfoService
 from services import UserShareLimitInfoService
 from services import UserShareInfoService
 from services import GameActiveInfoService
 from services import GameBizService
+from services import UserInfoService
 from models import *
 from utils import *
 
-
-#API
-# iosAPI = IosAPI()
-# iosUnionAPI = IosUnionAPI()
-# strategyAPI = StrategyAPI()
-# AppMap = AppMap()
-# baiduSearch = BaiduSearch()
-
-# TIMEOUT=600
-# VIEW_TYPE_COOKIE_KEY = 'view_type'
-# COOKIE_MAX_AGE = 86400
-# #COOKIE_MAX_AGE = 60
-
-# page = Blueprint('page', __name__)
-
-api = Blueprint("api", __name__)
+page = Blueprint("page", __name__)
 
 gameActiveInfoService = GameActiveInfoService.GameActiveInfoService()
 gameQuestionInfoService = GameQuestionInfoService.GameQuestionInfoService()
 userShareInfoService = UserShareInfoService.UserShareInfoService()
 userShareLimitInfoService = UserShareLimitInfoService.UserShareLimitInfoService()
 gameBizService = GameBizService.GameBizService()
+userInfoService = UserInfoService.UserInfoService()
+
+
+@page.route('/welcome/<string:signWord>')
+#@cache.cached(timeout=TIMEOUT,key_prefix=make_cache_key)
+def welcome(signWord):
+    ##check 中奖了没小伙
+
+    resp = gameBizService.gameHomepageInfo(1, signWord)
+    
+    return render_template("welcome.html", resp = resp)
+
+#####userInfoService get openId from cookie
+@page.route('/play/<int:activeId>/')
+def play(activeId):
+	openId = "aadfadflkjcao12-AAL-AC"
+	userId = userInfoService.getUserId(openId)
+	if userId is None:
+		return render_template("403.html", "无效的用户")
+	resp = gameBizService.firstPlay(userId, activeId)
+	if not resp:
+		return render_template("403.html", resp = resp), 500
+	##可以玩
+	if(resp.get('play')):
+		return render_template("game.html", resp = resp), 500
+	##已中奖
+	elif(resp.get('prized')):
+		return render_template("prized.html", resp = resp), 500
+##需要分享才能玩
+	elif(resp.get('needShare')):
+		return render_template("share.html", resp = resp), 500
+	##当前游戏不能玩了，等待下次
+	else:
+		return render_template("waitnext.html", resp = resp), 500
+
+
+@page.route('/shareplay/<int:activeId>/<string:shareCode>')
+def sharePlay(activeId, shareCode):
+	resp = gameBizService.shareFirstPlay(activeId, shareCode)
+
+	return None
+
+
+
+
 # def make_cache_key(*args, **kwargs):
 #     path = request.path
 #     items = request.args.items()
@@ -149,98 +180,4 @@ gameBizService = GameBizService.GameBizService()
 #     resp.set_cookie(VIEW_TYPE_COOKIE_KEY, view_type, max_age = 864000)
 #     if session['client']:
 #         resp.set_cookie('sessionid',str(session['client']), max_age = 864000)
-
-
-
-
-####
-@api.route("/game/homepage/<string:signWord>")
-def homepage(signWord):
-    if not signWord:
-        return jsonify(reslut=None)
-    result = gameBizService.gameHomepageInfo(1, signWord)
-    return jsonify(result = result)
-
-@api.route("/game/homepage/<string:signWord>/<int:step>")
-def playgame(signWord, step):
-    if not signWord:
-        return jsonify(result=None)
-    result = gameBizService.gamePlayInfo(signWord, step)
-    return jsonify(result = result)
-
-
-
-##init all cache 
-##if it's the first time to run this or ur cache crash  call it/
-@api.route("/game/init/<string:pwd>")
-def init(pwd):
-    if(pwd != "h5gameforquarter"):
-        return jsonify(done=False)
-    ##init cache
-    ##load all gameinfo
-    return jsonify(done=True)
-
-@api.route("/game/next/<string:token>/<int:id>/<int:step>")
-def nextGame(token, id, step=0):
-    ##check the token id is ok
-    return jsonify(username="controller",pwd=123)
-@api.route("/game/infos/<int:id>")
-def gameInfos(id=0):
-	# if(id == 0):
-	# 	return jsonify(infos=gameQuestionInfoService.getAllInfos())
-	return jsonify(infos=gameQuestionInfoService.getAllInfos())
-
-@api.route("/game/question/check/<int:id>/<int:answerId>")
-def checkAnswer(id, answerId):
-    if(id <= 0 or answerId <= 0):
-        return False
-    result =  gameQuestionInfoService.checkAnswer(id, answerId)
-    return jsonify(result=result)
-
-
-#####game active api#####
-####获取活动信息，在用户同意授权后，显示游戏首页
-@api.route("/game/active/info/<string:key>/")
-def getActiveInfo(key):
-    if(key is None):
-        return None
-    if key.isdigit():
-        result = gameActiveInfoService.getInfo(int(key))
-    else:
-        result = gameActiveInfoService.getInfo(key)
-    return jsonify(result = result)
-
-#####share api#####
-######判断此用户在当前活动还可以再分享吗
-@api.route("/game/share/count/check/<int:userId>/<int:activeId>")
-def checkShareLimit(userId, activeId):
-    if(id <= 0 or activeId <= 0):
-        return False
-    result = userShareLimitInfoService.incrAndcheckLimit(userId, activeId)
-    return jsonify(result=result)
-
-######获取用户分享时要展示的内容
-@api.route("/game/share/content/gen/<int:userId><int:activeId>")
-def genShareContent(userId, activeId):
-    if(userId <= 0 and activeId <=0):
-        return None
-    #获取用户token传递或者其它数据库//
-
-    ##获取活动的地址
-
-
-    ##userId, userToken, activeId, activeUrl):
-    result = userShareInfoService.genShareInfo(userId, userToken, activeId, activeUrl)
-    return jsonify(result=result)
-####share api####
-#####在用户分享后将分享结果回传，用来决定用户是继续玩还是不能玩
-@api.route("/game/share/feedback/<string:shareCode>/<int:result>")
-def shareFeedback(shareCode, result):
-    if result is None:
-        return jsonify(result=False)
-    if int(result) != 1 and int(result) != -1:
-        return jsonify(result=False)
-    shared = userShareInfoService.afterShare(shareCode, result)
-    return jsonify(result=shared)
-
 

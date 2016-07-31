@@ -39,7 +39,9 @@ class GameActiveInfoService:
 
 		result = self._dao.queryInfoByUk(signWord)
 		if(result is not None and r is not None):
-			self._initInfo(signWord.id, signWord, r)
+			infoKey = self._buildInfoKey(result.id)
+			self._initInfo(r, infoKey, result)
+			self._initSignWordIdInfo(r, key, result.id)
 		return result.__dict__
 
 	def _buildSignWordInfoIdKey(self, signWord):
@@ -48,9 +50,9 @@ class GameActiveInfoService:
 	def _buildInfoKey(self, id):
 		return ID_INFO_KEY + str(id)
 
-	def _initInfo(self, id, result, r):
-		key = self._buildInfoKey(id)
+	def _initInfo(self, r, key, result):
 		r.set(key, json.dumps(result.__dict__))
-		key = self._buildSignWordInfoIdKey(result.signWord)
+
+	def _initSignWordIdInfo(self, r, key, id):
 		r.set(key, id)
 

@@ -20,7 +20,7 @@ class GameActivePrizeInfoService:
 			caches = r.zrange(key, 0, -1)
 			if not (caches is None or not caches):
 				ids = caches
-				return getInfos(ids)
+				return self.getInfos(ids)
 		dbValues = self._dao.queryInfosByActiveId(activeId)
 		results = []
 
@@ -28,7 +28,7 @@ class GameActivePrizeInfoService:
 			self._initInfo(dbValue.id, dbValue, r)
 			results.append(dbValue.__dict__)
 		self._initSortedSet(activeId, dbValues)
-		return results;
+		return results
 
 ##初始化active-id level sorted set
 	def _initSortedSet(self, activeId, dbValues):

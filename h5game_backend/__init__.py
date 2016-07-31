@@ -5,7 +5,13 @@ from flask.ext.cache import Cache
 from flask import g
 from dao.MysqlDatasource import DataSource
 
-app = Flask(__name__, instance_relative_config=True)
+import sys
+
+
+reload(sys)
+sys.setdefaultencoding('utf8')
+
+app = Flask(__name__, instance_relative_config=True, static_folder='static', static_url_path='')
 app.config.from_object('config.default')
 app.config.from_pyfile('config.py', silent=True)
 app.config.from_envvar('APP_CONFIG_FILE', silent=True)
@@ -26,8 +32,10 @@ else:
 LOGGER.addHandler(handler)
 
 from controller import *
+from views import *
 
 app.register_blueprint(api, url_prefix="/api")
+app.register_blueprint(page, url_prefix="/page")
 
 
 @app.teardown_appcontext
@@ -46,13 +54,8 @@ def init_db():
 
 
 # add blue print views
-# from .views.android import android_view
-# from .views.ios import ios_view
 # from .views.error import *
 
-# app.register_blueprint(android_view, url_prefix='/android')
-# app.register_blueprint(ios_view, url_prefix='/ios')
-
 # import assets and template extensions
-# from .utils import assets
+from utils import assets
 # from .utils import template_filter_ex

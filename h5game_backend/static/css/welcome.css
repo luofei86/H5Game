@@ -1,0 +1,32 @@
+@charset "utf-8";
+
+body {
+    font-family:Tahoma,Arial,Roboto,”Droid Sans”,”Helvetica Neue”,”Droid Sans Fallback”,”Heiti SC”;
+    font-size: 100%;
+    background-color: #fff;
+    margin: 0;
+}
+.m-ins {
+	width: 173px;
+	height: 34px;
+	margin: 1.8rem auto;
+	background: url(../images/start_play.png);
+	background-size: 100%;
+	font-size: 1rem;
+	color: #fff;
+	display: block;
+	text-align: center;
+	line-height: 34px;
+	text-decoration: none;
+}
+
+.welcome_prize{
+	margin: 1.8rem auto;
+	font-size: 1rem;
+	
+	display: block;
+	text-align: center;
+	line-height: 34px;
+	text-decoration: none;
+	
+}

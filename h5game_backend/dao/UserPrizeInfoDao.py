@@ -4,21 +4,20 @@ import MySQLdb
 from _mysql_exceptions import OperationalError
 from services.DbService import get_db
 from contextlib import closing
-from models import GameActiveInfo
+from models import UserPrizeInfo
 
-#####关键字对应访问游戏地址
-####(self, id, keyword, signWord, url):
+#####用户中奖信息
+####(self, id, userId, activeId, prizeCode):
 __author__ = 'luofei'
 
 
 #######id, keyword, signWord, url, title content, resource_url
-TABLE_NAME= " game_active_info "
-COLUMNS = " id, keyword, sign_word, url, title, content, resource_url "
+TABLE_NAME= " user_prize_info "
+COLUMNS = " user_id, active_id, prize_code "
 ALL_SQL = '''SELECT ''' + COLUMNS + ''' FROM ''' + TABLE_NAME + ''' WHERE status = 0'''
-ID_SQL = ALL_SQL + ''' AND id = %s '''
-UK_SQL = ALL_SQL + ''' AND sign_word = %s '''
+UK_SQL = ALL_SQL + ''' AND user_id = %s AND active_id = %s '''
 
-class GameActiveInfoDao:
+class UserPrizeInfoDao:
 	def queryAllInfos(self):
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
@@ -33,23 +32,17 @@ class GameActiveInfoDao:
 				continue
 			values.append(value)
 		return values
+	
 
-	def queryInfo(self, id):
+	def queryInfoByUk(self, userId, activeId):
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
-			cur.execute(ID_SQL, (str(id),))
+			cur.execute(UK_SQL, (str(userId), str(activeId)))
 			result = cur.fetchone()
 		return self._toObject(result)
 
-	def queryInfoByUk(self, signWord):
-		dbConn = get_db()
-		with closing(dbConn.cursor()) as cur:
-			cur.execute(UK_SQL, (str(signWord),))
-			result = cur.fetchone()
-		return self._toObject(result)
-
-#######def __init__(self, id, keyword, signWord, url, title, content, resourceUrl):
+#######id, keyword, sign_word, url, title content, resource_url
 	def _toObject(self, db_item):
 		if db_item is None:
 			return None
-		return GameActiveInfo(db_item[0], db_item[1], db_item[2], db_item[3], db_item[4], db_item[5], db_item[6])
+		return UserPrizeInfo(db_item[0], db_item[1], db_item[2])

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name ="viewport" content ="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, width=device-width">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge，chrome=1"/>
+        <meta name="applicable-device" content="mobile"/>
+        <meta http-equiv="Cache-Control" content="no-siteapp"/>
+        <meta name="format-detection" content="telephone=no, email=no"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <!-- <link rel="icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" />
+        <link rel="Shortcut Icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" /> -->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/welcome.css')}}">
+        <!-- {% assets "home_page_js" %}
+            <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+        {% endassets %}
+        {% assets "home_page_css" %}
+            <link rel="stylesheet" href="{{ ASSET_URL }}" />
+        {% endassets %} -->
+        <title>分享一夏</title>            
+    </head>
+    <body  id="main" unselectable="on" onselectstart="return false;">
+        <!--题目区域-->
+        <div id="share_desc">
+            <div class="share_title">
+                回答错误
+            </div>
+            <div class="share_content">分享到朋友圈立即获得一次答案机会</div>
+        </div>
+        <!--奖品展示区域-->
+        <div id="to_share" class="to_share">
+            <a href="/page/play/1" id="btn" class="m-ins">立即分享</a>
+        </div>
+    </body>
+</html>

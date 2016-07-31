@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name ="viewport" content ="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, width=device-width">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge，chrome=1"/>
+        <meta name="applicable-device" content="mobile"/>
+        <meta http-equiv="Cache-Control" content="no-siteapp"/>
+        <meta name="format-detection" content="telephone=no, email=no"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <!-- <link rel="icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" />
+        <link rel="Shortcut Icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" /> -->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/welcome.css')}}">
+        <!-- {% assets "home_page_js" %}
+            <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+        {% endassets %}
+        {% assets "home_page_css" %}
+            <link rel="stylesheet" href="{{ ASSET_URL }}" />
+        {% endassets %} -->
+        <title>开心一夏</title>            
+    </head>
+    <body  id="main" unselectable="on" onselectstart="return false;">
+        <!--题目区域-->
+        <div id="subject">
+            <div id="question">
+                <!--0 picture 1 video 2 txt-->
+                {% if resp.question['resourceType'] == 0 %}
+                    <img src="">
+                {% elif resp.question['resourceType'] == 1 %}
+                    <video src="">
+                {% else %}
+                    <span></span>
+                {% endif %}
+            </div>
+            <div id="tip">
+                {{{resp.question['tips']}}}
+            </div>
+        </div>
+        <!--奖品展示区域-->
+        <div id="answer" class="answer">                
+            {% for answer in resp.answers%}
+                <div class="answer_block">
+                    <!--0 picture 1 video 2 txt-->
+                    {% if answer["resourceType"] == 0 %}
+                        <img src="">
+                    {% elif answer['resourceType'] == 1 %}
+                        <video src="">
+                    {% else %}
+                        <span></span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <!--开始区域-->
+        <div id="next">
+            <a href="/page/play/1" id="btn" class="m-ins">下一题</a>
+        </div>
+    </body>
+</html>

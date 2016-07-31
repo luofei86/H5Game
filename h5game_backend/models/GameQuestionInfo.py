@@ -8,8 +8,9 @@
 #db_item['possible_answer_ids'], db_item['right_answer_id'],
 #db_item['tips'])
 class GameQuestionInfo:
-	def __init__(self, id, title, resourceUrl, resourceType, possibleAnswerIds, rightAnswerId, tips):
+	def __init__(self, id, activeId, title, resourceUrl, resourceType, possibleAnswerIds, rightAnswerId, tips):
 		self.id = id
+		self.activeId = activeId
 		self.title = title
 		self.resourceUrl = resourceUrl
 		self.resourceType = resourceType
@@ -19,6 +20,7 @@ class GameQuestionInfo:
 
 	def __str__(self):
 		return "GameQuestionInfo: id=" + str(self.id) \
+			+", activeId=" + self.activeId \
 			+", title=" + self.title \
 			+", resourceUrl=" + self.resourceUrl \
 			+", resourceType=" + str(self.resourceType) \

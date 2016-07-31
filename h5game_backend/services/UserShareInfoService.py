@@ -13,7 +13,10 @@ import time
 
 pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
 SHARECODE_ACTIVEID_KEY="sharecode:activeid:"
-
+USER_SHARED_ID = "user:shared:id:"
+SHARED_OK = 1
+SHARED_FAILED = -1
+SHARED_INIT = 0
 
 class UserShareInfoService:
 	def __init__(self):
@@ -32,14 +35,28 @@ class UserShareInfoService:
 		else:
 			return self._dao.queryActiveIdByShareCode(shareCode)
 
+	def userShared(self, userId, activeId):
+		r = redis.Redis(connection_pool = pool)
+		if r:
+			key = self._buildUserSharedActiveKey(userId, activeId)
+			cacheValue = r.exists(key)
+			if cacheValue is not None:
+				return cacheValue
+		dbValue = self._dao.queryId(userId, activeId, SHARED_OK)
+		if dbValue is not None:
+			if r:
+				self._initSharedValue(r, key, dbValue)
+			return True
+		return False
+
+
 	#添加分享，在确认分享数量没问题后，调用此接口返回相关信息
-	def genShareInfo(self, userId, userToken, activeId, activeUrl):
-		shareCode = self._buildShareCode(activeUrl, token)
+	def genShareInfo(self, userId, openId, activeId, activeUrl):
+		shareCode = self._buildShareCode(openId)
 		if str(activeUrl).endswith("/"):
 			shareUrl = activeUrl + shareCode
 		else:
 			shareUrl = activeUrl + "/" + shareCode
-		self._dao.insert(userId, activeId, activeUrl,)
 		title = u"我发现一个好玩的游戏，你也快来吧"
 		content =u"精彩一夏奥运"
 		self._dao.insert(userId, activeId, shareCode, shareUrl, title, content)
@@ -62,8 +79,14 @@ class UserShareInfoService:
 				return False
 		return False
 
+	def _buildUserSharedActiveKey(self, userId, activeId):
+		return USER_SHARED_ID + str(userId) + ":" + str(activeId)
+
+	def _initSharedValue(self, r, key, value):
+		r.set(key, value)
+
 	def _buildShareActiveIdKey(self, shareCode):
 		return SHARECODE_ACTIVEID_KEY + sharecode
 
-	def _buildShareCode(self, activeUrl, userToken):
-		return userToken + "_" + str(time.time()) +str(time.clock())
+	def _buildShareCode(self, openId):
+		return openId + "_" + str(time.time()) +str(time.clock())

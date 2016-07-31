@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name ="viewport" content ="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, width=device-width">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge，chrome=1"/>
+        <meta name="applicable-device" content="mobile"/>
+        <meta http-equiv="Cache-Control" content="no-siteapp"/>
+        <meta name="format-detection" content="telephone=no, email=no"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <!-- <link rel="icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" />
+        <link rel="Shortcut Icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" /> -->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/welcome.css')}}">
+        <!-- {% assets "home_page_js" %}
+            <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+        {% endassets %}
+        {% assets "home_page_css" %}
+            <link rel="stylesheet" href="{{ ASSET_URL }}" />
+        {% endassets %} -->
+        <title>已获取抽奖码</title>            
+    </head>
+    <body  id="main" unselectable="on" onselectstart="return false;">
+        <!--海报区域-->
+        <div id="content">
+            <div>真棒都回答对了</div>
+        </div>
+        <!--开始区域-->
+        <div id="prize_code">
+            <div>抽奖码为:{{resp.prizeCode}}</div>
+        </div>
+        <!--奖品展示区域-->
+        <div id="prize_feedback" class="welcome_prize">
+            <div>投资结果将会微信联系您，请关注我们的推送消息</div>
+            <div>抽奖公布时间:{{resp.prizeNotifyTime}}</div>
+        </div>
+    </body>
+</html>

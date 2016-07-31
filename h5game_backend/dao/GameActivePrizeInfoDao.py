@@ -35,10 +35,10 @@ class GameActivePrizeInfoDao:
 			values.append(value)
 		return values
 
-	def queryInfosByActiveId(self, active_id):
+	def queryInfosByActiveId(self, activeId):
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
-			cur.execute(ACTIVEID_SQL, (str(active_id),))
+			cur.execute(ACTIVEID_SQL, (str(activeId),))
 			result = cur.fetchall()
 		if result is None:
 			return None
@@ -55,7 +55,7 @@ class GameActivePrizeInfoDao:
 		format_ids_strings = ','.join(['%s']) * len(ids)
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
-			cur.execute(ID_SQL, (format_ids_strings, tuple(ids)))
+			cur.execute(IDS_SQL, (format_ids_strings, tuple(ids)))
 			result = cur.fetchone()
 		return self._toObject(result)
 

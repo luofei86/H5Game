@@ -3,24 +3,10 @@
 
 ###
 ###用户分享信息
-####id, 用户Id, 活动id, 分享地址, 分享标题，分享内容, 分享结果
+####用户Id, 活动id, 分享码, 分享地址, 分享标题，分享内容, 分享结果
 ###
 class UserShareInfo:
-	def __init__(self, activeId, shareCode):
-		self.activeId = activeId
-		self.shareCode = shareCode
-
 	def __init__(self, userId, activeId, shareCode, shareUrl, title, content, result):
-		self.userId = userId
-		self.activeId = activeId
-		self.shareCode = shareCode
-		self.shareUrl = shareUrl
-		self.title = title
-		self.content = content
-		self.result = result
-
-	def __init__(self, id, userId, activeId, shareCode, shareUrl, title, content, result):
-		self.id = id###user.id
 		self.userId = userId
 		self.activeId = activeId
 		self.shareCode = shareCode
