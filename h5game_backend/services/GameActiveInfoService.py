@@ -24,7 +24,7 @@ class GameActiveInfoService:
 		result = self._dao.queryInfo(id)
 
 		if result is not None and r is not None:
-			self._initInfo(id, result, r)
+			self._initInfo(r, key, result)
 
 		return result.__dict__
 

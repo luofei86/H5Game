@@ -6,27 +6,31 @@ from services.DbService import get_db
 from contextlib import closing
 from models import GameAnswerInfo
 
+from h5game_backend import LOGGER
+
 __author__ = 'luofei'
 
 ALL_SQL = '''SELECT id, title, resource_url, resource_type FROM game_answer_info WHERE status = 0'''
-IDS_SQL = ALL_SQL + ''' AND id in (%s) '''
+IDS_SQL = ALL_SQL + ''' AND id in '''
 
 class GameAnswerInfoDao:
-	def queryAllInfos(self):
-		dbConn = get_db()
-		with closing(dbConn.cursor()) as cur:
-			cur.execute(ALL_SQL)
-			retlist = cur.fetchall()
-			dbConn.commit()
-		return retlist
-
 	def queryInfos(self, ids):		
-		idsStr = ",".join(map(str,ids))
+		idsStr = str(",".join(map(str,ids)))
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
-			cur.execute(IDS_SQL, (idsStr,))
-			result = cur.fetchone()
-		return self._toObject(result)
+			sql = IDS_SQL + "(" + idsStr + ")"
+			cur.execute(sql)
+			result = cur.fetchall()
+			if result is None:
+				return None
+			values = []
+			for r in result:
+				value = self._toObject(r)
+				if value is None:
+					continue
+				values.append(value)
+			return values
+		return None
 
 	def _toObject(self, db_item):
 		if db_item is None:

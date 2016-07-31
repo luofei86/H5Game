@@ -12,7 +12,7 @@
         <!-- <link rel="icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" />
         <link rel="Shortcut Icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" /> -->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/welcome.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/game.css')}}">
         <!-- {% assets "home_page_js" %}
             <script type="text/javascript" src="{{ ASSET_URL }}"></script>
         {% endassets %}
@@ -23,7 +23,7 @@
     </head>
     <body  id="main" unselectable="on" onselectstart="return false;">
         <!--题目区域-->
-        <div id="subject">
+        <div id="subject" class="subject">
             <div id="question">
                 <!--0 picture 1 video 2 txt-->
                 {% if resp.question['resourceType'] == 0 %}
@@ -35,7 +35,7 @@
                 {% endif %}
             </div>
             <div id="tip">
-                {{{resp.question['tips']}}}
+                {{resp.question.tips}}
             </div>
         </div>
         <!--奖品展示区域-->
@@ -44,11 +44,11 @@
                 <div class="answer_block">
                     <!--0 picture 1 video 2 txt-->
                     {% if answer["resourceType"] == 0 %}
-                        <img src="">
+                        <img src="{{answer['resourceUrl']}}" title= "{{answer['title']}}" alt="{{answer['title']}}">
                     {% elif answer['resourceType'] == 1 %}
-                        <video src="">
+                        <video src="{{answer['resourceUrl']}}">
                     {% else %}
-                        <span></span>
+                        <span>{{answer['title']}}</span>
                     {% endif %}
                 </div>
             {% endfor %}

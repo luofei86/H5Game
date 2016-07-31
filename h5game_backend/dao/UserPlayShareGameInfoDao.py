@@ -21,6 +21,7 @@ INSERT_SQL = '''INSERT INTO ''' + TABLE_NAME + '''(id, userId, active_id, share_
 UPDATE_SQL = ''' UPDATE ''' + TABLE_NAME + ''' SET play_question_id = %s WHERE userId = %s AND active_id = %s AND share_code = %s'''
 UPDATE_RESULT_SQL = '''UPDATE ''' + TABLE_NAME + ''' SET result = %s WHERE userId = %s AND active_id = %s AND share_code = %s'''
 UK_SQL = '''SELECT ''' + COLUMNS +  ''' FROM ''' + TABLE_NAME + '''WHERE status = 0 AND userId = %s AND active_id = %s AND share_code = %s '''
+LAST_SQL = '''SELECT ''' + COLUMNS +  ''' FROM ''' + TABLE_NAME + '''WHERE status = 0 AND userId = %s AND active_id = %s ORDER BY `id` DESC LIMIT 1 '''
 COUNT_SQL = '''SELECT COUNT(*) FROM ''' + TABLE_NAME + ''' WHERE status = 0 AND user_id = %s AND active_id = %s AND share_code = %s'''
 
 class UserPlayShareGameInfoDao:	
@@ -34,6 +35,13 @@ class UserPlayShareGameInfoDao:
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
 			cur.execute(UK_SQL, (str(userId), str(activeId), str(shareCode)))
+			result = cur.fetchone()
+		return self._toObject(result)
+
+	def queryLastInfo(self, userId, activeId):
+		dbConn = get_db()
+		with closing(dbConn.cursor()) as cur:
+			cur.execute(LAST_SQL, (str(userId), str(activeId)))
 			result = cur.fetchone()
 		return self._toObject(result)
 

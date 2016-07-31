@@ -1160,5 +1160,18 @@ div.greendot {
     -ms-flex: 1;
     flex: 1
 }
+.m-ins {
+	width: 173px;
+	height: 34px;
+	margin: 1.8rem auto;
+	background: url(../images/start_play.png);
+	background-size: 100%;
+	font-size: 1rem;
+	color: #fff;
+	display: block;
+	text-align: center;
+	line-height: 34px;
+	text-decoration: none;
+}
 
 @media only screen and (min-device-width:240px)and (max-device-width :700px)and (orientation:landscape){.pop-holder{padding-top:20%!important}}

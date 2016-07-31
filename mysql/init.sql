@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `user_share_limit_info`(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 #
-CREATE TABLE IF NOT EXISTS `use_share_info`(
+CREATE TABLE IF NOT EXISTS `user_share_info`(
 	`id` int unsigned not null auto_increment,
 	`user_id` int unsigned not null,
 	`active_id` int unsigned not null comment 'reference game_active_info.id',
@@ -155,6 +155,11 @@ CREATE TABLE IF NOT EXISTS `game_active_prize_info`(
 	KEY `KEY_GAPI_SIGNWORD`(`active_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+user h5_game;
+TRUNCATE user_play_share_game_info;
+TRUNCATE user_play_origin_game_info;
+TRUNCATE user_share_limit_info;
+TRUNTE user_share_info;
 
 
 INSERT INTO `h5_game_question_info` VALUES(null, '我是测试0', 'http://ios.appchina.com/hello.png', 0, '1,2,3,4', 1, '1', 0, now(), now());

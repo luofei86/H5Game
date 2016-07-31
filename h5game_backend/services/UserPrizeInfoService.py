@@ -24,7 +24,7 @@ class UserPrizeInfoService:
 		if dbValue:
 			if r:
 				self._initCacheInfo(r, key, dbValue)
-			return dbValue.__init__
+			return dbValue.__dict__
 
 		return None
 

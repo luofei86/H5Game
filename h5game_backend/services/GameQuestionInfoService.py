@@ -71,7 +71,7 @@ class GameQuestionInfoService:
 				return result
 		result = self._dao.queryInfo(id)
 		if result is not None and r is not None:
-			self._initInfo(key, r, result)
+			self._initInfo(r, key, result)
 
 		return result.__dict__
 
@@ -86,11 +86,11 @@ class GameQuestionInfoService:
 				return answerId == result['rightAnswerId']
 		result = self._dao.queryInfo(questionId)
 		if(result is None):
-			return false
-		self._initInfo(key, r, result)
+			return False
+		self._initInfo(r, key, result)
 		return answerId == result.rightAnswerId
 
-	def _initInfo(self, key, r, result):
+	def _initInfo(self, r, key, result):
 		r.set(key, json.dumps(result.__dict__))
 
 	def _buildInfoKey(self, id):

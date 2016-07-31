@@ -53,9 +53,9 @@ class GameActivePrizeInfoService:
 			if values is None:
 				notCacheIds = ids
 			else:
-				for value in values:
+				for index, value in enumerate(values):
 					if value is None:
-						notCacheIds.append(id)
+						notCacheIds.append(ids[index])
 					else:
 						result = json.loads(value)
 						results.append(result)
