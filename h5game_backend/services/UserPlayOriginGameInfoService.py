@@ -18,9 +18,9 @@ class UserPlayOriginGameInfoService:
 	def addUserPlayInfo(self, userId, activeId, randomQuestionIds, playQuestionId):
 		try:
 			self._dao.insert(userId, activeId, randomQuestionIds, playQuestionId)
+			return getInfo(userId, activeId)
 		except:
-			return False
-		return True
+			return None
 
 ####更新id对应的result
 	def modifyResultFailedCount(self, id, result, failedCount):

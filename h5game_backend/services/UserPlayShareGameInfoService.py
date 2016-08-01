@@ -16,8 +16,12 @@ class UserPlayShareGameInfoService:
 		self._dao = UserPlayShareGameInfoDao()
 
 	def addUserPlayInfo(self, userId, activeId, shareCode, randomQuestionIds, playQuestionId):
-		self._dao.insert(userId, activeId, shareCode, randomQuestionIds, playQuestionId)
-		self._incrCount(userId, activeId, shareCode)
+		try:
+			self._dao.insert(userId, activeId, shareCode, randomQuestionIds, playQuestionId)
+			self._incrCount(userId, activeId, shareCode)
+			return self.getUserPlayInfo(userId, activeId, shareCode)
+		except:
+			return None
 
 	def getUserlastPlayInfo(self, userId, activeId):
 		r = redis.Redis(connection_pool = pool)
@@ -51,26 +55,24 @@ class UserPlayShareGameInfoService:
 		return None
 
 
-	def countUserPlay(self, userId, activeId, shareCode):
+	def countUserPlay(self, userId, activeId):
 		r = redis.Redis(connection_pool = pool)
 		if r:
-			key = self._buildCountKey(userId, activeId, shareCode)
+			key = self._buildCountKey(userId, activeId)
 			result = r.get(key)
 			if result:
 				return int(result)
-		count = self._dao.count(userId, activeId, shareCode)
+		count = self._dao.count(userId, activeId)
 		if count:
 			if r:
 				self._initCount(r, key, count)
-		return count
+			return count
+		return 0
 
-		return None
-
-
-	def _incrCount(self, userId, activeId, shareCode):
+	def _incrCount(self, userId, activeId):
 		r = redis.Redis(connection_pool = pool)		
 		if r:
-			key = self._buildCountKey(userId, activeId, shareCode)
+			key = self._buildCountKey(userId, activeId)
 			r.incr(key)
 
 	def _initCount(self, r, key, count):
@@ -80,8 +82,8 @@ class UserPlayShareGameInfoService:
 		r.set(key, json.dumps(result.__dict__))
 
 
-	def _buildCountKey(self, userId, activeId, shareCode):
-		return COUNT_KEY + str(userId) + ":" + str(activeId) + ":" + shareCode
+	def _buildCountKey(self, userId, activeId):
+		return COUNT_KEY + str(userId) + ":" + str(activeId)
 
 
 	def _buildInfoKey(self, userId, activeId, shareCode):

@@ -11,4 +11,6 @@ from UserPrizeInfo import *
 from UserShareInfo import *
 from UserShareLimitInfo import *
 from UserInfo import *
+
+from BizStatusUtils import *
 __author__ = 'luofei'

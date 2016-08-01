@@ -14,10 +14,18 @@ __author__ = 'luofei'
 #######id, keyword, signWord, url, title content, resource_url
 TABLE_NAME= " user_prize_info "
 COLUMNS = " user_id, active_id, prize_code "
+INSERT_SQL = '''INSERT INTO ''' + TABLE_NAME + ''' (id, user_id, active_id, prize_code, status, update_time, create_time) ''' \
+			+ ''' VALUES(null, %s, %s, %s, 0, now(), now()) '''
 ALL_SQL = '''SELECT ''' + COLUMNS + ''' FROM ''' + TABLE_NAME + ''' WHERE status = 0'''
 UK_SQL = ALL_SQL + ''' AND user_id = %s AND active_id = %s '''
 
 class UserPrizeInfoDao:
+	def insert(self, userId, activeId, prizeCode):
+		dbConn = get_db()
+		with closing(dbConn.cursor()) as cur:
+			cur.execute(INSERT_SQL, (str(userId), str(activeId), str(prizeCode)))
+		dbConn.commit()
+
 	def queryAllInfos(self):
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:

@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS `user_play_origin_game_info`(
 	`active_id` int unsigned not null comment 'reference game_active_info.id',
 	`question_ids` varchar(255) not null comment 'ids with , and reference game_question_info.id',
 	`play_question_id` int unsigned not null comment 'id in question_ids and reference game_question_info.id',
+	`failed_count` tinyint unsigned not null default 0 comment '0,1 can continue play 2 must shared to play, 3 can play shared game',
  	`result` tinyint not null default 0  comment '0 init 1 success finsihed  -1: failed finish',
 	`status` tinyint not null comment '0 ok -1 del',
 	`update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,

@@ -8,7 +8,6 @@ class UserPrizeInfo:
 	def __init__(self, userId, activeId, prizeCode):
 		self.userId = openId
 		self.activeId = activeId
-		self.userActiveId = userActiveId
 		self.prizeCode = prizeCode
 
 	def __str__(self):

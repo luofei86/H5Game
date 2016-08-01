@@ -86,7 +86,7 @@ class UserShareInfoService:
 		r.set(key, value)
 
 	def _buildShareActiveIdKey(self, shareCode):
-		return SHARECODE_ACTIVEID_KEY + sharecode
+		return SHARECODE_ACTIVEID_KEY + shareCode
 
 	def _buildShareCode(self, openId):
 		return openId + "_" + str(time.time()) +str(time.clock())
