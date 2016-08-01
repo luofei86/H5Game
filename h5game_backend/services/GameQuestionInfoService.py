@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
+
 from services.DbService import get_db
 from dao.GameQuestionInfoDao import *
 import redis
 import json
 import random
+
+from h5game_backend import POOL
 
 ACTIVEID_QUESTIONID_SET_PREFIX_KEY = "game:active:question:ids:set:"
 info_key = "game:question:info:"
@@ -15,17 +18,12 @@ class GameQuestionInfoService:
 
 	def __init__(self):
 		self._dao = GameQuestionInfoDao()
-	# def afterShare(self, tokenId, shareToContact, shareToGroup):
-	# 	##用户是否还能再分享,如果不能，则分享失败
 
-	# 	##存储用户分享的内容
-
-	# 	return True
 ####随机用户答题目
 ####获取此活动下所有的题目，随机选取5道题目做为当前用户此次答题用到的题目,返回5道题目的id及第一道题目的内容
 	def randomAndGetUserFirstQuestion(self, activeId):
 		playQuestionIds = []		
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
 			key = self._buildActiveQuestionIds(activeId)
 			caches = r.smembers(key)
@@ -62,7 +60,7 @@ class GameQuestionInfoService:
 		r.sadd(key, ids)
 
 	def getInfo(self, id):
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		if(r):
 			key = self._buildInfoKey(id)
 			cacheValue = r.get(key)
@@ -77,7 +75,7 @@ class GameQuestionInfoService:
 
 	###检查答案
 	def checkAnswer(self, questionId, answerId):
-		r = redis.Redis(connection_pool=pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		key = self._buildInfoKey(questionId)
 		if(r):
 			cacheValue = r.get(key)

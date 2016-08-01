@@ -5,10 +5,11 @@ import redis
 import json
 import random
 
+from h5game_backend import POOL
 from h5game_backend import LOGGER
 
 info_key = "game:answer:info:"
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
+#pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
 
 class GameAnswerInfoService:
 
@@ -22,7 +23,7 @@ class GameAnswerInfoService:
 		keys = []
 		for id in ids:
 			keys.append(self._buildInfoKey(id))
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		notCacheIds = []
 		if r:
 			values = r.mget(keys)

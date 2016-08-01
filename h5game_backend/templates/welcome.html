@@ -27,7 +27,12 @@
         </div>
         <!--开始区域-->
         <div id="start">
-            <a href="/page/play/1" id="btn" class="m-ins">开始游戏</a>
+             {% if resp.shareCode %}
+                <a href="/page/play/{{resp.info.id}}/{{resp.shareCode}}" id="btn" class="m-ins">开始游戏</a>
+            {% else %}
+                <a href="/page/play/{{resp.info.id}}" id="btn" class="m-ins">开始游戏</a>
+            {% endif %}
+            
         </div>
         <!--奖品展示区域-->
         <div id="prize" class="welcome_prize">

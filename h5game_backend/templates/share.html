@@ -23,26 +23,34 @@
         <title>分享一夏</title>            
     </head>
     <body  id="main" unselectable="on" onselectstart="return false;">
+         <!--海报区域-->
+        <div id="poster">
+            <img src="http://iosimg.yingyonghui.com/banner/8191/819112_1468489114394_origin.jpg">
+        </div>
         <!--题目区域-->
         <div id="share_desc">
             <div class="share_title">
-                回答错误
+                回答错误,分享到朋友圈立即获得一次答案机会
             </div>
-            <div class="share_content">分享到朋友圈立即获得一次答案机会</div>
         </div>
+        <form id="form_hidden" action="/page/sharedtoplay/" method="POST">
+            <input type = 'hidden' name="shareCode" value="{{resp.shareInfo.shareCode}}">
+            <input type = 'hidden' name="id" value="{{resp.shareInfo.id}}">
+        </form>
         <!--奖品展示区域-->
         <div id="to_share" class="to_share">
             <a href="/page/play/1" id="btn" class="m-ins">立即分享</a>
         </div>
     </body>
     <script>
-        wx.config({
-    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-    appId: '', // 必填，公众号的唯一标识
-    timestamp: , // 必填，生成签名的时间戳
-    nonceStr: '', // 必填，生成签名的随机串
-    signature: '',// 必填，签名，见附录1
-    jsApiList: [] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-});
+        window.onload=function() {
+           document.getElementById("to_share").onclick=function() {
+                var r = confirm("分享就能再玩一次,分享?");
+                if (r){
+                    document.getElementById("form_hidden").submit();
+                }
+                return false; // cancel the actual link
+           }
+         }
     </script>
 </html>

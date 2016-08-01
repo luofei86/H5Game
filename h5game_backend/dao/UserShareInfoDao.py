@@ -1,4 +1,4 @@
-# # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import MySQLdb
 from _mysql_exceptions import OperationalError
@@ -9,14 +9,15 @@ from models import UserShareInfo
 __author__ = 'luofei'
 
 TABLE_NAME = " user_share_info "
-ALL_SQL = '''SELECT id, user_id, active_id, share_code FROM ''' + TABLE_NAME + ''' WHERE `status` = 0 AND result = 1 order by id LIMIT %s, %s'''
-UK_SQL = '''SELECT active_id FROM ''' + TABLE_NAME + ''' WHERE `status` = 0 AND result = 1 AND share_code = %s'''
-SHARED_SQL = '''SELECT id FROM ''' + TABLE_NAME + '''WHERE status = 0 AND user_id = %s AND active_id = %s AND result = %s'''
-
-INSERT_SQL = '''INSERT IGNORE INTO ''' + TABLE_NAME + ''' (`id`, `user_id`, `active_id`, `share_code`, ''' \
+COLUMNS = " id, user_id, active_id, share_code, share_url, title, content, result "
+#ALL_SQL = '''SELECT ''' + COLUMNS + ''' FROM ''' + TABLE_NAME + ''' WHERE `status` = 0 order by id LIMIT %s, %s'''
+SHARCODE_UK_SQL = '''SELECT ''' + COLUMNS + ''' FROM ''' + TABLE_NAME + ''' WHERE share_code = %s'''
+USER_ACTIVE_SQL = '''SELECT ''' + COLUMNS + ''' FROM ''' + TABLE_NAME + ''' WHERE user_id = %s AND active_id = %s'''
+ID_SQL = '''SELECT ''' + COLUMNS + ''' FROM ''' + TABLE_NAME + ''' WHERE `id` = %s'''
+INSERT_SQL = '''INSERT INTO ''' + TABLE_NAME + ''' (`id`, `user_id`, `active_id`, `share_code`, ''' \
 		 		+ '''`share_url`, `title`, `content`, `result`, `status`, update_time, create_time) ''' \
 				+ '''VALUES(NULL, %s, %s, %s, %s, %s, %s, 0, 0, now(), now())'''
-UPDATE_SQL = '''UPDATE ''' + TABLE_NAME + ''' SET `result` = %s WHERE share_code = %s'''
+UPDATE_RESULT_SQL = '''UPDATE ''' + TABLE_NAME + ''' SET `result` = %s WHERE id = %s'''
 
 class UserShareInfoDao:
 	
@@ -27,29 +28,44 @@ class UserShareInfoDao:
 		with closing(dbConn.cursor()) as cur:
 			cur.execute(INSERT_SQL, (str(userId), str(activeId), str(shareCode), \
 					str(shareUrl), str(title), str(content)))
-			dbConn.commit()
-
-	def updateResult(self, shareCode, result):
-		dbConn = get_db()
-		with closing(dbConn.cursor()) as cur:
-			cur.execute(UPDATE_SQL, (str(result), str(shareCode)))
 		dbConn.commit()
 
-	def queryId(self, userId, activeId, result):
+	def updateResult(self, id, result):
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
-			cur.execute(SHARED_SQL, (str(userId), str(activeId), str(result)))
+			cur.execute(UPDATE_RESULT_SQL, (str(result), str(id)))
+		dbConn.commit()
 
-	def queryActiveIdByShareCode(self, shareCode):
+	def queryInfo(self, id):
+		dbConn = get_db()
+		with closing(dbConn.cursor()) as cur:
+			cur.execute(ID_SQL, (str(id),))
+			result = cur.fetchone()
+		if result is None:
+			return None		
+		return self._toObject(result)
+
+	def queryInfoByShareCode(self, shareCode):
 		dbConn = get_db()		
 		with closing(dbConn.cursor()) as cur:
-			cur.execute(UK_SQL, (str(shareCode),))
+			cur.execute(SHARCODE_UK_SQL, (str(shareCode),))
 			result = cur.fetchone()
 		if result is None:
 			return None
-		return result[0]
+		return self._toObject(result)
+
+	def queryInfoByUserIdActiveId(self, userId, activeId):
+		dbConn = get_db()		
+		with closing(dbConn.cursor()) as cur:
+			cur.execute(USER_ACTIVE_SQL, (str(userId), str(activeId)))
+			result = cur.fetchone()
+		if result is None:
+			return None
+		return self._toObject(result)
 
 	def _toObject(self, db_item):
 		if db_item is None:
 			return None
-		return UserPrizeInfo(db_item[0], db_item[1], db_item[2])
+		return UserShareInfo(db_item[0], db_item[1], db_item[2], db_item[3], \
+							db_item[4], db_item[5], db_item[6], db_item[7])
+

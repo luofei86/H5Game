@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS `user_share_info`(
 	`update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
 	`create_time` datetime NOT NULL COMMENT '记录创建时间',
 	PRIMARY KEY `PK_USI_ID`(`id`),
+	UNIQUE KEY `UK_USI_UAID`(`user_id`, `active_id`),
 	UNIQUE KEY `UK_USI_SHARECODE`(`share_code`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

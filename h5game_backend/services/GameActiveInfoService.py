@@ -2,22 +2,24 @@
 from services.DbService import get_db
 from utils.JsonEncoder import *
 from dao.GameActiveInfoDao import *
+from services.RedisConf import RedisConf
 import redis
 import json
 
 from h5game_backend import LOGGER
+from h5game_backend import POOL
 
 
 ID_INFO_KEY = "game:active:info:"
 SIGNWORD_ID_KEY = "game:active:signword:id:"
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379, password="yike", db=0, socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
+
 
 class GameActiveInfoService:
 	def __init__(self):
 		self._dao = GameActiveInfoDao()
 
 	def getInfo(self, id):
-		r = redis.Redis(connection_pool=pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		if(r):
 			key = self._buildInfoKey(id)
 			cacheValue = r.get(key)
@@ -32,7 +34,7 @@ class GameActiveInfoService:
 		return result.__dict__
 
 	def getInfoBySignWord(self, signWord):
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
 			LOGGER.info("Connection")
 			key = self._buildSignWordInfoIdKey(signWord)
@@ -40,10 +42,10 @@ class GameActiveInfoService:
 			if cacheValue is not None:
 				id = int(cacheValue)
 				return self.getInfo(id)
-		else:
-			LOGGER.info("not connection")
 		result = self._dao.queryInfoByUk(signWord)
-		if(result is not None and r is not None):
+		if result is None:
+			return None
+		if r:
 			infoKey = self._buildInfoKey(result.id)
 			self._initInfo(r, infoKey, result)
 			self._initSignWordIdInfo(r, key, result.id)

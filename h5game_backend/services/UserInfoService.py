@@ -4,6 +4,7 @@ from dao.UserInfoDao import *
 import redis
 import json
 
+from h5game_backend import POOL
 
 ID_INFO_KEY = "user:info:"
 OPENID_ID_KEY = "user:openid:id:"
@@ -16,7 +17,7 @@ class UserInfoService:
 		self._dao = UserInfoDao()
 ##获取用户中奖信息
 	def getUserId(self, openId):
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
 			key = self._buildOpenIdReflectIdKey(openId)
 			result = r.get(key)
@@ -28,7 +29,7 @@ class UserInfoService:
 		return id
 
 	def getUserOpenId(self, id):
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
 			key = self._buildIdReflectOpenIdKey(id)
 			result = r.get(key)

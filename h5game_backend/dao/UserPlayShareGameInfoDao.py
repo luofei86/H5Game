@@ -17,7 +17,7 @@ TABLE_NAME= " user_play_share_game_info "
 COLUMNS = " id, user_id, active_id, share_code, question_ids, play_question_id, result "
 INSERT_SQL = '''INSERT INTO ''' + TABLE_NAME + '''(id, user_id, active_id, share_code, ''' \
 		+ '''question_ids, play_question_id, result, status, update_time, create_time) ''' \
-		+ ''' VALUES (null, %s, %s, %s, %s, %s, %s, 0, now(), now())'''
+		+ ''' VALUES (null, %s, %s, %s, %s, %s, 0, 0, now(), now())'''
 UPDATE_PLAY_QUESTION_IDSQL = ''' UPDATE ''' + TABLE_NAME + ''' SET play_question_id = %s WHERE id = %s'''
 UPDATE_RESULT_SQL = '''UPDATE ''' + TABLE_NAME + ''' SET result = %s WHERE id = %s'''
 UK_SQL = '''SELECT ''' + COLUMNS +  ''' FROM ''' + TABLE_NAME + '''WHERE status = 0 AND user_id = %s AND active_id = %s AND share_code = %s '''

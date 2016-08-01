@@ -4,12 +4,14 @@ from dao.UserPlayShareGameInfoDao import *
 import redis
 import json
 
+from h5game_backend import POOL
+from h5game_backend import LOGGER
 
 UK_INFO_KEY = "user:play:share:game:info:"
 USER_LAST_PLAY_KEY = "user:play:share:game:last:info:"
 COUNT_KEY = "user:play:share:count:"
 
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
+# pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
 
 class UserPlayShareGameInfoService:
 	def __init__(self):
@@ -19,8 +21,8 @@ class UserPlayShareGameInfoService:
 		randomQuestionIdsStr = ', '.join(str(x) for x in randomQuestionIds)
 		try:
 			self._dao.insert(userId, activeId, shareCode, randomQuestionIdsStr, playQuestionId)
-			self._incrCount(userId, activeId, shareCode)
-			return self.getUserPlayInfo(userId, activeId, shareCode)
+			self._incrCount(userId, activeId)
+			return self.getInfo(userId, activeId, shareCode)
 		except:
 			return None
 	####更新id对应的result
@@ -33,11 +35,11 @@ class UserPlayShareGameInfoService:
 		self._delInfoCache(userId, activeId, shareCode)
 
 	def getUserlastPlayInfo(self, userId, activeId):
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
 			key = self._buildLastInfoKey(userId, activeId)
-			result = r.get(key)
-			if result:
+			cacheValue = r.get(key)
+			if cacheValue:
 				return json.loads(cacheValue)
 		dbValue = self._dao.queryLastInfo(userId, activeId)
 		if dbValue:
@@ -50,11 +52,11 @@ class UserPlayShareGameInfoService:
 		return USER_LAST_PLAY_KEY + str(userId) + str(activeId)
 
 	def getInfo(self, userId, activeId, shareCode):
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
 			key = self._buildInfoKey(userId, activeId, shareCode)
-			result = r.get(key)
-			if result:
+			cacheValue = r.get(key)
+			if cacheValue:
 				return json.loads(cacheValue)
 		dbValue = self._dao.queryInfoByUk(userId, activeId, shareCode)
 		if dbValue:
@@ -65,12 +67,12 @@ class UserPlayShareGameInfoService:
 
 
 	def countUserPlay(self, userId, activeId):
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
 			key = self._buildCountKey(userId, activeId)
-			result = r.get(key)
-			if result:
-				return int(result)
+			cacheValue = r.get(key)
+			if cacheValue:
+				return int(cacheValue)
 		count = self._dao.count(userId, activeId)
 		if count:
 			if r:
@@ -79,7 +81,7 @@ class UserPlayShareGameInfoService:
 		return 0
 
 	def _incrCount(self, userId, activeId):
-		r = redis.Redis(connection_pool = pool)		
+		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
 			key = self._buildCountKey(userId, activeId)
 			r.incr(key)
@@ -95,12 +97,12 @@ class UserPlayShareGameInfoService:
 		return COUNT_KEY + str(userId) + ":" + str(activeId)
 
 	def _delInfoCache(self, userId, activeId, shareCode):
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
 			key = self._buildInfoKey(userId, activeId, shareCode)
 			r.delete(key)
 
 	def _buildInfoKey(self, userId, activeId, shareCode):
-		return UKID_INFO_KEY + str(userId) + str(activeId) + shareCode		
+		return UK_INFO_KEY + str(userId) + str(activeId) + shareCode		
 
 

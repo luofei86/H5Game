@@ -4,12 +4,13 @@ from dao.UserPlayOriginGameInfoDao import *
 import redis
 import json
 
+from h5game_backend import POOL
 from h5game_backend import LOGGER
 
 UKID_INFO_KEY = "user:play:origin:game:info:"
 COUNT_KEY = "user:play:origin:count:"
 
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
+#pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
 
 class UserPlayOriginGameInfoService:
 	def __init__(self):
@@ -39,7 +40,7 @@ class UserPlayOriginGameInfoService:
 		self._delInfoCache(userId, activeId)
 
 	def getInfo(self, userId, activeId):
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
 			key = self._buildInfoKey(userId, activeId)
 			result = r.get(key)
@@ -53,7 +54,7 @@ class UserPlayOriginGameInfoService:
 		return None
 
 	def _delInfoCache(self, userId, activeId):
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
 			key = self._buildInfoKey(userId, activeId)
 			r.delete(key)

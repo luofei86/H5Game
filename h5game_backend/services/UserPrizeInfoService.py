@@ -8,10 +8,11 @@ import json
 import random
 import string
 
+from h5game_backend import POOL
 
 ID_INFO_KEY = "user:prize:info:"
 
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
+# pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
 
 class UserPrizeInfoService:
 	def __init__(self):
@@ -28,7 +29,7 @@ class UserPrizeInfoService:
 
 ##获取用户中奖信息
 	def getUserPrizeInfo(self, userId, activeId):
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
 			key = self._buildInfoKey(userId, activeId)
 			cacheValue = r.get(key)

@@ -4,9 +4,11 @@ from dao.UserShareLimitInfoDao import *
 import redis
 import json
 
+from h5game_backend import POOL
+
 MAX_SHARE_ACCOUNT = 3
 count_key = "user:share:limit:"
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
+# pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
 
 ###用户分享限制服务
 class UserShareLimitInfoService:
@@ -17,7 +19,7 @@ class UserShareLimitInfoService:
 	###增加同时检查用户是否还能进行分享,外围在调用此接口时，需要确认此次分享是不是一次重复操作
 	###若此次用户可以分享，返回True，否则返回False
 	def incrAndcheckLimit(self, token, activeId):
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		key = self._buildCountKey(token, activeId)
 		if(r):
 			shareAccount = r.get(key)
@@ -35,7 +37,7 @@ class UserShareLimitInfoService:
 	###在用户点取消分享或分享失败时调用 ，用来减少用户分享次数，
 	###外围在调用此接口时，需要确认此次取消分享是不是一次重复操作
 	def afterShareFailed(self, token, activeId):
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		key = self._buildCountKey(token, activeId)
 		if(r):
 			r.decr(key)

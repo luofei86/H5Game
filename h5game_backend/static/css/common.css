@@ -1161,8 +1161,8 @@ div.greendot {
     flex: 1
 }
 .m-ins {
-	width: 173px;
-	height: 34px;
+	width: 273px;
+	height: 54px;
 	margin: 1.8rem auto;
 	background: url(../images/start_play.png);
 	background-size: 100%;
@@ -1170,7 +1170,7 @@ div.greendot {
 	color: #fff;
 	display: block;
 	text-align: center;
-	line-height: 34px;
+	line-height: 54px;
 	text-decoration: none;
 }
 

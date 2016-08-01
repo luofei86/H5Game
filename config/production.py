@@ -11,10 +11,7 @@ CACHE_REDIS_PORT=8643
 CACHE_KEY_PREFIX='mini:web:'
 CACHE_DEFAULT_TIMEOUT=24*7*3600
 
-LOG_FILE='log/mini-web.log'
-EN_PROPERTIES_FILE='/home/mk/mini_web/config/ln_en.properties'
-CN_PROPERTIES_FILE='/home/mk/mini_web/config/ln_cn.properties'
-TW_PROPERTIES_FILE='/home/mk/mini_web/config/ln_tw.properties'
+LOG_FILE='log/h5game.log'
 
 DB_CONF = {
     "host" :'10.18.103.121',

@@ -31,11 +31,25 @@ else:
     LOGGER.setLevel(logging.DEBUG)
 LOGGER.addHandler(handler)
 
+from services.RedisConf import RedisConf
+import redis
+
+REDIS_CACHE_CONF = RedisConf(app.config.get("REDIS_CONF", None))
+POOL = redis.ConnectionPool(host = REDIS_CACHE_CONF.host, port = REDIS_CACHE_CONF.port, \
+                            password = REDIS_CACHE_CONF.password, db = REDIS_CACHE_CONF.db, \
+                            socket_timeout = REDIS_CACHE_CONF.socket_timeout, \
+                            socket_connect_timeout = REDIS_CACHE_CONF.socket_connect_timeout, \
+                            socket_keepalive = REDIS_CACHE_CONF.socket_keepalive)
+
 from controller import *
 from views import *
 
+
+
 app.register_blueprint(api, url_prefix="/api")
 app.register_blueprint(page, url_prefix="/page")
+
+
 
 
 @app.teardown_appcontext
@@ -47,12 +61,9 @@ def teardown_db(exception):
 
 @app.before_first_request
 def init_db():
-    db_conf = app.config.get("DB_CONF", None)
-    LOGGER.info(db_conf)
+    db_conf = app.config.get("DB_CONF", None)    
     if db_conf:
         DataSource.setDbInfo(db_conf)
-
-
 # add blue print views
 # from .views.error import *
 

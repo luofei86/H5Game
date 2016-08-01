@@ -19,3 +19,13 @@ DB_CONF = {
     "passwd" : '16021incloud',
     "dbname" : 'h5_game'
 }
+
+REDIS_CONF = {
+	"host": '127.0.0.1',
+	"port": 6379,
+	"password": "yike",
+	"db": 0,
+	"socket_timeout": 5,
+	"socket_connect_timeout": 1,
+	"socket_keepalive": 7200 
+}

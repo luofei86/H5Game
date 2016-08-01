@@ -30,27 +30,34 @@ gameBizService = GameBizService.GameBizService()
 userInfoService = UserInfoService.UserInfoService()
 
 
-@page.route('/welcome/<string:signWord>')
-def welcome(signWord):
+@page.route('/welcome/<string:signWord>/<string:shareCode>')
+def welcome(signWord, shareCode=None):
     resp = gameBizService.gameHomepageInfo(1, signWord)
+    if resp is None:
+    	return render_template("404.html"), 404
+    if resp is not None and shareCode is not None:
+    	resp['shareCode'] = shareCode
     return render_template("welcome.html", resp = resp)
 
 ####由系统后台自动生成的供用户直接游戏的地址，在没有自有游戏的情况下，如有分享的游戏没玩完，则完分享的，否则告诉用户无法玩了
-@page.route('/play/<int:activeId>/', methods=['GET', 'POST'])
-def play(activeId):
-	openId = "aadfadflkjcao12-AAL-AC"
+@page.route('/play/<int:activeId>/<string:shareCode>', methods=['GET', 'POST'])
+def play(activeId, shareCode=None):
+	openId = "aadfadflkjcao12-AAL-DC"
 	userId = userInfoService.getUserId(openId)
+	if userId is None:
+		return render_template("403.html"), 403
 	if request.method == 'POST':
 		questionId = request.form['questionId']
 		answerId = request.form['answerId']
-		if 'shareCode' in request.files:
-			shareCode = request.form['shareCode']		
+		if questionId and answerId and shareCode:
 			return _playSharedWithAnswer(userId, openId, activeId, shareCode, questionId, answerId)
 			###共享游戏
-		if questionId is not None and answerId is not None:
+		elif questionId  and answerId:
 			return _playOriginWithAnswer(userId, openId, activeId, questionId, answerId)
-	if userId is None:
-		return render_template("403.html"), 403
+		else:
+			return render_template("403.html"),403
+	if shareCode:
+		return _playShareGame(userId, openId, activeId, shareCode)
 	resp = gameBizService.playGame(userId, activeId)
 	if not resp:
 		return render_template("403.html"), 403
@@ -96,12 +103,28 @@ def _playOriginWithAnswer(userId, openId, activeId, questionId, answerId):
 	else:###达到用户限制，也无法分享
 		return render_template('waitnext.html', resp = resp)
 
-@page.route('/sharegameplay/<string:signWord>/<string:shareCode>')
-def playShareGame(signWord, shareCode):
-	openId = "aadfadflkjcao12-AAL-AC"
-	userId = userInfoService.getUserId(openId)
-	resp = gameBizService.playShareGame(userId, signWord, shareCode)	
-	
+@page.route("/sharedtoplay/", methods=['GET', 'POST'])
+def sharedToPlay():
+	openId = "aadfadflkjcao12-AAL-DC"
+	userId = userInfoService.getUserId(openId)	
+	id = request.form['id']
+	shareCode = request.form['shareCode']
+	resp = gameBizService.userShared(id, shareCode)
+	if not resp:
+		return render_template("403.html"), 403
+	if resp.get('success'):
+		if(resp.get('play')):
+			return redirect("/page/play/" + str(resp.get('playInfo').get('activeId')), code=302)
+			# return render_template('game.html', resp = resp)
+		return render_template("500.html", resp = resp)	
+	else:
+		if resp.get("failedType") == 'limit':
+			return render_template('waitnext.html', resp = resp)
+		else:
+			return render_template("403.html"), 403
+
+def _playShareGame(userId, openId, activeId, shareCode):
+	resp = gameBizService.playShareGame(userId, openId, activeId, shareCode)	
 	if not resp:
 		return render_template("403.html"), 
 	LOGGER.info(resp)
@@ -128,6 +151,7 @@ def playShareGame(signWord, shareCode):
 ###共享玩的
 def _playSharedWithAnswer(userId, openId, activeId, shareCode, questionId, answerId):
 	resp = gameBizService.shareGameNext(userId, activeId, shareCode, questionId, answerId)
+	LOGGER.info(resp);
 	if not resp:
 		return render_template("403.html"), 
 	if not resp.get('success'):

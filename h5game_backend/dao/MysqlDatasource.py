@@ -23,7 +23,6 @@ class DataSource(object):
     def connect(cls):
         if not (cls.__host != None and cls.__user != None and cls.__passwd != None and cls.__dbname != None):
             raise RuntimeError("db information not set")
-        print cls
         return MySQLdb.connect(host=cls.__host,
                    user=cls.__user,
                    passwd=cls.__passwd,

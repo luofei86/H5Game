@@ -4,17 +4,18 @@ from services.DbService import get_db
 from dao.GameActivePrizeInfoDao import *
 import redis
 import json
+from h5game_backend import POOL
 
 ID_INFO_KEY = "game:active:prize:info:"
 ACTIVE_ID_PRIZE_SORTEDSET_KEY = "game:active:prize:sorted:ids:"
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
+# pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
 
 class GameActivePrizeInfoService:
 	def __init__(self):
 		self._dao = GameActivePrizeInfoDao()
 
 	def getInfosByActiveId(self, activeId):
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
 			key = self._buildActiveIdIdsSortedKey(activeId)
 			caches = r.zrange(key, 0, -1)
@@ -32,7 +33,7 @@ class GameActivePrizeInfoService:
 
 ##初始化active-id level sorted set
 	def _initSortedSet(self, activeId, dbValues):
-		r = redis.Redis(connection_pool = pool)		
+		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
 			key = self._buildActiveIdIdsSortedKey(activeId)
 			for dbValue in dbValues:
@@ -46,7 +47,7 @@ class GameActivePrizeInfoService:
 		keys = []
 		for id in ids:
 			keys.append(self._buildInfoKey(id))
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		notCacheIds = []
 		if r:
 			values = r.mget(keys)
@@ -74,7 +75,7 @@ class GameActivePrizeInfoService:
 		return results
 
 	def getInfo(self, id):
-		r = redis.Redis(connection_pool = pool)
+		r = redis.StrictRedis(connection_pool = POOL)
 		if(r):
 			key = self._buildInfoKey(id)
 			cacheValue = r.get(key)
