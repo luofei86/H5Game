@@ -35,22 +35,32 @@ def welcome(signWord):
     resp = gameBizService.gameHomepageInfo(1, signWord)
     return render_template("welcome.html", resp = resp)
 
-#####userInfoService get openId from cookie
-@page.route('/play/<int:activeId>')
+####由系统后台自动生成的供用户直接游戏的地址，在没有自有游戏的情况下，如有分享的游戏没玩完，则完分享的，否则告诉用户无法玩了
+@page.route('/play/<int:activeId>/', methods=['GET', 'POST'])
 def play(activeId):
-	LOGGER.info("Come")
 	openId = "aadfadflkjcao12-AAL-AC"
 	userId = userInfoService.getUserId(openId)
-	# if request.method == 'POST':
-	# 	questionId = request.form[questionId]
-	# 	answerId = request.form[questionId]
-	# 	if questionId is not None and answerId is not None:
-	# 		return self._playWithAnswer(userId, openId, activeId, questionId, answerId)
+	if request.method == 'POST':
+		questionId = request.form['questionId']
+		answerId = request.form['answerId']
+		if 'shareCode' in request.files:
+			shareCode = request.form['shareCode']		
+			return _playSharedWithAnswer(userId, openId, activeId, shareCode, questionId, answerId)
+			###共享游戏
+		if questionId is not None and answerId is not None:
+			return _playOriginWithAnswer(userId, openId, activeId, questionId, answerId)
 	if userId is None:
 		return render_template("403.html"), 403
-	resp = gameBizService.firstPlay(userId, activeId)
+	resp = gameBizService.playGame(userId, activeId)
 	if not resp:
 		return render_template("403.html"), 403
+	if not resp.get('success'):
+		if resp.get('failedType') == 'server':###服务器压力过大，请稍候
+			return render_template("500.html"), 
+		elif resp.get('failedType') == 'illegal':####数据问题
+			return render_template("403.html"), 403
+		else:###达到用户限制，也无法分享
+			return render_template('waitnext.html', resp = resp)
 	##可以玩
 	if(resp.get('play')):
 		return render_template("game.html", resp = resp)
@@ -60,21 +70,21 @@ def play(activeId):
 ##需要分享才能玩
 	elif(resp.get('needShare')):
 		return render_template("share.html", resp = resp)
-	##当前游戏不能玩了，等待下次
+	##当前游戏不能玩了，等待下次	
 	else:
 		return render_template("waitnext.html", resp = resp)
 
-def _playWithAnswer(self, userId, openId, activeId, questionId, answerId):
-	resp = gameBizService.next(userId, activeId, questionId, answerId)
+def _playOriginWithAnswer(userId, openId, activeId, questionId, answerId):
+	resp = gameBizService.originGameNext(userId, activeId, questionId, answerId)
 	if not resp:
 		return render_template("403.html"), 
 	if not resp.get('success'):
-		if resp.get['failedType'] == 'server':###服务器压力过大，请稍候
+		if resp.get('failedType') == 'server':###服务器压力过大，请稍候
 			return render_template("500.html"), 
-		elif resp.get['failedType'] == 'illegal':####数据问题
+		elif resp.get('failedType') == 'illegal':####数据问题
 			return render_template("403.html"), 403
 		else:###达到用户限制，也无法分享
-			return render_template('waitnext.html')
+			return render_template('waitnext.html', resp = resp)
 	if(resp.get('play')):
 		return render_template("game.html", resp = resp)
 	##已中奖
@@ -84,25 +94,26 @@ def _playWithAnswer(self, userId, openId, activeId, questionId, answerId):
 	elif(resp.get('needShare')):
 		return render_template("share.html", resp = resp)
 	else:###达到用户限制，也无法分享
-		return render_template('waitnext.html')
+		return render_template('waitnext.html', resp = resp)
 
-
-@page.route('/shareplay/<int:activeId>/<string:shareCode>')
-def sharePlay(activeId, shareCode):
+@page.route('/sharegameplay/<string:signWord>/<string:shareCode>')
+def playShareGame(signWord, shareCode):
 	openId = "aadfadflkjcao12-AAL-AC"
 	userId = userInfoService.getUserId(openId)
-	resp = gameBizService.sharePlay(userId, activeId, shareCode)	
+	resp = gameBizService.playShareGame(userId, signWord, shareCode)	
 	
 	if not resp:
 		return render_template("403.html"), 
 	LOGGER.info(resp)
 	if not resp.get('success'):
-		if str(resp.get['failedType']) == 'illegal':####数据问题
-			return render_template("403.html"), 403		
-		elif str(resp.get['failedType']) == 'server':###服务器压力过大，请稍候
+		####数据问题
+		if resp.get('failedType') == 'illegal':
+			return render_template("403.html"), 403	
+		###服务器压力过大，请稍候	
+		elif resp.get('failedType') == 'server':
 			return render_template("500.html"), 
 		else:###达到用户限制，也无法分享
-			return render_template('waitnext.html')
+			return render_template('waitnext.html', resp =resp)
 	if(resp.get('play')):
 		return render_template("game.html", resp = resp)
 	##已中奖
@@ -112,8 +123,27 @@ def sharePlay(activeId, shareCode):
 	elif(resp.get('needShare')):
 		return render_template("share.html", resp = resp)
 	else:###达到用户限制，也无法分享
-		return render_template('waitnext.html')
+		return render_template('waitnext.html', resp = resp)
 
+###共享玩的
+def _playSharedWithAnswer(userId, openId, activeId, shareCode, questionId, answerId):
+	resp = gameBizService.shareGameNext(userId, activeId, shareCode, questionId, answerId)
+	if not resp:
+		return render_template("403.html"), 
+	if not resp.get('success'):
+		if resp.get('failedType') == 'server':###服务器压力过大，请稍候
+			return render_template("500.html"), 
+		elif resp.get('failedType') == 'illegal':####数据问题
+			return render_template("403.html"), 403
+		else:###达到用户限制，也无法分享
+			return render_template('waitnext.html', resp = resp)
+	if(resp.get('play')):
+		return render_template("game.html", resp = resp)
+	##已中奖
+	elif(resp.get('prized')):
+		return render_template("prized.html", resp = resp)
+	else:###达到用户限制，也无法分享
+		return render_template('waitnext.html', resp = resp)
 
 # def make_cache_key(*args, **kwargs):
 #     path = request.path

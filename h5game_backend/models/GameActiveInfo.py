@@ -7,7 +7,7 @@
 ######id, keyword, signWord, url, title content, resource_url
 ######
 class GameActiveInfo:
-	def __init__(self, id, keyword, signWord, url, title, content, resourceUrl):
+	def __init__(self, id, keyword, signWord, url, title, content, resourceUrl, prizeTime):
 		self.id = id
 		self.keyword = keyword
 		self.signWord = signWord
@@ -15,6 +15,7 @@ class GameActiveInfo:
 		self.title = title
 		self.content = content
 		self.resourceUrl = resourceUrl
+		self.prizeTime = prizeTime
 
 	def __str__(self):
 		return "id=" + self.id \

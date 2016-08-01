@@ -6,7 +6,8 @@
 ###userId, activeId, shareCode, questionIds, playQuestionId, result
 
 class UserPlayShareGameInfo:
-	def __init__(self, userId, activeId, shareCode, questionIds, playQuestionId, result):
+	def __init__(self, id, userId, activeId, shareCode, questionIds, playQuestionId, result):
+		self.id = id
 		self.userId = userId
 		self.activeId = activeId
 		self.shareCode =shareCode

@@ -6,6 +6,7 @@ from services.DbService import get_db
 from contextlib import closing
 from models import UserPrizeInfo
 
+from h5game_backend import LOGGER
 #####用户中奖信息
 ####(self, id, userId, activeId, prizeCode):
 __author__ = 'luofei'
@@ -21,10 +22,19 @@ UK_SQL = ALL_SQL + ''' AND user_id = %s AND active_id = %s '''
 
 class UserPrizeInfoDao:
 	def insert(self, userId, activeId, prizeCode):
-		dbConn = get_db()
-		with closing(dbConn.cursor()) as cur:
-			cur.execute(INSERT_SQL, (str(userId), str(activeId), str(prizeCode)))
-		dbConn.commit()
+		try:
+			dbConn = get_db()
+			with closing(dbConn.cursor()) as cur:
+				cur.execute(INSERT_SQL, (str(userId), str(activeId), str(prizeCode)))
+			dbConn.commit()
+			return True
+		except MySQLdb.IntegrityError as e:
+			result = self.queryInfoByUk(userId, activeId)
+			if result is None:
+				return Flase
+			return True
+		except:
+			raise
 
 	def queryAllInfos(self):
 		dbConn = get_db()

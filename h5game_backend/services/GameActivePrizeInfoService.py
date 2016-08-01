@@ -7,7 +7,7 @@ import json
 
 ID_INFO_KEY = "game:active:prize:info:"
 ACTIVE_ID_PRIZE_SORTEDSET_KEY = "game:active:prize:sorted:ids:"
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
+pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
 
 class GameActivePrizeInfoService:
 	def __init__(self):

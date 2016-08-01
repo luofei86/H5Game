@@ -11,8 +11,9 @@ import time
 #####分享地址的逻辑，用户当前玩的游戏的原生地址加上/token
 
 
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
-SHARECODE_ACTIVEID_KEY="sharecode:activeid:"
+pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
+SHARECODE_ACTIVEID_KEY="sharecode:info:"
+####用户是否分享此个游戏
 USER_SHARED_ID = "user:shared:id:"
 SHARED_OK = 1
 SHARED_FAILED = -1

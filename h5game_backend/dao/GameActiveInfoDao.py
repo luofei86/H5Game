@@ -13,7 +13,7 @@ __author__ = 'luofei'
 
 #######id, keyword, signWord, url, title content, resource_url
 TABLE_NAME= " game_active_info "
-COLUMNS = " id, keyword, sign_word, url, title, content, resource_url "
+COLUMNS = " id, keyword, sign_word, url, title, content, resource_url, prize_time "
 ALL_SQL = '''SELECT ''' + COLUMNS + ''' FROM ''' + TABLE_NAME + ''' WHERE status = 0'''
 ID_SQL = ALL_SQL + ''' AND id = %s '''
 UK_SQL = ALL_SQL + ''' AND sign_word = %s '''
@@ -52,4 +52,4 @@ class GameActiveInfoDao:
 	def _toObject(self, db_item):
 		if db_item is None:
 			return None
-		return GameActiveInfo(db_item[0], db_item[1], db_item[2], db_item[3], db_item[4], db_item[5], db_item[6])
+		return GameActiveInfo(db_item[0], db_item[1], db_item[2], db_item[3], db_item[4], db_item[5], db_item[6], db_item[7])

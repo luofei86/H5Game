@@ -35,26 +35,30 @@ class GameBizService:
 
 #####获取此Url或signWord对应的activeId
 	def gameHomepageInfo(self, userId, signWord):
-		gameActiveInfo = self._gameActiveInfoService.getInfoBySignWord(signWord)
-		
-		if not gameActiveInfo:
+		info = self._gameActiveInfoService.getInfoBySignWord(signWord)		
+		if not info:
 			return None
-
-		gameActivePrizeInfos = self._gameActivePrizeInfoService.getInfosByActiveId(gameActiveInfo['id'])
-
-		return {"info": gameActiveInfo, "prizes": gameActivePrizeInfos}
+		prizes = self._gameActivePrizeInfoService.getInfosByActiveId(info['id'])
+		return {"info": info, "prizes": prizes}
 
 	def gamePlayInfo(self, signWord, step):
 		gameActiveInfo = self._gameActiveInfoService.getInfoBySignWord(signWord)
 		if not gameActiveInfo:
 			return None
 
-	def sharePlay(self, userId, activeId, shareCode):
+	def _handelNoMoreCanPlayResp(self, activeId):
+		info = self._gameActiveInfoService.getInfo(activeId)
+		prizes = self._gameActivePrizeInfoService.getInfosByActiveId(info['id'])
+		return {'success': False, 'failedType': 'limit', 'info': info, 'prizes': prizes}
+
+###
+	def playShareGame(self, userId, signWord, shareCode):
 		##用户权限检测
-		activeInfo = self._gameActiveInfoService.getInfo(activeId)
+		activeInfo = self._gameActiveInfoService.getInfoBySignWord(signWord)
 		if activeInfo is None:
 			return {'success': False, "failedType": "illegal"}
-		###是否中奖了		
+		###是否中奖了
+		activeId = activeInfo['id']
 		prizeInfo = self._userPrizedInfoService.getUserPrizeInfo(userId, activeId)
 		if prizeInfo:
 			return self._handlePrized(activeInfo, prizeInfo)
@@ -62,18 +66,21 @@ class GameBizService:
 		shareActiveId = self._userShareInfoService.getShareActiveId(shareCode)
 		if shareActiveId is None or int(shareActiveId) != int(activeId):
 			return {'success': False, 'failedType': 'illegal'}
+		###是不是用户自己分享的，如果是，也不能玩
+		self._userShareInfoService.getInfo(shareActiveId)
 		####检查用户能玩的共享过来的游戏总数
 		count = self._userPlayShareGameInfoService.countUserPlay(userId, activeId)
-		if count > BizStatusUtils.MAX_SHARED_PLAY:
-			return {'success': False, 'failedType': 'limit'}
-		sharePlayInfo = self._userPlayShareGameInfoService.getUserPlayInfo(userId, activeId, shareCode)
-		if sharedPrePlayInfo is not None:
-			if sharedPrePlayInfo['result'] == BizStatusUtils.PLAY_RESULT_INIT:
-				return self._continuePlay(sharedPrePlayInfo)
-			elif sharedPrePlayInfo['result'] == BizStatusUtils.PLAY_RESULT_SUCCESS:
+		if int(count) > BizStatusUtils.MAX_SHARED_PLAY:
+			return self._handelNoMoreCanPlayResp(activeId)
+		sharePlayInfo = self._userPlayShareGameInfoService.getInfo(userId, activeId, shareCode)
+		if sharePlayInfo is not None:
+			playInfoResult = int(sharePlayInfo['result'])
+			if playInfoResult == BizStatusUtils.PLAY_RESULT_INIT:
+				return self._continuePlay(sharePlayInfo)
+			elif playInfoResult == BizStatusUtils.PLAY_RESULT_SUCCESS:
 				return self._gotoRecivePrize(userId, activeId)
 			else:
-				return {'success': False, 'failedType': 'limit'}
+				return self._handelNoMoreCanPlayResp(activeId)
 		####用户分享的且没有玩
 		firstQuestion, randomQuestionIds = self._gameQuestionInfoService.randomAndGetUserFirstQuestion(activeId)
 		#def addUserPlayInfo(self, userId, activeId, shareCode, randomQuestionIds, playQuestionId):
@@ -81,12 +88,8 @@ class GameBizService:
 		if playInfo:
 			return self._continuePlay(playInfo, firstQuestion)
 		return {'success': False, 'failedType': 'server'}
-##第一步条案，无须检查答案是否正确
-		# if(step == 1):
-		# 	self._gameQuestionInfoService.
-		return None
 
-	def firstPlay(self, userId, activeId):
+	def playGame(self, userId, activeId):
 		##用户权限检测
 		activeInfo = self._gameActiveInfoService.getInfo(activeId)
 		if activeInfo is None:
@@ -102,7 +105,7 @@ class GameBizService:
 			return self._playOriginGame(userId, activeId)
 		####查看用户玩分享过来的链接的情况
 		sharedPrePlayInfo = self._userPlayShareGameInfoService.getUserlastPlayInfo(userId, activeId)
-		if sharedPrePlayInfo is not None and sharedPrePlayInfo['result'] == 0:
+		if sharedPrePlayInfo is not None and int(sharedPrePlayInfo['result']) == 0:
 			return self._continuePlay(sharedPrePlayInfo)
 		######用户有正在玩的记录
 		###return self._play
@@ -111,17 +114,17 @@ class GameBizService:
 ####处理用户玩过了的情况 系统给的游戏次数#####
 	def _handlePrePlay(self, playInfo):
 		###要给我得奖的啊
-		if int(playInfo['result']) == BizStatusUtils.PLAY_RESULT_SUCCESS:
+		if int(playInfo.get('result')) == BizStatusUtils.PLAY_RESULT_SUCCESS:
 			return self._gotoRecivePrize(playInfo['userId'], playInfo['activeId'])
 		####用户还能再玩,要么继续，要么在以前错误的上面继续
-		if playInfo['result'] == BizStatusUtils.PLAY_RESULT_INIT or playInfo['failedCount'] < BizStatusUtils.MAX_FAILED_NUMBER:
+		if int(playInfo.get('result')) == BizStatusUtils.PLAY_RESULT_INIT or int(playInfo['failedCount']) < BizStatusUtils.MAX_FAILED_NUMBER:
 			return self._continuePlay(playInfo)
 		#####已达到个人最大可玩数,需要根据分享的情况来决定如何
-		if playInfo['failedCount'] == BizStatusUtils.MAX_SELF_PLAY:
-			return self._sharedToPlay(playInfo['userId'], playInfo['activeId'])
+		if int(playInfo.get('failedCount')) == BizStatusUtils.MAX_SELF_PLAY:
+			return self._sharedToPlay(playInfo)
 		####用户最大个人可玩数已玩了，查看是否有未玩完的共享游戏
-		if playInfo['failedCount'] >= MAX_ORIGIN_PLAY:
-			return {'success': False, 'failedType': 'limit'}
+		if int(playInfo.get('failedCount')) >= BizStatusUtils.MAX_ORIGIN_PLAY:
+			return self._handelNoMoreCanPlayResp(playInfo['activeId'])
 
 	def _playOriginGame(self, userId, activeId):###用户还能再玩
 		firstQuestion, randomQuestionIds = self._gameQuestionInfoService.randomAndGetUserFirstQuestion(activeId)
@@ -131,12 +134,17 @@ class GameBizService:
 		return {'success': False, 'failedType': 'server'}
 
 	######如果用户未分享过，则弹出叫用户分享，否则，无法继续游戏，告诉用户
-	def _sharedToPlay(self, userId, activeId):
+	def _sharedToPlay(self, playInfo):
+		userId = playInfo['userId']
+		activeId = playInfo['activeId']
 		shared = self._userShareInfoService.userShared(userId, activeId)
 		if not shared:
 			##获取用户分享的链接
 			openId = self._userInfoService.getUserOpenId(userId)
 			if openId is None:
+				return {'success': False, 'failedType': 'illegal'}
+			activeInfo = self._gameActiveInfoService.getInfo(activeId)
+			if activeInfo is None:
 				return {'success': False, 'failedType': 'illegal'}
 			shareInfo = self._userShareInfoService.genShareInfo(userId, openId, activeId, activeInfo['url'])
 			if shareInfo is None:
@@ -149,25 +157,49 @@ class GameBizService:
 	#####resp=  {'sucess': True/False, 'failedType': 'illegal'|'server'|'limit', 'play':True, \
 	############'needShare': True, 'prized', 'activeInfo': activeInfo, 'playInfo': playInfo,  \
 	############'prizeInfo': prizeInfo, 'question': question, "answers": answers}
-	def next(self, userId, activeId, questionId, answerId):
-		playInfo = self._userPlayOriginGameInfoService.getInfo(activeId, questionId)
-		###用户请求有问题
-		if playInfo is None or playInfo['playQuestionId'] != questionId:
+	def originGameNext(self, userId, activeId, questionId, answerId):
+		playInfo = self._userPlayOriginGameInfoService.getInfo(userId, activeId)
+		if playInfo is None or int(playInfo['playQuestionId']) != int(questionId):
+			LOGGER.info('play info illegal')
 			return {'success': False, 'failedType': 'illegal'}
 
 		rightAnswer = self._gameQuestionInfoService.checkAnswer(questionId, answerId)
 		if rightAnswer:
-			return self._gotoNext(self, userId, activeId, questionId, playInfo)
+			return self._gotoNext(userId, activeId, questionId, playInfo)
 		else:
-			self._userPlayOriginGameInfoService.modifyResultFailedCount(playInfo['id'], BizStatusUtils.PLAY_RESULT_FAILED, 1)			
-			playInfo = self._userPlayOriginGameInfoService.getLastPlay(activeId, questionId)
+			self._userPlayOriginGameInfoService.modifyResultFailedCount(playInfo['id'], \
+						userId, activeId, BizStatusUtils.PLAY_RESULT_FAILED, 1)			
+			playInfo = self._userPlayOriginGameInfoService.getInfo(userId, activeId)
 			return self._handlePrePlay(playInfo)
+
+	def shareGameNext(self, userId, activeId, shareCode, questionId, answerId):
+		playInfo = self._userPlayShareGameInfoService.getInfo(userId, activeId, sharedCode)
+		if playInfo is None or int(playInfo['playQuestionId']) != int(questionId):
+			return {'success': False, 'failedType': 'illegal', 'sharedGame': True}
+
+		rightAnswer = self._gameQuestionInfoService.checkAnswer(questionId, answerId)
+		if rightAnswer:
+			return self._gotoSharedGameNext(userId, activeId, shareCode, questionId, playInfo)
+		else:
+			self._userPlayShareGameInfoService.modifyResult(playInfo['id'], \
+						userId, activeId, shareCode, BizStatusUtils.PLAY_RESULT_FAILED)
+			###失败了 没得玩
+			return {'success': False, "failedType": 'limit', 'sharedGame': True}
+
+	def _initQuestionIds(self, questionIdsStr):
+		questionIds = questionIdsStr.split(",")
+		questionIdList = []
+		for questionId in questionIds:
+			questionId = questionId.strip()
+			questionIdList.append(questionId)
+		return questionIdList
 	
 	###在答题成功后，下一个题目
 	def _gotoNext(self, userId, activeId, preQuestionId, playInfo):
-		questionIds =playInfo['questionIds']
+		questionIdsStr = playInfo['questionIds']
+		questionIdList = self._initQuestionIds(questionIdsStr)
 		preIndex = -1
-		for index, value in enumerate(questionIds):
+		for index, value in enumerate(questionIdList):
 			if int(value) == int(preQuestionId):
 				preIndex = index
 				break
@@ -175,20 +207,46 @@ class GameBizService:
 			return {'success': False, 'failedType': 'illegal'}
 		###问题答完了
 		###获取抽奖码
-		if preIndex == len(questionIds) - 1:
-			self._userPlayOriginGameInfoService.modifyResult(playInfo['id'], BizStatusUtils.PLAY_RESULT_SUCCESS)
+		if preIndex == len(questionIdList) - 1:
+			self._userPlayOriginGameInfoService.modifyResult(playInfo['id'], userId, activeId, BizStatusUtils.PLAY_RESULT_SUCCESS)
 			return self._gotoRecivePrize(userId, activeId)
 		#####下一个问题
-		questionId = questionIds[preIndex + 1]
+		questionId = questionIdList[preIndex + 1]
 		question = self._gameQuestionInfoService.getInfo(questionId)		
 		if question is None:
-			return None
-		self._userPlayOriginGameInfoService.modifyPlayQuestionId(playInfo['id'], questionId)
+			return {'success': False, 'failedType': 'illegal'}
+		self._userPlayOriginGameInfoService.modifyPlayQuestionId(playInfo['id'], userId, activeId, questionId)
 		playInfo = self._userPlayOriginGameInfoService.getInfo(userId, activeId)
 		return self._continuePlay(playInfo, question)
 
+	###在答题成功后，下一个题目
+	def _gotoSharedGameNext(self, userId, activeId, shareCode, preQuestionId, playInfo):
+		questionIdsStr = playInfo['questionIds']
+		questionIdList = self._initQuestionIds(questionIdsStr)
+		preIndex = -1
+		for index, value in enumerate(questionIdList):
+			if int(value) == int(preQuestionId):
+				preIndex = index
+				break
+		if preIndex == -1:
+			return {'success': False, 'failedType': 'illegal', 'sharedGame': True}
+		###问题答完了
+		###获取抽奖码
+		if preIndex == len(questionIdList) - 1:
+			self._userPlayShareGameInfoService.modifyResult(playInfo['id'], userId, activeId, shareCode, BizStatusUtils.PLAY_RESULT_SUCCESS)
+			return self._gotoRecivePrize(userId, activeId)
+		#####下一个问题
+		questionId = questionIdList[preIndex + 1]
+		question = self._gameQuestionInfoService.getInfo(questionId)		
+		if question is None:
+			return {'success': False, 'failedType': 'illegal', 'sharedGame': True}
+		self._userPlayShareGameInfoService.modifyPlayQuestionId(playInfo['id'], userId, activeId, shareCode, questionId)
+		playInfo = self._userPlayShareGameInfoService.getInfo(userId, activeId)
+		return self._continuePlay(playInfo, question)
+
+
 	###用户领奖给用户生成抽奖码，并返回
-	def _gotoRecivePrize(self, userid, activeId):
+	def _gotoRecivePrize(self, userId, activeId):
 		activeInfo = self._gameActiveInfoService.getInfo(activeId)
 		prizeInfo = self._userPrizedInfoService.genPrize(userId, activeId)
 		if activeInfo is None or prizeInfo is None:
@@ -204,11 +262,14 @@ class GameBizService:
 			return {'success': False, 'failedType': 'illegal'}
 		if playInfo is None:
 			return {'success': False, 'failedType': 'illegal'}			
- 		originGame = 'sharedCode' in playInfo
+ 		
 		answers = self._initQuestionPossibleAnswerInfo(question);
 		if answers is None or not answers:
 			return {'success': False, 'failedType': 'illegal'}
-		return {'success': True, 'play': True, 'originGame': originGame, 'question': question, 'answers': answers}
+		if 'sharedCode' in playInfo:
+			return {'success': True, 'play': True, 'shareCode': playInfo['sharedCode'], 'question': question, 'answers': answers}
+		else:
+			return {'success': True, 'play': True, 'question': question, 'answers': answers}
 
 	################originGame是否原生游戏#############
 	def _continuePlay(self, playInfo, question = None):
@@ -230,29 +291,4 @@ class GameBizService:
 
 	def _userId(self, openId):
 		return self._userInfoService.getUserId(openId)
-
-
-	####答错题目了，检查用户还能再玩么？不能再玩，就需要查看分享了，要是也不能分享，则告诉用户没得玩了，只能玩朋友的
-	# def _handleAnswerQuestionFailed(self, userId, activeId, questionId):
-	# 	####has more self play
-	# 	playCount = self._userPrizedInfoService.count(userId, activeId)
-	# 	if(playCount >= MAX_ORIGIN_PLAY):
-	# 		return {'play': False}
-	# 	if(playCount == MAX_SELF_PLAY):
-	# 		###用户上一次玩结束了吗
-	# 		###需要分享才能玩
-	# 		###用户是否已经分享
-	# 		shared = self._userShareInfoService.userShared(userId, activeId)
-	# 		if not shared:
-	# 			##获取用户分享的链接
-	# 			openId = self._userInfoService.getUserOpenId(userId)
-	# 			if openId is None:
-	# 				return None
-	# 			shareInfo = self._userShareInfoService.genShareInfo(userId, openId, activeId, activeInfo['url'])
-	# 			if shareInfo is None:
-	# 				return None
-	# 			else:
-	# 				return {'needShare': True, 'shareInfo': shareInfo}
-
-		
 

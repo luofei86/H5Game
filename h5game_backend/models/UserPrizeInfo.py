@@ -6,7 +6,7 @@
 ###id, userId, active_info_id, bouns_code, 
 class UserPrizeInfo:
 	def __init__(self, userId, activeId, prizeCode):
-		self.userId = openId
+		self.userId = userId
 		self.activeId = activeId
 		self.prizeCode = prizeCode
 

@@ -9,19 +9,28 @@ UK_INFO_KEY = "user:play:share:game:info:"
 USER_LAST_PLAY_KEY = "user:play:share:game:last:info:"
 COUNT_KEY = "user:play:share:count:"
 
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
+pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
 
 class UserPlayShareGameInfoService:
 	def __init__(self):
 		self._dao = UserPlayShareGameInfoDao()
 
 	def addUserPlayInfo(self, userId, activeId, shareCode, randomQuestionIds, playQuestionId):
+		randomQuestionIdsStr = ', '.join(str(x) for x in randomQuestionIds)
 		try:
-			self._dao.insert(userId, activeId, shareCode, randomQuestionIds, playQuestionId)
+			self._dao.insert(userId, activeId, shareCode, randomQuestionIdsStr, playQuestionId)
 			self._incrCount(userId, activeId, shareCode)
 			return self.getUserPlayInfo(userId, activeId, shareCode)
 		except:
 			return None
+	####更新id对应的result
+	def modifyResult(self, id, userId, activeId, shareCode, result):
+		self._dao.updateResult(id, result)
+		self._delInfoCache(userId, activeId, shareCode)
+
+	def modifyPlayQuestionId(self, id, userId, activeId, shareCode, playQuestionId):
+		self._dao.updatePlayQuestionId(id, playQuestionId)		
+		self._delInfoCache(userId, activeId, shareCode)
 
 	def getUserlastPlayInfo(self, userId, activeId):
 		r = redis.Redis(connection_pool = pool)
@@ -40,7 +49,7 @@ class UserPlayShareGameInfoService:
 	def _buildLastInfoKey(self, userId, activeId):
 		return USER_LAST_PLAY_KEY + str(userId) + str(activeId)
 
-	def getUserPlayInfo(self, userId, activeId, shareCode):
+	def getInfo(self, userId, activeId, shareCode):
 		r = redis.Redis(connection_pool = pool)
 		if r:
 			key = self._buildInfoKey(userId, activeId, shareCode)
@@ -85,6 +94,11 @@ class UserPlayShareGameInfoService:
 	def _buildCountKey(self, userId, activeId):
 		return COUNT_KEY + str(userId) + ":" + str(activeId)
 
+	def _delInfoCache(self, userId, activeId, shareCode):
+		r = redis.Redis(connection_pool = pool)
+		if r:
+			key = self._buildInfoKey(userId, activeId, shareCode)
+			r.delete(key)
 
 	def _buildInfoKey(self, userId, activeId, shareCode):
 		return UKID_INFO_KEY + str(userId) + str(activeId) + shareCode		

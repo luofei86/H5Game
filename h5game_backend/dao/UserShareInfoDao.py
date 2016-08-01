@@ -9,7 +9,7 @@ from models import UserShareInfo
 __author__ = 'luofei'
 
 TABLE_NAME = " user_share_info "
-ALL_SQL = '''SELECT active_id， share_code FROM ''' + TABLE_NAME + ''' WHERE `status` = 0 AND result = 1 order by id LIMIT %s, %s'''
+ALL_SQL = '''SELECT id, user_id, active_id, share_code FROM ''' + TABLE_NAME + ''' WHERE `status` = 0 AND result = 1 order by id LIMIT %s, %s'''
 UK_SQL = '''SELECT active_id FROM ''' + TABLE_NAME + ''' WHERE `status` = 0 AND result = 1 AND share_code = %s'''
 SHARED_SQL = '''SELECT id FROM ''' + TABLE_NAME + '''WHERE status = 0 AND user_id = %s AND active_id = %s AND result = %s'''
 
@@ -48,3 +48,8 @@ class UserShareInfoDao:
 		if result is None:
 			return None
 		return result[0]
+
+	def _toObject(self, db_item):
+		if db_item is None:
+			return None
+		return UserPrizeInfo(db_item[0], db_item[1], db_item[2])

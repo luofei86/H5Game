@@ -134,6 +134,7 @@ CREATE TABLE IF NOT EXISTS `game_active_info`(
 	`title` varchar(50) not null,
 	`content` varchar(500),	
 	`resource_url` varchar(255) not null,
+	`prize_time` datetime,
 	`status` tinyint not null comment '0 ok -1 del',
 	`update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
 	`create_time` datetime NOT NULL COMMENT '记录创建时间',

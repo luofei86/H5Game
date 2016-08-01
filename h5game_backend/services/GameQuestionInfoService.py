@@ -7,7 +7,7 @@ import random
 
 ACTIVEID_QUESTIONID_SET_PREFIX_KEY = "game:active:question:ids:set:"
 info_key = "game:question:info:"
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
+pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
 
 RANDOM_QUESTION_COUNT = 5
 
@@ -83,12 +83,12 @@ class GameQuestionInfoService:
 			cacheValue = r.get(key)
 			if(cacheValue is not None):
 				result = json.loads(cacheValue)
-				return answerId == result['rightAnswerId']
+				return int(answerId) == int(result['rightAnswerId'])
 		result = self._dao.queryInfo(questionId)
 		if(result is None):
 			return False
 		self._initInfo(r, key, result)
-		return answerId == result.rightAnswerId
+		return int(answerId) == int(result.rightAnswerId)
 
 	def _initInfo(self, r, key, result):
 		r.set(key, json.dumps(result.__dict__))

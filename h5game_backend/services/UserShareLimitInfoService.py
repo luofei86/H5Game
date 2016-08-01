@@ -6,7 +6,7 @@ import json
 
 MAX_SHARE_ACCOUNT = 3
 count_key = "user:share:limit:"
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
+pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
 
 ###用户分享限制服务
 class UserShareLimitInfoService:

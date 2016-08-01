@@ -24,16 +24,16 @@
     <body  id="main" unselectable="on" onselectstart="return false;">
         <!--海报区域-->
         <div id="content">
-            <div>真棒都回答对了</div>
+            <div>您先前的回答都对了</div>
         </div>
         <!--开始区域-->
         <div id="prize_code">
-            <div>抽奖码为:{{resp.prizeCode}}</div>
+            <div>您的抽奖码为:{{resp.prizeInfo.prizeCode}}</div>
         </div>
         <!--奖品展示区域-->
         <div id="prize_feedback" class="welcome_prize">
             <div>投资结果将会微信联系您，请关注我们的推送消息</div>
-            <div>抽奖公布时间:{{resp.prizeNotifyTime}}</div>
+            <div>抽奖公布时间:{{resp.activeInfo.prizeTime}}</div>
         </div>
     </body>
 </html>

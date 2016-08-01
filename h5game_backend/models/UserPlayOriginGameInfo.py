@@ -6,7 +6,8 @@
 ###userId, activeId, question_ids, cur_play_question_id, faile_count, result
 
 class UserPlayOriginGameInfo:
-	def __init__(self, userId, activeId, questionIds, playQuestionId, failedCount, result):
+	def __init__(self, id, userId, activeId, questionIds, playQuestionId, failedCount, result):
+		self.id = id
 		self.userId = userId
 		self.activeId = activeId
 		self.questionIds = questionIds

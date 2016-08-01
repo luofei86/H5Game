@@ -24,14 +24,14 @@
     <body  id="main" unselectable="on" onselectstart="return false;">
         <!--题目区域-->
         <div id="subject" class="subject">
-            <div id="question">
+            <div id="question" width="320" height="240" controls>
                 <!--0 picture 1 video 2 txt-->
                 {% if resp.question['resourceType'] == 0 %}
-                    <img src="">
+                    <img src="{{resp.question.resourceUrl}}">
                 {% elif resp.question['resourceType'] == 1 %}
-                    <video src="">
+                    <video width="320" height="240" controls src="{{resp.question.resourceUrl}}">
                 {% else %}
-                    <span></span>
+                    <span>{{resp.question.title}}</span>
                 {% endif %}
             </div>
             <div id="tip">
@@ -53,9 +53,24 @@
                 </div>
             {% endfor %}
         </div>
+        <form id="form_hidden" method="POST">
+            <input type="hidden" name="questionId" value="{{resp.question['id']}}">
+            <input type="hidden" name="answerId" value="{{resp.question['id']}}">
+            {% if resp.shareCode %}
+                <input type="hidden" name="shareCode" value="{{resp.shareCode}}">
+            {% endif %}
+        </form>
         <!--开始区域-->
         <div id="next">
-            <a href="/page/play/1" id="btn" class="m-ins">下一题</a>
+            <a id="next_play" href="/page/play/1" id="btn" class="m-ins">下一题</a>
         </div>
     </body>
+    <script>
+         window.onload=function() {
+           document.getElementById("next_play").onclick=function() {
+             document.getElementById("form_hidden").submit();
+             return false; // cancel the actual link
+           }
+         }
+    </script>
 </html>
