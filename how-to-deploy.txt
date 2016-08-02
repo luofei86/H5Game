@@ -1,0 +1,47 @@
+
+# 环境配置
+* 说明：python flask 项目，包含的包依赖全部在  requirements.txt 里面， 建议使用virtualenv  
+* 安装依赖： pip install -r requirements.txt (或者 bash env-build.sh)  
+* Python 2.7
+
+# 本地运行
+* python run.py
+
+# 线上部署
+线上采用  gunicorn 运行flask项目, 配置文件：gunicorn.conf
+部署目录：自行决定
+自定义部署：
+start_online.sh
+####将目录/home/mk改为线上此项目的存放路径
+###export APP_CONFIG_FILE=/home/mk/H5Game/config/production.py   
+###gunicorn --config gunicorn.conf h5game_backend:app
+
+#####gunicorn.conf  根据需要变化
+###workers = 4
+###bind = '0.0.0.0:12123'
+###proc_name = 'h5game'
+###pidfile = '/tmp/h5game_backend.pid'
+###backlog = 2048
+###worker_class = "gevent"
+###debug = False
+#loglevel = 'info'
+###loglevel = 'debug'
+###logfile = 'log'
+####accesslog = 'log/h5game_backend_access.log'
+###errorlog = 'log/h5game_backend_error.log'
+
+###access_log_format='%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s %(L)s "%(f)s" "%(a)s"'
+
+####timeout = 30
+####daemon = True
+
+
+
+
+
+##访问其中page/welcome可根据需要配置####baskball数据库配置
+${本机ip}:${绑定端口}/page/welcome/baskball
+
+
+###config/production.py
+###配置数据库与redis

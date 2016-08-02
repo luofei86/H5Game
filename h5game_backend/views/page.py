@@ -30,6 +30,7 @@ gameBizService = GameBizService.GameBizService()
 userInfoService = UserInfoService.UserInfoService()
 
 
+@page.route('/welcome/<string:signWord>')
 @page.route('/welcome/<string:signWord>/<string:shareCode>')
 def welcome(signWord, shareCode=None):
     resp = gameBizService.gameHomepageInfo(1, signWord)
@@ -40,6 +41,8 @@ def welcome(signWord, shareCode=None):
     return render_template("welcome.html", resp = resp)
 
 ####由系统后台自动生成的供用户直接游戏的地址，在没有自有游戏的情况下，如有分享的游戏没玩完，则完分享的，否则告诉用户无法玩了
+@page.route('/play/<int:activeId>', methods=['GET', 'POST'])
+@page.route('/play/<int:activeId>/', methods=['GET', 'POST'])
 @page.route('/play/<int:activeId>/<string:shareCode>', methods=['GET', 'POST'])
 def play(activeId, shareCode=None):
 	openId = "aadfadflkjcao12-AAL-DC"

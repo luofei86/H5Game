@@ -1,19 +1,6 @@
 # H5Game
 
-
-# 环境配置
-* 说明：python flask 项目，包含的包依赖全部在  requirements.txt 里面， 建议使用virtualenv  
-* 安装依赖： pip install -r requirements.txt (或者 bash env-build.sh)  
-* Python 2.7
-
-# 本地运行
-  * python run.py
-
-# 线上部署
-线上采用  gunicorn 运行flask项目, 配置文件：gunicorn.conf
-部署目录：iback1:/home/mk/H5Game/
-
-
+# 项目说明
 
 相关描述：
 H5Game后台系统，负责提供H5游戏的相关接口。

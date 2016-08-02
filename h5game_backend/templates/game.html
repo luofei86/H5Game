@@ -13,6 +13,8 @@
         <link rel="Shortcut Icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" /> -->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/game.css')}}">
+        <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.11.3.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/game.js') }}"></script>
         <!-- {% assets "home_page_js" %}
             <script type="text/javascript" src="{{ ASSET_URL }}"></script>
         {% endassets %}
@@ -41,7 +43,7 @@
         <!--奖品展示区域-->
         <div id="answer" class="answer">                
             {% for answer in resp.answers%}
-                <div class="answer_block">
+                <div id = "answer_sub_{{answer['id']}}" class="answer_block">
                     <!--0 picture 1 video 2 txt-->
                     {% if answer["resourceType"] == 0 %}
                         <img src="{{answer['resourceUrl']}}" title= "{{answer['title']}}" alt="{{answer['title']}}">
@@ -62,7 +64,7 @@
         </form>
         <!--开始区域-->
         <div id="next">
-            <a id="next_play" href="/page/play/1" id="btn" class="m-ins">下一题</a>
+            <a id="next_play" href="/page/play/1" id="btn" class="m-ins" disabled>下一题</a>
         </div>
     </body>
     <script>
@@ -70,7 +72,10 @@
            document.getElementById("next_play").onclick=function() {
              document.getElementById("form_hidden").submit();
              return false; // cancel the actual link
-           }
+           };
+
+
+
          }
     </script>
 </html>

@@ -5,12 +5,6 @@
 # 此配置最后被加载，会覆盖其他默认配置
 DEBUG = False
 
-CACHE_TYPE="redis"
-CACHE_REDIS_HOST='192.168.2.4'
-CACHE_REDIS_PORT=8643
-CACHE_KEY_PREFIX='mini:web:'
-CACHE_DEFAULT_TIMEOUT=24*7*3600
-
 LOG_FILE='log/h5game.log'
 
 DB_CONF = {
@@ -18,4 +12,13 @@ DB_CONF = {
     "user" : 'luofei',
     "passwd" : '16021incloud',
     "dbname" : 'h5_game'
+}
+REDIS_CONF = {
+	"host": '127.0.0.1',
+	"port": 6379,
+	"password": "yike",
+	"db": 0,
+	"socket_timeout": 5,
+	"socket_connect_timeout": 1,
+	"socket_keepalive": 7200 
 }

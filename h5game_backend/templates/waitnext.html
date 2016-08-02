@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name ="viewport" content ="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, width=device-width">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge，chrome=1"/>
+        <meta name="applicable-device" content="mobile"/>
+        <meta http-equiv="Cache-Control" content="no-siteapp"/>
+        <meta name="format-detection" content="telephone=no, email=no"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <!-- <link rel="icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" />
+        <link rel="Shortcut Icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" /> -->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/welcome.css')}}">
+        <!-- {% assets "home_page_js" %}
+            <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+        {% endassets %}
+        {% assets "home_page_css" %}
+            <link rel="stylesheet" href="{{ ASSET_URL }}" />
+        {% endassets %} -->
+        <title>{{resp.info.title}}</title>
+    </head>
+    <body  id="main" unselectable="on" onselectstart="return false;">
+        <!--海报区域-->
+        <div id="poster">
+            <img src="http://iosimg.yingyonghui.com/banner/8191/819112_1468489114394_origin.jpg">
+        </div>
+        <!--开始区域-->
+        <div id="start">
+            <a href="/page/play/1" id="btn" class="m-ins" disabled>很遗憾，您用完了所有次数仍未通关</a>
+        </div>
+        <!--奖品展示区域-->
+        <div id="prize" class="welcome_prize">
+            <div>奖品</div>
+            {% for prize in resp.prizes%}
+                <div>
+                    <label>{{prize.levelDesc}}</label>
+                    <label>{{prize.prizeDesc}}</label>
+                    <label>{{prize.count}}</label>
+                </div>
+            {% endfor %}
+        </div>
+    </body>
+</html>

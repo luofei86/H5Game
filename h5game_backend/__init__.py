@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask
-from flask.ext.cache import Cache
 from flask import g
 from dao.MysqlDatasource import DataSource
 
@@ -15,8 +14,6 @@ app = Flask(__name__, instance_relative_config=True, static_folder='static', sta
 app.config.from_object('config.default')
 app.config.from_pyfile('config.py', silent=True)
 app.config.from_envvar('APP_CONFIG_FILE', silent=True)
-
-cache = Cache(app) # ,config={'CACHE_TYPE': 'redis'}
 
 LOGGER = app.logger
 # if not debug , log to file
@@ -45,11 +42,7 @@ from controller import *
 from views import *
 
 
-
-app.register_blueprint(api, url_prefix="/api")
 app.register_blueprint(page, url_prefix="/page")
-
-
 
 
 @app.teardown_appcontext
