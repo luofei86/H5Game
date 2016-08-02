@@ -14,34 +14,16 @@
 start_online.sh
 ####将目录/home/mk改为线上此项目的存放路径
 ###export APP_CONFIG_FILE=/home/mk/H5Game/config/production.py   
-###gunicorn --config gunicorn.conf h5game_backend:app
 
-#####gunicorn.conf  根据需要变化
-###workers = 4
-###bind = '0.0.0.0:12123'
-###proc_name = 'h5game'
-###pidfile = '/tmp/h5game_backend.pid'
-###backlog = 2048
-###worker_class = "gevent"
-###debug = False
-#loglevel = 'info'
-###loglevel = 'debug'
-###logfile = 'log'
-####accesslog = 'log/h5game_backend_access.log'
-###errorlog = 'log/h5game_backend_error.log'
-
-###access_log_format='%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s %(L)s "%(f)s" "%(a)s"'
-
-####timeout = 30
-####daemon = True
-
-
-
-
-
-##访问其中page/welcome可根据需要配置####baskball数据库配置
-${本机ip}:${绑定端口}/page/welcome/baskball
-
+#####gunicorn.conf  根据需要变化[端口pid文件workers]
 
 ###config/production.py
 ###配置数据库与redis
+
+数据库建表语句
+###mysql/init.sql
+
+##访问其中page/welcome可根据需要配置####baskball数据库配置
+###${本机ip}:${绑定端口}/page/welcome/baskball
+
+
