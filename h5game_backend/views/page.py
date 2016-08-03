@@ -46,7 +46,6 @@ def welcome(signWord, shareCode=None):
 	# 	LOGGER.info("Unexpected error:" + sys.exc_info()[0])
 	# 	return render_template("500.html"), 500
 
-
 ####由系统后台自动生成的供用户直接游戏的地址，在没有自有游戏的情况下，如有分享的游戏没玩完，则完分享的，否则告诉用户无法玩了
 @page.route('/play/<int:activeId>', methods=['GET', 'POST'])
 @page.route('/play/<int:activeId>/', methods=['GET', 'POST'])

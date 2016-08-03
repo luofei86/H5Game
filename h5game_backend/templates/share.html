@@ -20,12 +20,12 @@
         {% assets "home_page_css" %}
             <link rel="stylesheet" href="{{ ASSET_URL }}" />
         {% endassets %} -->
-        <title>分享一夏</title>            
+        <title>{{resp.activeInfo.title}}</title>            
     </head>
     <body  id="main" unselectable="on" onselectstart="return false;">
          <!--海报区域-->
         <div id="poster">
-            <img src="http://iosimg.yingyonghui.com/banner/8191/819112_1468489114394_origin.jpg">
+            <img src="{{resp.activeInfo.resourceUrl}}">
         </div>
         <!--题目区域-->
         <div id="share_desc">
