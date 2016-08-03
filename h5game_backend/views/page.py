@@ -35,16 +35,16 @@ userInfoService = UserInfoService.UserInfoService()
 @page.route('/welcome/<string:signWord>')
 @page.route('/welcome/<string:signWord>/<string:shareCode>')
 def welcome(signWord, shareCode=None):
-	try:
-	    resp = gameBizService.gameHomepageInfo(1, signWord)
-	    if resp is None:
-	    	return render_template("404.html"), 404
-	    if resp is not None and shareCode is not None:
-	    	resp['shareCode'] = shareCode
-	    return render_template("welcome.html", resp = resp)
-	except:
-		LOGGER.info("Unexpected error:" + sys.exc_info()[0])
-		return render_template("500.html"), 500
+	# try:
+    resp = gameBizService.gameHomepageInfo(1, signWord)
+    if resp is None:
+    	return render_template("404.html"), 404
+    if resp is not None and shareCode is not None:
+    	resp['shareCode'] = shareCode
+    return render_template("welcome.html", resp = resp)
+	# except:
+	# 	LOGGER.info("Unexpected error:" + sys.exc_info()[0])
+	# 	return render_template("500.html"), 500
 
 
 ####由系统后台自动生成的供用户直接游戏的地址，在没有自有游戏的情况下，如有分享的游戏没玩完，则完分享的，否则告诉用户无法玩了
