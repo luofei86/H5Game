@@ -10,7 +10,6 @@ from h5game_backend import POOL
 
 ACTIVEID_QUESTIONID_SET_PREFIX_KEY = "game:active:question:ids:set:"
 info_key = "game:question:info:"
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
 
 RANDOM_QUESTION_COUNT = 5
 

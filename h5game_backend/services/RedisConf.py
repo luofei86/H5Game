@@ -5,7 +5,6 @@ from h5game_backend import LOGGER
 
 class RedisConf:
 	def __init__(self, conf):
-		LOGGER.info("Init RedisConf")
 		self.host = conf['host']
 		self.port = conf['port']
 		self.db = conf['db']
