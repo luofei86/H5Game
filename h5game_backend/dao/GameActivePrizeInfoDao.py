@@ -15,7 +15,7 @@ TABLE_NAME= " game_active_prize_info "
 COLUMNS = " id, active_id, level, level_desc, prize_desc, count  "
 ALL_SQL = '''SELECT ''' + COLUMNS + ''' FROM ''' + TABLE_NAME + ''' WHERE status = 0'''
 ID_SQL = ALL_SQL + ''' AND id = %s '''
-IDS_SQL = ALL_SQL + ''' AND id in (%s) '''
+IDS_SQL = ALL_SQL + ''' AND id in '''
 ACTIVEID_SQL = ALL_SQL + ''' AND active_id = %s ORDER BY level'''
 
 
@@ -52,12 +52,22 @@ class GameActivePrizeInfoDao:
 
 ##
 	def queryInfos(self, ids):
-		format_ids_strings = ','.join(['%s']) * len(ids)
+		idsStr = str(",".join(map(str,ids)))
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
-			cur.execute(IDS_SQL, (format_ids_strings, tuple(ids)))
-			result = cur.fetchone()
-		return self._toObject(result)
+			sql = IDS_SQL + "(" + idsStr + ")"
+			cur.execute(sql)
+			result = cur.fetchall()
+			if result is None:
+				return None
+			values = []
+			for r in result:
+				value = self._toObject(r)
+				if value is None:
+					continue
+				values.append(value)
+			return values
+		return None
 
 	def queryInfo(self, id):
 		dbConn = get_db()
