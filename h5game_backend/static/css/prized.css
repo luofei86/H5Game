@@ -1,0 +1,14 @@
+body{
+    font-size: 1rem;
+    display: block;
+    text-align: center;
+    line-height: 34px;
+    text-decoration: none;
+}
+
+.screen_code img{
+	width: auto !important; 
+	visibility: visible !important; 
+	height: auto !important;
+	max-width: 100%!important;
+}

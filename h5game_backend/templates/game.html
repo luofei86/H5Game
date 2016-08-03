@@ -13,8 +13,7 @@
         <link rel="Shortcut Icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" /> -->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/game.css')}}">
-        <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.11.3.min.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/game.js') }}"></script>
+       
         <!-- {% assets "home_page_js" %}
             <script type="text/javascript" src="{{ ASSET_URL }}"></script>
         {% endassets %}
@@ -24,26 +23,37 @@
         <title>开心一夏</title>            
     </head>
     <body  id="main" unselectable="on" onselectstart="return false;">
-        <!--题目区域-->
+        <!--题目区域-->        
+        {% if resp.question.title %}
+            <div class="subject_title">{{resp.question.title}}</div>
+        {% endif %}
         <div id="subject" class="subject">
+        <!--0 picture 1 video 2 txt-->
+        {% if resp.question['resourceType'] == 0 %}
+            <div id="img_question" controls>
+                <img src="{{resp.question.resourceUrl}}">
+            </div>
+            <div id="img_question_tips" controls>
+                <span>{{resp.question.tips}}</span>
+            </div>
+        {% elif resp.question['resourceType'] == 1 %}
             <div id="question" width="320" height="240" controls>
-                <!--0 picture 1 video 2 txt-->
-                {% if resp.question['resourceType'] == 0 %}
-                    <img src="{{resp.question.resourceUrl}}">
-                {% elif resp.question['resourceType'] == 1 %}
-                    <video width="320" height="240" controls src="{{resp.question.resourceUrl}}">
-                {% else %}
-                    <span>{{resp.question.title}}</span>
-                {% endif %}
+                <video class="videon_subject" controls src="{{resp.question.resourceUrl}}">
             </div>
-            <div id="tip">
+        {% else %}
+            <div id="question" width="320" height="240" controls>
+                <span>{{resp.question.title}}</span>
+            </div>
+        {% endif %}
+            <!-- <div id="tip">
                 {{resp.question.tips}}
-            </div>
+            </div> -->
         </div>
-        <!--奖品展示区域-->
+        <div class="div_sep"></div>
+        <!--答案展示区域-->
         <div id="answer" class="answer">                
-            {% for answer in resp.answers%}
-                <div id = "answer_sub_{{answer['id']}}" class="answer_block">
+            {% for answer in resp.answers %}
+                <div id = "answer_sub_{{loop.index}}" answer-value="{{answer.id}}" class="answer_block">
                     <!--0 picture 1 video 2 txt-->
                     {% if answer["resourceType"] == 0 %}
                         <img src="{{answer['resourceUrl']}}" title= "{{answer['title']}}" alt="{{answer['title']}}">
@@ -57,25 +67,25 @@
         </div>
         <form id="form_hidden" method="POST">
             <input type="hidden" name="questionId" value="{{resp.question['id']}}">
-            <input type="hidden" name="answerId" value="{{resp.question['id']}}">
+            <input id="input_answer" type="hidden" name="answerId" value="{{resp.question['id']}}">
             {% if resp.shareCode %}
                 <input type="hidden" name="shareCode" value="{{resp.shareCode}}">
             {% endif %}
         </form>
         <!--开始区域-->
         <div id="next">
-            <a id="next_play" href="/page/play/1" id="btn" class="m-ins" disabled>下一题</a>
+            <button id="next_play" href="/page/play/1" id="btn" class="m-ins btn-disabled" disabled>下一题</button>
         </div>
     </body>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.11.3.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-ui.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/game.js') }}"></script>
     <script>
          window.onload=function() {
            document.getElementById("next_play").onclick=function() {
              document.getElementById("form_hidden").submit();
              return false; // cancel the actual link
            };
-
-
-
          }
     </script>
 </html>

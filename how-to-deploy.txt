@@ -1,4 +1,3 @@
-
 # 环境配置
 * 说明：python flask 项目，包含的包依赖全部在  requirements.txt 里面， 建议使用virtualenv  
 * 安装依赖： pip install -r requirements.txt (或者 bash env-build.sh)  

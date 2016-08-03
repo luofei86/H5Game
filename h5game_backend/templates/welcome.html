@@ -24,7 +24,7 @@
     <body  id="main" unselectable="on" onselectstart="return false;">
         <!--海报区域-->
         <div id="poster">
-            <img src="http://iosimg.yingyonghui.com/banner/8191/819112_1468489114394_origin.jpg">
+            <img src="{{resp.info.resourceUrl}}">
         </div>
         <!--开始区域-->
         <div id="start">
@@ -45,6 +45,13 @@
                     <label>{{prize.count}}</label>
                 </div>
             {% endfor %}
+        </div>
+        <div class="more_game">
+            <div>关注我们<b>一刻talks</b></div>
+            <div>更多精彩奥运游戏，等你来玩</div>
+        </div>
+        <div class="screen_code">
+            <img data-type="gif" src="{{ url_for('static', filename='images/screen.gif')}}">
         </div>
     </body>
 </html>

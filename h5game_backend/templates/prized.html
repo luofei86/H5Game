@@ -13,6 +13,7 @@
         <link rel="Shortcut Icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" /> -->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/welcome.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/prized.css')}}">
         <!-- {% assets "home_page_js" %}
             <script type="text/javascript" src="{{ ASSET_URL }}"></script>
         {% endassets %}
@@ -22,18 +23,28 @@
         <title>已获取抽奖码</title>            
     </head>
     <body  id="main" unselectable="on" onselectstart="return false;">
+        <div id="poster">
+            <img src="{{resp.activeInfo.resourceUrl}}">
+        </div>
         <!--海报区域-->
-        <div id="content">
-            <div>您先前的回答都对了</div>
+        <div id="content">            
+            <div>恭喜您，全对了</div>
         </div>
         <!--开始区域-->
         <div id="prize_code">
-            <div>您的抽奖码为:{{resp.prizeInfo.prizeCode}}</div>
+            <div>您的抽奖码为:<b>{{resp.prizeInfo.prizeCode}}</b></div>
         </div>
         <!--奖品展示区域-->
         <div id="prize_feedback" class="welcome_prize">
-            <div>投资结果将会微信联系您，请关注我们的推送消息</div>
-            <div>抽奖公布时间:{{resp.activeInfo.prizeTime}}</div>
+            <div>获取结果将会微信联系您，请关注我们的推送消息</div>
+            <div>抽奖公布时间:<b>{{resp.activeInfo.prizeTime | timestamp_strftime}}</b></div>
+        </div>
+        <div class="more_game">
+            <div>关注我们<b>一刻talks</b></div>
+            <div>更多精彩奥运游戏，等你来玩</div>
+        </div>
+        <div class="screen_code">
+            <img data-type="gif" src="{{ url_for('static', filename='images/screen.gif')}}">
         </div>
     </body>
 </html>

@@ -62,4 +62,5 @@ def init_db():
 
 # import assets and template extensions
 from utils import assets
+from utils import template_filter_ex
 # from .utils import template_filter_ex
