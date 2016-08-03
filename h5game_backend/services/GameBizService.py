@@ -36,39 +36,34 @@ class GameBizService:
 
 #####获取此Url或signWord对应的activeId
 	def gameHomepageInfo(self, userId, signWord):
-		info = self._gameActiveInfoService.getInfoBySignWord(signWord)		
-		if not info:
+		activeInfo = self._gameActiveInfoService.getInfoBySignWord(signWord)		
+		if not activeInfo:
 			return None
-		prizes = self._gameActivePrizeInfoService.getInfosByActiveId(info['id'])
-		return {"info": info, "prizes": prizes}
-
-	def gamePlayInfo(self, signWord, step):
-		gameActiveInfo = self._gameActiveInfoService.getInfoBySignWord(signWord)
-		if not gameActiveInfo:
-			return None
+		prizes = self._gameActivePrizeInfoService.getInfosByActiveId(activeInfo['id'])
+		return {"activeInfo": activeInfo, "prizes": prizes}
 
 	def _handelNoMoreCanPlayResp(self, activeId):
-		info = self._gameActiveInfoService.getInfo(activeId)
-		prizes = self._gameActivePrizeInfoService.getInfosByActiveId(info['id'])
-		return {'success': False, 'failedType': 'limit', 'info': info, 'prizes': prizes}
+		activeInfo = self._gameActiveInfoService.getInfo(activeId)
+		prizes = self._gameActivePrizeInfoService.getInfosByActiveId(activeInfo['id'])
+		return {'success': False, "activeInfo": activeInfo, 'failedType': 'limit', 'prizes': prizes}
 
 	def userShared(self, id, shareCode):
-		info = self._userShareInfoService.getInfo(id)
-		if info is None or info['shareCode'] != shareCode:
+		userShareInfo = self._userShareInfoService.getInfo(id)
+		if userShareInfo is None or userShareInfo['shareCode'] != shareCode:
 			return self._handleIllegalResp()
 		###已经分享过了，则处理下是否能继续玩的问题，即用户失败次数是否大于3
-		if int(info['result']) == BizStatusUtils.SHARED_SUCCESS:
-			playInfo = self._userPlayOriginGameInfoService.getInfo(info['userId'], info['activeId'])
+		if int(userShareInfo['result']) == BizStatusUtils.SHARED_SUCCESS:
+			playInfo = self._userPlayOriginGameInfoService.getInfo(userShareInfo['userId'], userShareInfo['activeId'])
 			if playInfo is None:
 				return self._handleIllegalResp()
 			if int(playInfo['failedCount']) <= BizStatusUtils.MAX_SELF_PLAY:
 				return self._continuePlay(playInfo)
 			else:
-				return self._handelNoMoreCanPlayResp(info['activeId'])
+				return self._handelNoMoreCanPlayResp(userShareInfo['activeId'])
 
 		self._userShareInfoService.modifyResult(id, BizStatusUtils.SHARED_SUCCESS)
 		###共享成功了，修改
-		playInfo = self._userPlayOriginGameInfoService.getInfo(info['userId'], info['activeId'])
+		playInfo = self._userPlayOriginGameInfoService.getInfo(userShareInfo['userId'], userShareInfo['activeId'])
 		if playInfo is None:
 			return self._handleIllegalResp()
 		return self._continuePlay(playInfo)
@@ -101,7 +96,7 @@ class GameBizService:
 		if sharePlayInfo is not None:
 			playInfoResult = int(sharePlayInfo['result'])
 			if playInfoResult == BizStatusUtils.PLAY_RESULT_INIT:
-				return self._continuePlay(sharePlayInfo)
+				return self._continuePlay(sharePlayInfo, activeInfo = activeInfo)
 			elif playInfoResult == BizStatusUtils.PLAY_RESULT_SUCCESS:
 				return self._gotoRecivePrize(userId, activeId)
 			else:
@@ -111,7 +106,7 @@ class GameBizService:
 		#def addUserPlayInfo(self, userId, activeId, shareCode, randomQuestionIds, playQuestionId):
 		playInfo = self._userPlayShareGameInfoService.addUserPlayInfo(userId, activeId, shareCode, randomQuestionIds, firstQuestion['id'])
 		if playInfo:
-			return self._continuePlay(playInfo, firstQuestion)
+			return self._continuePlay(playInfo, firstQuestion, activeInfo = activeInfo)
 		return self._handleIllegalResp(failedType="server")
 
 	def playGame(self, userId, activeId):
@@ -131,7 +126,7 @@ class GameBizService:
 		####查看用户玩分享过来的链接的情况
 		sharedPrePlayInfo = self._userPlayShareGameInfoService.getUserlastPlayInfo(userId, activeId)
 		if sharedPrePlayInfo is not None and int(sharedPrePlayInfo['result']) == 0:
-			return self._continuePlay(sharedPrePlayInfo)
+			return self._continuePlay(sharedPrePlayInfo, activeInfo = activeInfo)
 		######用户有正在玩的记录
 		###return self._play
 		return self._handlePrePlay(playInfo)
@@ -169,7 +164,7 @@ class GameBizService:
 		if info:
 			###已经分享了 可以玩了
 			if int(info['result']) == BizStatusUtils.SHARED_SUCCESS:
-				return self._continuePlay(playInfo)
+				return self._continuePlay(playInfo, activeInfo =  activeInfo)
 			else:
 				return self._handleNeedShareThenPlayResp(activeInfo, info)
 
@@ -290,24 +285,26 @@ class GameBizService:
 	def _handlePrized(self, activeInfo, prizeInfo):
 		return {'success': True, 'prized': True, 'activeInfo': activeInfo, 'prizeInfo': prizeInfo}
 
-	def _initReturnQuestion(self, question, playInfo):
-		if question is None or playInfo is None:
+	def _initReturnQuestion(self, question, playInfo, activeInfo):
+		if question is None or playInfo is None or activeInfo is None:
 			return self._handleIllegalResp()
  		
 		answers = self._initQuestionPossibleAnswerInfo(question);
 		if answers is None or not answers:
 			return self._handleIllegalResp()
 		if 'shareCode' in playInfo:
-			return {'success': True, 'play': True, 'playInfo': playInfo, 'question': question, 'answers': answers, 'shareCode': playInfo['shareCode']}
+			return {'success': True, 'play': True, 'activeInfo': activeInfo, 'playInfo': playInfo, 'question': question, 'answers': answers, 'shareCode': playInfo['shareCode']}
 		else:
-			return {'success': True, 'play': True, 'playInfo': playInfo, 'question': question, 'answers': answers}
+			return {'success': True, 'play': True, 'activeInfo': activeInfo, 'playInfo': playInfo, 'question': question, 'answers': answers}
 
 	################originGame是否原生游戏#############
-	def _continuePlay(self, playInfo, question = None):
+	def _continuePlay(self, playInfo, question = None, activeInfo = None):
 		if question is None:
 			questionId = playInfo['playQuestionId']
 			question = self._gameQuestionInfoService.getInfo(questionId)
-		return self._initReturnQuestion(question, playInfo)
+		if activeInfo is None:
+			activeInfo = self._gameActiveInfoService.getInfo(playInfo['activeId'])
+		return self._initReturnQuestion(question, playInfo, activeInfo)
 
 	def _initQuestionPossibleAnswerInfo(self, question):
 		if question is None:

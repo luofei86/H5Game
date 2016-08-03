@@ -19,19 +19,18 @@
 --
 -- Table structure for table `game_active_info`
 --
-
-DROP TABLE IF EXISTS `game_active_info`;
+#DROP TABLE IF EXISTS `game_active_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `game_active_info` (
+CREATE TABLE IF NOT EXISTS `game_active_info` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `keyword` varchar(25) NOT NULL,
-  `sign_word` varchar(25) NOT NULL,
-  `url` varchar(255) NOT NULL,
-  `title` varchar(50) NOT NULL,
-  `content` varchar(500) DEFAULT NULL,
-  `resource_url` varchar(255) NOT NULL,
-  `prize_time` datetime DEFAULT NULL,
+  `keyword` varchar(25) NOT NULL COMMENT "keyword for official accounts' subscriber to input to get the url",
+  `sign_word` varchar(25) NOT NULL COMMENT "the sub path for your to identified the active, is at the end of url",
+  `url` varchar(255) NOT NULL COMMENT 'when subscriber input the word which match the keyword will return this',
+  `title` varchar(50) NOT NULL COMMENT 'the title of the active info, also is the title of the url in browser',
+  `content` varchar(500) DEFAULT NULL COMMENT 'active desc ',
+  `resource_url` varchar(255) NOT NULL COMMENT 'the img in url home page ,prized page, share page to show',
+  `prize_time` datetime DEFAULT NULL COMMENT 'the lottery time will show after subscriber finished the active',
   `status` tinyint(4) NOT NULL COMMENT '0 ok -1 del',
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   `create_time` datetime NOT NULL COMMENT '记录创建时间',
@@ -51,9 +50,9 @@ CREATE TABLE `game_active_prize_info` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active_id` int(10) unsigned NOT NULL COMMENT 'reference game_active_info.id',
   `level` tinyint(3) unsigned NOT NULL COMMENT 'using for order 1 is the top prize',
-  `level_desc` varchar(255) NOT NULL,
-  `prize_desc` varchar(50) NOT NULL,
-  `count` int(10) unsigned NOT NULL,
+  `level_desc` varchar(255) NOT NULL COMMENT '等级描述',
+  `prize_desc` varchar(50) NOT NULL COMMENT '奖品描述',
+  `count` int(10) unsigned NOT NULL COMMENT '奖品数量',
   `status` tinyint(4) NOT NULL COMMENT '0 ok -1 del',
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   `create_time` datetime NOT NULL COMMENT '记录创建时间',
@@ -71,8 +70,8 @@ DROP TABLE IF EXISTS `game_answer_info`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `game_answer_info` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL,
-  `resource_url` varchar(500) DEFAULT NULL,
+  `title` varchar(255) NOT NULL DEFAULT '' COMMENT "答案描述， 若resouce_type不为text 可为''",
+  `resource_url` varchar(500) DEFAULT NULL COMMENT '答案描述，若若resouce_type不为text，则必须不为空' ,
   `resource_type` tinyint(3) unsigned NOT NULL COMMENT '0 picture 1 video 2 text ',
   `status` tinyint(4) NOT NULL COMMENT '0 ok -1 del',
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
@@ -91,9 +90,9 @@ DROP TABLE IF EXISTS `game_question_info`;
 CREATE TABLE `game_question_info` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `active_id` int(10) unsigned NOT NULL COMMENT 'reference game_active_info.id',
-  `title` varchar(255) NOT NULL,
-  `resource_url` varchar(500) NOT NULL,
-  `resource_type` tinyint(3) unsigned NOT NULL COMMENT '0 picture 1 video 2 text',
+  `title` varchar(255) NOT NULL COMMENT 'QUESTION TITLE',
+  `resource_url` varchar(500) NOT NULL ,
+  `resource_type` tinyint(3) unsigned NOT NULL COMMENT '0 picture 1 video',
   `possible_answer_ids` varchar(255) NOT NULL COMMENT '4个答案id，以,分隔',
   `right_answer_id` int(10) unsigned NOT NULL COMMENT '正确id',
   `tips` varchar(255) NOT NULL COMMENT '答案提示语',
