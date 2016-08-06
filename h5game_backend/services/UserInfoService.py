@@ -5,6 +5,7 @@ import redis
 import json
 
 from h5game_backend import POOL
+from h5game_backend import LOGGER
 
 ID_INFO_KEY = "user:info:"
 OPENID_ID_KEY = "user:openId:id:"
@@ -15,6 +16,7 @@ class UserInfoService:
 		self._dao = UserInfoDao()
 
 	def addInfo(self, weiXinInfo):
+		LOGGER.debug(str(weiXinInfo))
 		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
 			key = self._buildOpenIdReflectIdKey(weiXinInfo['openid'])

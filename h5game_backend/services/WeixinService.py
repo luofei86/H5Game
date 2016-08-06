@@ -180,5 +180,5 @@ class WeixinService:
 				% (accessToken, openid)
 		response = requests.get(url)
 		data = response.json()
-		LOGGER.debug(str(data))
+		LOGGER.debug("Get from info url:" + str(data))
 		return data

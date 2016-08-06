@@ -27,8 +27,8 @@ class UserInfoDao:
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
 			cur.execute(INSERT_SQL, (str(openId),str(unionId), str(nickname), str(sex), \
-				+ str(language), str(city), str(province), str(country), str(headimgurl), \
-				+ str(nickname), str(headimgurl)))
+				str(language), str(city), str(province), str(country), str(headimgurl), \
+				str(nickname), str(headimgurl)))
 			dbConn.commit()
 
 	def queryInfoById(self, id):

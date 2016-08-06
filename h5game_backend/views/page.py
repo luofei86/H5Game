@@ -34,7 +34,6 @@ userInfoService = UserInfoService.UserInfoService()
 @page.route("/welcome/callback/")
 def callback():
 	sign = request.args.get("sign")
-	LOGGER.debug(sign)
 	if not sign:
 		return render_template("404.html"), 404
 	shareCode = request.args.get("shareCode")
@@ -52,13 +51,13 @@ def callback():
 	if str(userWeiXinInfo.get('errcode')) == '40001':
 		userOpenInfo = weixinService.refreshOpenInfo(userOpenInfo['openid'], userOpenInfo['refresh_token'])
 		userWeiXinInfo = weixinService.getUserInfo(userOpenInfo['openid'], userOpenInfo['access_token'])
-	if userWeiXinInfo is None or str(userWeiXinInfo.get('errcode')):
-		return render_template("404.html"), 404
+		if userWeiXinInfo is None:
+			return render_template("404.html"), 404
 	####Init user
 	LOGGER.debug("code" + code + ",userWeiXinInfo:" + str(userWeiXinInfo))
 	userInfoService.addInfo(userWeiXinInfo)
 
-	session['openId'] = openId
+	session['openId'] = userOpenInfo['openid']
 	return redirect(url_for('.welcome', signWord = sign, shareCode = shareCode))
 
 @page.route('/welcome/<string:signWord>')
@@ -66,6 +65,7 @@ def callback():
 def welcome(signWord, shareCode=None):
 	try:
 		openId = session["openId"]
+		LOGGER.debug("openId" + str(openId))
 		if not openId:
 			return render_template("404.html"), 404
 		if not userInfoService.getUserId(openId):
