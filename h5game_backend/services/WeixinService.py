@@ -149,11 +149,14 @@ class WeixinService:
 			% (self.appId, self.appSecret, code)
 		response = requests.get(url)
 		data = response.json()
+		LOGGER.debug(str(data))
+		if data is None:
+			return None
 		openId = data['openId']
 		accessToken = data['access_token']
 		if not openId or not accessToken:
 			return None
-		LOGGER.debug(str(data))
+		
 		return self._getUserInfo(openId, accessToken)
 
 	def _getUserInfo(self, openid, accessToken):
