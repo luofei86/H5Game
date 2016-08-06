@@ -136,10 +136,10 @@ def play(activeId, shareCode=None):
 			return render_template("prized.html", resp = resp)
 	##需要分享才能玩
 		elif(resp.get('needShare')):
-			return render_template("share.html", resp = resp)
+			return render_template("nomoreplay.html", resp = resp)
 		##当前游戏不能玩了，等待下次	
 		else:
-			return render_template("share.html", resp = resp)
+			return render_template("nomoreplay.html", resp = resp)
 	except:
 	 	return render_template("404.html"), 500
 
@@ -162,9 +162,9 @@ def _playOriginWithAnswer(userId, unionId, activeId, questionId, answerId):
 		return render_template("prized.html", resp = resp)
 	##需要分享才能玩
 	elif(resp.get('needShare')):
-		return render_template("share.html", resp = resp)
+		return render_template("nomoreplay.html", resp = resp)
 	else:###达到用户限制，也无法分享
-		return render_template('share.html', resp = resp)
+		return render_template('nomoreplay.html', resp = resp)
 
 @page.route("/sharedtoplay/", methods=['GET', 'POST'])
 def sharedToPlay():
@@ -182,7 +182,7 @@ def sharedToPlay():
 		return render_template("404.html", resp = resp)	
 	else:
 		if resp.get("failedType") == 'limit':
-			return render_template('share.html', resp = resp)
+			return render_template('nomoreplay.html', resp = resp)
 		else:
 			return render_template("404.html"), 403
 
@@ -207,9 +207,9 @@ def _playShareGame(userId, unionId, activeId, shareCode):
 		return render_template("prized.html", resp = resp)
 	##需要分享才能玩
 	elif(resp.get('needShare')):
-		return render_template("share.html", resp = resp)
+		return render_template("nomoreplay.html", resp = resp)
 	else:###达到用户限制，也无法分享
-		return render_template('share.html', resp = resp)
+		return render_template('nomoreplay.html', resp = resp)
 
 ###共享玩的
 def _playSharedWithAnswer(userId, unionId, activeId, shareCode, questionId, answerId):
@@ -223,11 +223,11 @@ def _playSharedWithAnswer(userId, unionId, activeId, shareCode, questionId, answ
 		elif resp.get('failedType') == 'illegal':####数据问题
 			return render_template("404.html"), 403
 		else:###达到用户限制，也无法分享
-			return render_template('share.html', resp = resp)
+			return render_template('nomoreplay.html', resp = resp)
 	if(resp.get('play')):
 		return render_template("game.html", resp = resp)
 	##已中奖
 	elif(resp.get('prized')):
 		return render_template("prized.html", resp = resp)
 	else:###达到用户限制，也无法分享
-		return render_template('share.html', resp = resp)
+		return render_template('nomoreplay.html', resp = resp)

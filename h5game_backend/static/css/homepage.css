@@ -7,11 +7,11 @@
 
 .div-homepage-desc{
     text-align: center;
+    margin: 0px auto;
 }
 
 .div-homepage-desc img{
-    margin-top: 32px;
-    width: auto;
+    width: 98%;
     height: 260px;
     border: 4px solid black;
 }

@@ -16,7 +16,7 @@
     background-repeat: repeat;
     width: 88%;
     margin: 0px auto;
-    min-height: 520px;
+    min-height: 610px;
     border:4px solid black;
 }
 
@@ -74,10 +74,11 @@
     text-align: center;
     line-height: 34px;
     text-decoration: none;
+    overflow: hidden;
 }
 .answer_block{    
     float: left;
-    height: 49%;
+    height: 180px;
     width: 50%;
     font-size: 1rem;
     display: block;
@@ -86,9 +87,10 @@
     opacity: 0.8;
 }
 .answer_block img{
+    display: inline-block;
     margin-left: 5px;
-    width: 92%;
-    height: 92%;
+    width: 156px;
+    height: 152px;
     border: 4px solid black;
 }
 
@@ -123,6 +125,7 @@
     text-align: center;
     width: 160px;
     margin: 0px auto;
+    margin-top: 25px;
 }
 
 

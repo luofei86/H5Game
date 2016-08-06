@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name ="viewport" content ="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, width=device-width">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge，chrome=1"/>
+        <meta name="applicable-device" content="mobile"/>
+        <meta http-equiv="Cache-Control" content="no-siteapp"/>
+        <meta name="format-detection" content="telephone=no, email=no"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/share.css')}}">
+        <title>{{resp.activeInfo.title}}</title>
+    </head>
+    <body  id="main" unselectable="on" onselectstart="return false;">
+        <div id="div_share_page">
+            <div class="div-share-desc">
+                <div><b>亲，你确定看了情报？</b></div>
+                <div><b>你当前游戏失败次数过多</b></div>
+                <div><b>您需要更多的朋友帮助</b></div>
+                <div><b>任务失败！</b></div>
+            </div>
+        </div>
+    </body>
+</html>
