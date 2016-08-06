@@ -46,7 +46,7 @@ def callback():
 	if userWeiXinInfo is None:
 		return render_template("404.html"), 404
 	####Init user
-	LOGGER.debug("code" + code + ",OpenId:" + openId)
+	# LOGGER.debug("code" + code + ",OpenId:" + openId)
 	userInfoService.addInfo(userWeiXinInfo)
 
 	session['openId'] = openId

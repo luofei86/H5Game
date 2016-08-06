@@ -17,7 +17,7 @@ class UserInfoService:
 	def addInfo(self, weiXinInfo):
 		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
-			key = self._buildOpenIdReflectIdKey(openId)
+			key = self._buildOpenIdReflectIdKey(weiXinInfo['openid'])
 			result = r.get(key)
 			if result:
 				return
