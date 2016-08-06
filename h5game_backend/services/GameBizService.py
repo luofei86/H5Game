@@ -11,9 +11,11 @@ from services import UserPlayShareGameInfoService
 from services import UserShareInfoService
 from services import UserShareLimitInfoService
 from services import UserPrizeInfoService
+from services import WeixinService
 
 
 from h5game_backend import LOGGER
+from h5game_backend import app
 from models import BizStatusUtils
 
 #####主业务类
@@ -32,6 +34,7 @@ class GameBizService:
 		self._userShareInfoService = UserShareInfoService.UserShareInfoService()
 		self._userShareLimitInfoService = UserShareLimitInfoService.UserShareLimitInfoService()
 		self._userInfoService = UserInfoService.UserInfoService()
+		self._weixinService = WeixinService.WeixinService(app.config.get('APP_ID', None), app.config.get('APP_SECERT', None))
 
 
 #####获取此Url或signWord对应的activeId
@@ -40,7 +43,15 @@ class GameBizService:
 		if not activeInfo:
 			return None
 		prizes = self._gameActivePrizeInfoService.getInfosByActiveId(activeInfo['id'])
-		return {"activeInfo": activeInfo, "prizes": prizes}
+		###check user prized
+		###是否中奖了
+		LOGGER.debug(str(userId))
+		LOGGER.debug(activeInfo['id'])
+		prizeInfo = self._userPrizedInfoService.getUserPrizeInfo(userId, activeInfo['id'])
+
+		if prizeInfo:
+			return self._handlePrized(activeInfo, prizeInfo)
+		return {'success': True, 'welcome': True, 'activeInfo': activeInfo, 'prizes': prizes}
 
 	def _handelNoMoreCanPlayResp(self, activeId):
 		activeInfo = self._gameActiveInfoService.getInfo(activeId)
@@ -50,7 +61,7 @@ class GameBizService:
 	def userShared(self, id, shareCode):
 		userShareInfo = self._userShareInfoService.getInfo(id)
 		if userShareInfo is None or userShareInfo['shareCode'] != shareCode:
-			return self._handleIllegalResp()
+			return self._handleIllegalResp()		
 		###已经分享过了，则处理下是否能继续玩的问题，即用户失败次数是否大于3
 		if int(userShareInfo['result']) == BizStatusUtils.SHARED_SUCCESS:
 			playInfo = self._userPlayOriginGameInfoService.getInfo(userShareInfo['userId'], userShareInfo['activeId'])
@@ -71,7 +82,7 @@ class GameBizService:
 	def _handleIllegalResp(failedType = 'illegal', message="data access failed"):
 		return {'success': False, 'failedType': failedType, 'message': message}
 #######
-	def playShareGame(self, userId, openId, activeId, shareCode):
+	def playShareGame(self, userId, unionId, activeId, shareCode):
 		##用户权限检测
 		activeInfo = self._gameActiveInfoService.getInfo(activeId)
 		if activeInfo is None:
@@ -83,9 +94,10 @@ class GameBizService:
 			return self._handlePrized(activeInfo, prizeInfo)
 		###shareCode有效性检测
 		shareInfo = self._userShareInfoService.getInfoByShareCode(shareCode)
-		if shareInfo is None or int(shareInfo['activeId']) != int(activeId) \
-			or int(shareInfo['result']) != BizStatusUtils.SHARED_SUCCESS \
-			or int(shareInfo['userId']) == userId:
+		if shareInfo is None or int(shareInfo['activeId']) != int(activeId):
+		 # \
+			# or int(shareInfo['result']) != BizStatusUtils.SHARED_SUCCESS \
+			# or int(shareInfo['userId']) == userId:
 			return self._handleIllegalResp(message="illegal info failed.")
 
 		####检查用户能玩的共享过来的游戏总数
@@ -141,6 +153,7 @@ class GameBizService:
 			return self._continuePlay(playInfo)
 		#####已达到个人最大可玩数,需要根据分享的情况来决定如何
 		if int(playInfo.get('failedCount')) == BizStatusUtils.MAX_SELF_PLAY:
+			LOGGER.debug("Failed to shared.")
 			return self._sharedToPlay(playInfo)
 		####用户最大个人可玩数已玩了，查看是否有未玩完的共享游戏
 		if int(playInfo.get('failedCount')) >= BizStatusUtils.MAX_ORIGIN_PLAY:
@@ -170,16 +183,20 @@ class GameBizService:
 
 		if not info:
 			##获取用户分享的链接
-			openId = self._userInfoService.getUserOpenId(userId)
-			if openId is None:
+			unionId = self._userInfoService.getUserUnionId(userId)
+			if not unionId:
 				return self._handleIllegalResp()
-			info = self._userShareInfoService.genShareInfo(userId, openId, activeId, activeInfo['url'])
+			LOGGER.debug("_sharedToPlay unionId:" + unionId)
+			info = self._userShareInfoService.genShareInfo(userId, unionId, activeId, activeInfo['url'])
 			if info is None:
 				return self._handleIllegalResp()
 			else:
 				return self._handleNeedShareThenPlayResp(activeInfo, info)
 	
 	def _handleNeedShareThenPlayResp(self, activeInfo, shareInfo):
+		###需要分享才能玩
+		###
+		# self._weixinService.sign(app.config.get['weixin_js_url'])
 		return {'success': True, 'needShare': True, 'activeInfo': activeInfo, 'shareInfo': shareInfo}
 
 	#####开始在接口层面区分来自于共享的还是系统提供的游戏机会,此接口只供系统提供的游戏机会中调用
@@ -188,9 +205,15 @@ class GameBizService:
 	############'prizeInfo': prizeInfo, 'question': question, "answers": answers}
 	def originGameNext(self, userId, activeId, questionId, answerId):
 		playInfo = self._userPlayOriginGameInfoService.getInfo(userId, activeId)
-		if playInfo is None or int(playInfo['playQuestionId']) != int(questionId):
+		if playInfo is None:
 			return self._handleIllegalResp()
 
+		if int(playInfo['playQuestionId']) != int(questionId):
+			###用户当前玩的问题和数据库数据不对，可能是微信客户端里点后退了
+			prizeInfo = self._userPrizedInfoService.getUserPrizeInfo(userId, activeId)
+			if prizeInfo:
+				activeInfo = self._gameActiveInfoService.getInfo(activeId)
+				return self._handlePrized(activeInfo, prizeInfo)
 		rightAnswer = self._gameQuestionInfoService.checkAnswer(questionId, answerId)
 		if rightAnswer:
 			return self._gotoNext(userId, activeId, questionId, playInfo)
@@ -281,7 +304,6 @@ class GameBizService:
 			return self._handleIllegalResp()
 		return self._handlePrized(activeInfo, prizeInfo)
 
-
 	def _handlePrized(self, activeInfo, prizeInfo):
 		return {'success': True, 'prized': True, 'activeInfo': activeInfo, 'prizeInfo': prizeInfo}
 
@@ -289,7 +311,7 @@ class GameBizService:
 		if question is None or playInfo is None or activeInfo is None:
 			return self._handleIllegalResp()
  		
-		answers = self._initQuestionPossibleAnswerInfo(question);
+		answers = self._initQuestionPossibleAnswerInfo(question)
 		if answers is None or not answers:
 			return self._handleIllegalResp()
 		if 'shareCode' in playInfo:
@@ -317,6 +339,6 @@ class GameBizService:
 			answerIdList.append(answerId)
 		return self._gameAnswerInfoService.getInfos(answerIdList)
 
-	def _userId(self, openId):
-		return self._userInfoService.getUserId(openId)
+	def _userId(self, unionId):
+		return self._userInfoService.getUserId(unionId)
 

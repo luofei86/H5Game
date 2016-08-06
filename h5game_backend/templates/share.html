@@ -9,48 +9,28 @@
         <meta name="format-detection" content="telephone=no, email=no"/>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <!-- <link rel="icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" />
-        <link rel="Shortcut Icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" /> -->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/welcome.css')}}">
-        <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-        <!-- {% assets "home_page_js" %}
-            <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-        {% endassets %}
-        {% assets "home_page_css" %}
-            <link rel="stylesheet" href="{{ ASSET_URL }}" />
-        {% endassets %} -->
-        <title>{{resp.activeInfo.title}}</title>            
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/share.css')}}">
+        <title>{{resp.activeInfo.title}}</title>
     </head>
     <body  id="main" unselectable="on" onselectstart="return false;">
-         <!--海报区域-->
-        <div id="poster">
-            <img src="{{resp.activeInfo.resourceUrl}}">
-        </div>
-        <!--题目区域-->
-        <div id="share_desc">
-            <div class="share_title">
-                回答错误,分享到朋友圈立即获得一次答案机会
+        <div id="div_share_page">
+            <div class="div-share-desc">
+                <div><b>亲，你确定看了情报？</b></div>
+                <div><b>你刚刚抢到了</b></div>
+                <div><b>里约首席警察官</b></div>
+                <div><b>任务失败！</b></div>
             </div>
-        </div>
-        <form id="form_hidden" action="/page/sharedtoplay/" method="POST">
-            <input type = 'hidden' name="shareCode" value="{{resp.shareInfo.shareCode}}">
-            <input type = 'hidden' name="id" value="{{resp.shareInfo.id}}">
-        </form>
-        <!--奖品展示区域-->
-        <div id="to_share" class="to_share">
-            <a href="/page/play/1" id="btn" class="m-ins">立即分享</a>
+
+        {% if resp.shareCode %}
+            <a href="{{ url_for('page.homepage', signWord = resp['activeInfo']['signWord'], shareCode = resp['shareCode'])}}">
+        {% else %}
+            <a href="{{ url_for('page.homepage', signWord = resp['activeInfo']['signWord'])}}">
+        {% endif %}
+                <div class="div-share-bottom-desc">
+                    再看一次视频情报
+                </div>
+            </a>
         </div>
     </body>
-    <script>
-        window.onload=function() {
-           document.getElementById("to_share").onclick=function() {
-                var r = confirm("分享就能再玩一次,分享?");
-                if (r){
-                    document.getElementById("form_hidden").submit();
-                }
-                return false; // cancel the actual link
-           }
-         }
-    </script>
 </html>

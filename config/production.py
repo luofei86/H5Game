@@ -7,6 +7,8 @@ DEBUG = False
 
 LOG_FILE='log/h5game.log'
 
+SECRET_KEY='zRbcL8jGqESN3eUYBaDtRatyOndHeprZ'
+
 DB_CONF = {
     "host" :'10.18.103.121',
     "user" : 'luofei',
@@ -22,3 +24,7 @@ REDIS_CONF = {
 	"socket_connect_timeout": 1,
 	"socket_keepalive": 7200 
 }
+
+APP_ID = ''
+APP_SECERT = ''
+WEIXIN_JS_URL = ''

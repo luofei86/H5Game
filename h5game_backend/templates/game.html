@@ -9,80 +9,87 @@
         <meta name="format-detection" content="telephone=no, email=no"/>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <!-- <link rel="icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" />
-        <link rel="Shortcut Icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" /> -->
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/game.css')}}">
-       
-        <!-- {% assets "home_page_js" %}
-            <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-        {% endassets %}
-        {% assets "home_page_css" %}
-            <link rel="stylesheet" href="{{ ASSET_URL }}" />
-        {% endassets %} -->
-        <title>{{resp.activeInfo.title}}</title>               
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}">
+        <title>{{resp.activeInfo.title}}</title>
     </head>
     <body  id="main" unselectable="on" onselectstart="return false;">
-        <!--题目区域-->        
-        {% if resp.question.title %}
-            <div class="subject_title">{{resp.question.title}}</div>
-        {% endif %}
-        <div id="subject" class="subject">
-        <!--0 picture 1 video 2 txt-->
-        {% if resp.question['resourceType'] == 0 %}
-            <div id="img_question" controls>
-                <img src="{{resp.question.resourceUrl}}">
-            </div>
-            <div id="img_question_tips" controls>
-                <span>{{resp.question.tips}}</span>
-            </div>
-        {% elif resp.question['resourceType'] == 1 %}
-            <div id="question" width="320" height="240" controls>
-                <video class="videon_subject" controls src="{{resp.question.resourceUrl}}">
-            </div>
-        {% else %}
-            <div id="question" width="320" height="240" controls>
-                <span>{{resp.question.title}}</span>
-            </div>
-        {% endif %}
-            <!-- <div id="tip">
-                {{resp.question.tips}}
-            </div> -->
-        </div>
-        <div class="div_sep"></div>
-        <!--答案展示区域-->
-        <div id="answer" class="answer">                
-            {% for answer in resp.answers %}
-                <div id = "answer_sub_{{loop.index}}" answer-value="{{answer.id}}" class="answer_block">
+        <div id="div-game-page">
+            <div id="div-play-game-page">
+                <div class="title">{{resp['question']['title']}}</div>
+                <div class="question">
+                    <div class="inner-question">
+                        {% if resp['question']['resourceType'] == 0 %}
+                            <img src="{{resp['question']['resourceUrl']}}">
+                         <!--    <img src="{{ url_for('static', filename='images/drop_tips.png')}}">
+                            <div class="tips">{{resp['question']['tips']}}</div> -->
+                        {% elif resp['question']['resourceType'] == 1%}
+                            <video controls class="video">
+                                <source src="{{resp['question']['resourceUrl']}}" type="video/mp4">
+                            </video>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div id="answer" class="answer">                
+                {% for answer in resp.answers %}
+                    <div id = "answer_sub_{{loop.index}}" answer-value="{{answer.id}}" class="answer_block">
+                    {% if loop.index == 1%}
+                        <div class="answer-order">A 
+                            <span>{{answer.title}}</span>
+                        </div>
+                    {% elif loop.index == 2%}
+                        <div class="answer-order odds">B 
+                            <span>{{answer.title}}</span>
+                        </div>
+                    {% elif loop.index == 3%}
+                        <div class="answer-order">C 
+                            <span>{{answer.title}}</span>
+                        </div>
+                    {% elif loop.index == 4%}
+                        <div class="answer-order odds">D 
+                            <span>{{answer.title}}</span>
+                        </div>
+                    {% endif %}
                     <!--0 picture 1 video 2 txt-->
                     {% if answer["resourceType"] == 0 %}
                         <img src="{{answer['resourceUrl']}}" title= "{{answer['title']}}" alt="{{answer['title']}}">
                     {% elif answer['resourceType'] == 1 %}
-                        <video src="{{answer['resourceUrl']}}">
+                        <video controls class="video">
+                            <source src="{{answer['resourceUrl']}}">
+                        </video>
                     {% else %}
-                        <span>{{answer['title']}}</span>
+                        <span>{{answer['resourceType']}}</span>
                     {% endif %}
+                    </div>
+                {% endfor %}
                 </div>
-            {% endfor %}
-        </div>
-        <form id="form_hidden" method="POST">
-            <input type="hidden" name="questionId" value="{{resp.question['id']}}">
-            <input id="input_answer" type="hidden" name="answerId" value="{{resp.question['id']}}">
+            </div>
+            <form id="form_hidden" method="POST">
+                <input type="hidden" name="questionId" value="{{resp['question']['id']}}">
+                <input id="input_answer" type="hidden" name="answerId" value="">
             {% if resp.shareCode %}
                 <input type="hidden" name="shareCode" value="{{resp.shareCode}}">
             {% endif %}
-        </form>
-        <!--开始区域-->
-        <div id="next">
-            <button id="next_play" href="/page/play/1" id="btn" class="m-ins btn-disabled" disabled>下一题</button>
+            </form>
+            
+            <div id="next_play" class="div-next disabled" disabled>
+                <img src="{{url_for('static', filename='images/next_play.png')}}">
+            </div>
         </div>
     </body>
+
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.11.3.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-ui.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/game.js') }}"></script>
     <script>
          window.onload=function() {
            document.getElementById("next_play").onclick=function() {
+            var answerInput = $("#input_answer");
+            var answerId = $(answerInput).val();
+            if (typeof answerId === 'undefined' || answerId == ''){
+                return false;
+            }
              document.getElementById("form_hidden").submit();
              return false; // cancel the actual link
            };

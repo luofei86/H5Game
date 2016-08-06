@@ -2,7 +2,6 @@
 from services.DbService import get_db
 from utils.JsonEncoder import *
 from dao.GameActiveInfoDao import *
-from services.RedisConf import RedisConf
 import redis
 import json
 

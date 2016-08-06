@@ -7,47 +7,55 @@ import json
 from h5game_backend import POOL
 
 ID_INFO_KEY = "user:info:"
-OPENID_ID_KEY = "user:openid:id:"
-ID_OPENID_KEY = "user:id:openid:"
-
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password = "yike", socket_timeout=5, socket_connect_timeout=1, socket_keepalive=7200)
+UNIONID_ID_KEY = "user:unionid:id:"
+ID_UNIONID_KEY = "user:id:unionid:"
 
 class UserInfoService:
 	def __init__(self):
 		self._dao = UserInfoDao()
+
+	def addInfo(self, unionId):
+		r = redis.StrictRedis(connection_pool = POOL)
+		if r:
+			key = self._buildUnionIdReflectIdKey(unionId)
+			result = r.get(key)
+			if result:
+				return
+		self._dao.insert(unionId)
+
 ##获取用户中奖信息
-	def getUserId(self, openId):
+	def getUserId(self, unionId):
 		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
-			key = self._buildOpenIdReflectIdKey(openId)
+			key = self._buildUnionIdReflectIdKey(unionId)
 			result = r.get(key)
 			if result:
 				return int(result)
-		id = self._dao.queryIdByUk(openId)
+		id = self._dao.queryIdByUk(unionId)
 		if id and not r:
 			self._initReflectInfo(r, key, id)
 		return id
 
-	def getUserOpenId(self, id):
+	def getUserUnionId(self, id):
 		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
-			key = self._buildIdReflectOpenIdKey(id)
+			key = self._buildIdReflectUnionIdKey(id)
 			result = r.get(key)
 			if result:
 				return int(result)
-		id = self._dao.queryOpenId(id)
+		id = self._dao.queryUnionId(id)
 		if id and not r:
 			self._initReflectInfo(r, key, id)
 		return id
 
 
-	def _buildOpenIdReflectIdKey(self, openId):
-		return OPENID_ID_KEY + openId
+	def _buildUnionIdReflectIdKey(self, unionId):
+		return UNIONID_ID_KEY + unionId
 
-	def _buildIdReflectOpenIdKey(self, id):
-		return ID_OPENID_KEY + str(id)
+	def _buildIdReflectUnionIdKey(self, id):
+		return ID_UNIONID_KEY + str(id)
 
 	def _initReflectInfo(self, r, key, id):
-		r.set(key, id)
+		r.set(key, str(id))
 
 

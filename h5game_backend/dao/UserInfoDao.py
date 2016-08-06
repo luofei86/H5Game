@@ -12,13 +12,22 @@ __author__ = 'luofei'
 #用户信息表
 
 TABLE_NAME= " user_info "
-COLUMNS = " id, open_id, nickname, sex, city, headimgurl "
+COLUMNS = " id, union_id, nickname, sex, city, headimgurl "
+INSERT_SQL = '''INSERT IGNORE INTO ''' + TABLE_NAME + ''' (id, ''' \
+		+ ''' `union_id`, `nickname`, `sex`, `city`, `headimgurl`, status, update_time, create_time) ''' \
+		+ ''' VALUES(null, %s, %s, %s, %s, %s, 0, NOW(), NOW()) '''
 ALL_SQL = '''SELECT ''' + COLUMNS + ''' FROM ''' + TABLE_NAME + ''' WHERE status = 0 '''
-UK_SQL = ALL_SQL + ''' AND open_id = %s '''
-UK_ID_SQL = '''SELECT id FROM ''' + TABLE_NAME + ''' WHERE status = 0 AND open_id = %s '''
-OPENID_SQL = '''SELECT open_id FROM ''' + TABLE_NAME + ''' WHERE status = 0 AND id = %s '''
+UK_SQL = ALL_SQL + ''' AND union_id = %s '''
+UK_ID_SQL = '''SELECT id FROM ''' + TABLE_NAME + ''' WHERE status = 0 AND union_id = %s '''
+UNIONID_SQL = '''SELECT union_id FROM ''' + TABLE_NAME + ''' WHERE status = 0 AND id = %s '''
 
 class UserInfoDao:
+	def insert(self, unionId):
+		dbConn = get_db()
+		with closing(dbConn.cursor()) as cur:
+			cur.execute(INSERT_SQL, (str(unionId), '', '', '', ''))
+			dbConn.commit()
+
 	def queryInfoById(self, id):
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
@@ -26,26 +35,26 @@ class UserInfoDao:
 			result = cur.fetchone()
 		return self._toObject(result)
 
-	def queryInfoByUk(self, openId):
+	def queryInfoByUk(self, unionId):
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
-			cur.execute(UK_SQL, (str(openId),))
+			cur.execute(UK_SQL, (str(unionId),))
 			result = cur.fetchone()
 		return self._toObject(result)
 
-	def queryOpenId(self, id):
+	def queryUnionId(self, id):
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
-			cur.execute(OPENID_SQL, (str(id),))
+			cur.execute(UNIONID_SQL, (str(id),))
 			result = cur.fetchone()
 			if result:
 				return result[0]
 		return None
 
-	def queryIdByUk(self, openId):
+	def queryIdByUk(self, unionId):
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
-			cur.execute(UK_ID_SQL, (str(openId), ))
+			cur.execute(UK_ID_SQL, (str(unionId), ))
 			result = cur.fetchone()
 			if result:
 				return result[0]

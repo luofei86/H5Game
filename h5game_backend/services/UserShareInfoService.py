@@ -10,6 +10,7 @@ import json
 import time
 
 from h5game_backend import POOL
+from h5game_backend import LOGGER
 #####分享地址的逻辑，用户当前玩的游戏的原生地址加上/token
 
 
@@ -75,8 +76,8 @@ class UserShareInfoService:
 		return dbValue.__dict__
 
 	#添加分享，在确认分享数量没问题后，调用此接口返回相关信息
-	def genShareInfo(self, userId, openId, activeId, activeUrl):
-		shareCode = self._buildShareCode(openId)
+	def genShareInfo(self, userId, unionId, activeId, activeUrl):
+		shareCode = self._buildShareCode(unionId)
 		if str(activeUrl).endswith("/"):
 			shareUrl = activeUrl + shareCode
 		else:
@@ -116,5 +117,5 @@ class UserShareInfoService:
 	def _initUserIdActiveIdIdInfo(self, r, key, result):
 		r.set(key, result)
 
-	def _buildShareCode(self, openId):
-		return openId + "_" + str(time.time()) +str(time.clock())
+	def _buildShareCode(self, unionId):
+		return unionId + "_" + str(time.time()) +str(time.clock())

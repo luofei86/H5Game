@@ -13,9 +13,9 @@ def page_not_found(error):
 @app.errorhandler(403)
 def page_not_found(error):
     app.logger.error(error)
-    return render_template('403.html'),403
+    return render_template('404.html'),403
 
 @app.errorhandler(500)
 def some_error(error):
     app.logger.error(error)
-    return render_template('500.html'),500
+    return render_template('404.html'),500

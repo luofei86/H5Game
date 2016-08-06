@@ -53,4 +53,5 @@ app.register_blueprint(page, url_prefix="/page")
 # import assets and template extensions
 from utils import assets
 from utils import template_filter_ex
+
 # from .utils import template_filter_ex

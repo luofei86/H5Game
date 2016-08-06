@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name ="viewport" content ="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, width=device-width">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge，chrome=1"/>
+        <meta name="applicable-device" content="mobile"/>
+        <meta http-equiv="Cache-Control" content="no-siteapp"/>
+        <meta name="format-detection" content="telephone=no, email=no"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/homepage.css')}}">
+        <title>{{resp.activeInfo.title}}</title>
+    </head>
+    <body  id="main" unselectable="on" onselectstart="return false;">
+        <div id="div-homepage-page">
+            <!--老爷子 你最喜欢的中国队邹凯 已经到里约了 我们可以下手了  -->
+
+            <div class="div-homepage-desc head">
+                <img src="{{resp.activeInfo.championUrl}}">
+            </div> 
+            <div class="div-homepage-goplay">
+                <!--奖品展示区域-->
+            {% if resp.shareCode %}
+                <a href="{{ url_for('page.play', activeId = resp['activeInfo']['id'], shareCode = resp['shareCode'])}}">
+            {% else %}
+                <a href="{{ url_for('page.play', activeId = resp['activeInfo']['id'])}}">
+            {% endif %}
+                    <img src="{{url_for('static', filename='images/go_play.png')}}">
+                </a>
+            </div>
+            <div id="prize" class="div-homepage-prize">
+                <div class="div-homepage-prize-sologan">
+                    <span>抢到目标人物最爱的五件物品 可能获得的赎金</span>
+                </div>
+            {% for prize in resp.prizes%}
+                <div class="div-homepage-prize-detail">
+                    <!-- <label>{{prize.levelDesc}}</label> -->
+                    <label>{{prize.prizeDesc}}</label>
+                    <label>({{prize.count}})</label>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    </body>
+</html>

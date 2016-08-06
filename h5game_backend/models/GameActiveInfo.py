@@ -7,21 +7,15 @@
 ######id, keyword, signWord, url, title content, resource_url
 ######
 class GameActiveInfo:
-	def __init__(self, id, keyword, signWord, url, title, content, resourceUrl, prizeTime):
+	def __init__(self, id, championName, championUrl, keyword, signWord, url, title, content, resourceUrl, posterUrl, prizeTime):
 		self.id = id
+		self.championName = championName
 		self.keyword = keyword
 		self.signWord = signWord
 		self.url = url
 		self.title = title
 		self.content = content
 		self.resourceUrl = resourceUrl
+		self.posterUrl = posterUrl
+		self.championUrl = championUrl
 		self.prizeTime = prizeTime
-
-	def __str__(self):
-		return "id=" + self.id \
-			+", keyword=" + self.keyword \
-			+", signWord=" + self.signWord \
-			+", url=" + self.url \
-			+", title=" + self.title \
-			+", content=" + self.content \
-			+", resourceUrl=" + self.resourceUrl

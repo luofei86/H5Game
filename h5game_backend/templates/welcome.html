@@ -9,49 +9,27 @@
         <meta name="format-detection" content="telephone=no, email=no"/>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <!-- <link rel="icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" />
-        <link rel="Shortcut Icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" /> -->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/welcome.css')}}">
-        <!-- {% assets "home_page_js" %}
-            <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-        {% endassets %}
-        {% assets "home_page_css" %}
-            <link rel="stylesheet" href="{{ ASSET_URL }}" />
-        {% endassets %} -->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/welcome.css')}}">
         <title>{{resp.activeInfo.title}}</title>
     </head>
     <body  id="main" unselectable="on" onselectstart="return false;">
-        <!--海报区域-->
-        <div id="poster">
-            <img src="{{resp.activeInfo.resourceUrl}}">
-        </div>
-        <!--开始区域-->
-        <div id="start">
-             {% if resp.shareCode %}
-                <a href="/page/play/{{resp.activeInfo.id}}/{{resp.shareCode}}" id="btn" class="m-ins">开始游戏</a>
+        <div id="div-welcome-page">
+            <!--老爷子 你最喜欢的中国队邹凯 已经到里约了 我们可以下手了  -->
+
+            <div class="div-welcome-desc head">老爷子</div>
+            <div class="div-welcome-desc">你最喜欢的中国队<span class="span-champion">{{resp.activeInfo.championName}}</span></div>
+            <div class="div-welcome-desc">已经到里约了</div>
+            <div class="div-welcome-desc">我们可以下手了</div>
+            <div class="div-welcome-gohomepage">
+            {% if resp.shareCode %}
+                <a href="{{ url_for('page.homepage', signWord = resp['signWord'], shareCode = resp['shareCode'])}}">
             {% else %}
-                <a href="/page/play/{{resp.activeInfo.id}}" id="btn" class="m-ins">开始游戏</a>
+                <a href="{{ url_for('page.homepage', signWord = resp['signWord'])}}">
             {% endif %}
-            
-        </div>
-        <!--奖品展示区域-->
-        <div id="prize" class="welcome_prize">
-            <div>奖品</div>
-            {% for prize in resp.prizes%}
-                <div>
-                    <label>{{prize.levelDesc}}</label>
-                    <label>{{prize.prizeDesc}}</label>
-                    <label>{{prize.count}}</label>
-                </div>
-            {% endfor %}
-        </div>
-        <div class="more_game">
-            <div>关注我们<b>一刻talks</b></div>
-            <div>更多精彩奥运游戏，等你来玩</div>
-        </div>
-        <div class="screen_code">
-            <img data-type="gif" src="{{ url_for('static', filename='images/screen.gif')}}">
+                    <img src="{{url_for('static', filename='images/start_play.png')}}">
+                </a>
+            </div>
         </div>
     </body>
 </html>

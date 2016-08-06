@@ -24,12 +24,15 @@
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE IF NOT EXISTS `game_active_info` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `champion_name` varchar(15) not null DEFAULT '',
+  `champion_url` varchar(255) not null DEFAULT '',
   `keyword` varchar(25) NOT NULL COMMENT "keyword for official accounts' subscriber to input to get the url",
   `sign_word` varchar(25) NOT NULL COMMENT "the sub path for your to identified the active, is at the end of url",
   `url` varchar(255) NOT NULL COMMENT 'when subscriber input the word which match the keyword will return this',
   `title` varchar(50) NOT NULL COMMENT 'the title of the active info, also is the title of the url in browser',
   `content` varchar(500) DEFAULT NULL COMMENT 'active desc ',
   `resource_url` varchar(255) NOT NULL COMMENT 'the img in url home page ,prized page, share page to show',
+  `poster_url` varchar(255) NOT NULL DEFAULT '',
   `prize_time` datetime DEFAULT NULL COMMENT 'the lottery time will show after subscriber finished the active',
   `status` tinyint(4) NOT NULL COMMENT '0 ok -1 del',
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
@@ -112,7 +115,7 @@ DROP TABLE IF EXISTS `user_info`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_info` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `open_id` varchar(64) NOT NULL COMMENT 'weixin token id',
+  `union_id` varchar(64) NOT NULL COMMENT 'weixin token id',
   `nickname` varchar(64) NOT NULL,
   `sex` varchar(10) DEFAULT NULL,
   `city` varchar(255) DEFAULT NULL,
@@ -121,7 +124,7 @@ CREATE TABLE `user_info` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   `create_time` datetime NOT NULL COMMENT '记录创建时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `UK_UI_OPENID` (`open_id`)
+  UNIQUE KEY `UK_UI_UNIONID` (`union_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -159,7 +162,7 @@ CREATE TABLE `user_play_share_game_info` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL COMMENT 'reference user_info.id',
   `active_id` int(10) unsigned NOT NULL COMMENT 'reference game_active_info.id',
-  `share_code` varchar(50) NOT NULL,
+  `share_code` varchar(100) NOT NULL,
   `question_ids` varchar(255) NOT NULL COMMENT 'ids with , and reference game_question_info.id',
   `play_question_id` int(10) unsigned NOT NULL COMMENT 'id in question_ids and reference game_question_info.id',
   `result` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0 init 1 success finsihed  -1: failed finish',
@@ -202,7 +205,7 @@ CREATE TABLE `user_share_info` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
   `active_id` int(10) unsigned NOT NULL COMMENT 'reference game_active_info.id',
-  `share_code` varchar(50) NOT NULL,
+  `share_code` varchar(100) NOT NULL,
   `share_url` varchar(500) NOT NULL,
   `title` varchar(255) NOT NULL,
   `content` varchar(500) DEFAULT NULL,

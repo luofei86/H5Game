@@ -1,126 +1,131 @@
+#div-game-page{
+    box-sizing:border-box;
+    background : #000000 url("../images/game_background.png") no-repeat bottom left;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    min-height:100%;
+    padding-top: 10px;
+}
 
-.subject_title{	
-	margin: 1.8rem auto;
-	font-size: 1rem;
-	display: block;
-	text-align: center;
-	line-height: 34px;
-	text-decoration: none;
-    border-radius: 5px;
-    border-bottom: 1px solid green;
+
+#div-play-game-page{
+    box-sizing:border-box;
+    background-image:  url("../images/game_play_background.png");
+    background-repeat: repeat;
+    width: 88%;
+    margin: 0px auto;
+    min-height: 520px;
+    border:4px solid black;
+}
+
+.title{
+    margin: 0px auto;
+    margin-top: 15px;
+    background-color: #000000;
+    text-align: center;
+    width: 95%;
+    height: 40px;
+    line-height: 34px;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+.question{
+    height: 220px;
+    border: 4px dotted black;
+    margin: 0px auto;
+    width: 95%;
+    margin-top: 10px;
+}
+.inner-question{
+    height: 200px;
+    border: 4px solid #4e0000;
+    margin: 0px auto;
+    width: 96%;
+    margin-top: 6px;
+}
+.inner-question img{
+    height: 100%;
     width: 100%;
 }
-.div_sep{
-	margin: 1.8rem auto;
-	font-size: 1rem;
-	display: block;
-	text-align: center;
-	line-height: 34px;
-	text-decoration: none;
-    border-radius: 5px;
-    border-bottom: 1px solid green;
-    width: 100%;	
-}
-.subject{	
-	width: 298px;
-	height: 180px;
-	margin: 1.8rem auto;
-	font-size: 1rem;
-	display: block;
-	text-align: center;
-	line-height: 34px;
-	text-decoration: none;
-    border-radius: 5px;
-}
-#img_question{
-	width: 50%;
-	height: 50%;
-	float: left;
-	padding:2px;
-	/*background: #ececec;*/
-	border-radius:32px;
-	/*box-shadow: 0px 0px 1px rgba(0,0,0,0.4);*/
-	box-sizing:border-box;
-	-moz-border-radius: 32px;
-	-webkit-border-radius: 32px;
-	display: table-cell;
-	vertical-align:middle;
-}
-#img_question_tips{
-	width: 40%;
-	height: 40%;
-	display: block;
-	float: right;
-	padding:2px;
-	background: #ececec;
-	border-radius:50%;
-	box-shadow: 0px 0px 1px rgba(0,0,0,0.4);
-	box-sizing:border-box;
-	-moz-border-radius: 100%;
-	-webkit-border-radius: 100%;
-	display: table-cell;
-	vertical-align:middle;
-}
-#img_question img{
-    width:110px;
-    height:110px;
-	line-height: 0;	/* remove line-height */ 
-	display: inline-block;	/* circle wraps image */
-	border-radius: 50%;	/* relative value */
-	vertical-align:middle;
-    overflow:hidden;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
-	transition: linear 0.25s;
-}
-.videon_subject{
-	width: 100%;
-	height: 100%;
+.div-game-desc{
+    text-align: center;
 }
 
-.answer{	
-	width: 300px;
-	height: 300px;
-	margin: 1.8rem auto;
-	font-size: 1rem;
-	display: block;
-	text-align: center;
-	line-height: 34px;
-	text-decoration: none;
+.tips{    
+    display: block;
+    background-image: url("../images/drop_tips.png");
+    margin-top: -200px;
+    margin-left: 90%;
+    height: 122px;
+    background-color: #000000;
+    z-index: 21;
+    width: 10px;
 }
 
-.answer_block{    
-	float: left;
-    height: 49%;
-    width: 49%;
+
+.answer{    
+    width: 95%;
+    height: 250px;
+    margin: 1.8rem auto;
     font-size: 1rem;
     display: block;
     text-align: center;
-    line-height: 1000%;
-    background-color: green;
+    line-height: 34px;
+    text-decoration: none;
+}
+.answer_block{    
+    float: left;
+    height: 49%;
+    width: 50%;
+    font-size: 1rem;
+    display: block;
+    text-align: center;
     border-radius: 5px;
-	opacity: 0.5;
-    /*border:1px solid green;
-    
-    opacity: 0.4;*/
+    opacity: 0.8;
+}
+.answer_block img{
+    margin-left: 5px;
+    width: 92%;
+    height: 92%;
+    border: 4px solid black;
 }
 
-.m-ins {
-	width: 273px;
-	height: 54px;
-	margin: 1.8rem auto;
-	background: url(../images/start_play.png);
-	background-size: 100%;
-	font-size: 1rem;
-	display: block;
-	text-align: center;
-	line-height: 54px;
-	text-decoration: none;
+.inner-question video{
+    width: 100%;
+    height: 100%;
 }
 
-button.btn-disabled{
-	opacity: 0.3;	
+.video{
+    width: 100%;
 }
-button.m-ins{
-	border: none;
+
+.answer-order{
+    float: left;
+    width: 100%;
+    height: 28px;
+    display: block;
+    font-size: 28px;
+    font-weight: bold;
+    color: #f2a10a;
+    background-color: #000000;
+    text-align: left;
+}
+.answer-order span{
+    font-size: 18px;
+}
+.answer-order.odds{
+    margin-right: 
+}
+
+.div-next{
+    text-align: center;
+    margin-top: 15px;
+}
+
+
+.div-next.disabled{
+    text-align: center;
+    margin-top: 15px;
 }

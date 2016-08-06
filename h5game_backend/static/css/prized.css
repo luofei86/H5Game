@@ -1,14 +1,90 @@
-body{
-    font-size: 1rem;
-    display: block;
-    text-align: center;
-    line-height: 34px;
-    text-decoration: none;
+#div-prized-page{
+    box-sizing:border-box;
+    background : #000000 url("../images/prized-bg.png") no-repeat bottom left;
+    background-size: 100% 100%;
+    min-height:100%;
 }
 
-.screen_code img{
-	width: auto !important; 
-	visibility: visible !important; 
-	height: auto !important;
-	max-width: 100%!important;
+
+.div-prized-desc.head{    
+    padding-top: 88px !important;
+}
+.div-prized-desc{
+    width: 100%;
+    padding-left: 14%;
+    display: inline-block;
+    font-style: italic;
+    font-size: 22px;
+    font-weight: bold;
+    padding-top: 2px;
+}
+
+.div-prized-desc div{
+    margin-bottom: 0.16em;
+}
+
+.div-prized-now{
+    margin-top: 48%;
+    margin-left: 35%;
+    font-size: 1.2em;
+}
+
+.span-prized-now{
+    font-style: italic;
+}
+
+.div-prized-code{
+    text-align: center;
+    font-size: 50px;
+    font-style: italic;
+    margin-top: 110px;
+}
+
+.div-prized-bottom{
+    margin-top: 100px;
+    font-size:16px;
+    line-height: 26px;
+    text-align: center;
+}
+
+.left-arrow{
+    background-color: #000000;
+    border: 1px dashed red;
+    width: 150px;
+    margin: 0px auto;
+    text-align: center;
+    margin-top: 250px;
+}
+
+.div-prizedinfo-desc{
+    font-size: 16px;
+    line-height: 30px;
+}
+
+.div-prizecode{
+    background-color: #000000;
+    border: 1px dashed red;
+    width: 150px;
+    margin: 0px auto;
+    text-align: center;
+    margin-top: 250px;
+}
+.div-prizedinfo-desc{
+    margin-top: 20px;
+    font-size: 16px;
+    line-height: 30px;
+    text-align: center;
+    margin: 0px auto;
+    font-weight: bold;
+}
+.div-prizedinfo-desc.head{
+    padding-top: 15px;
+}
+.div-prized-bottom{
+    margin-top: 20px;
+    font-size: 16px;
+    line-height: 30px;
+    text-align: center;
+    margin: 0px auto;  
+    padding-top: 15px;                              
 }

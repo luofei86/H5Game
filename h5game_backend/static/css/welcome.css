@@ -1,47 +1,74 @@
-@charset "utf-8";
-
-body {
-    font-family:Tahoma,Arial,Roboto,”Droid Sans”,”Helvetica Neue”,”Droid Sans Fallback”,”Heiti SC”;
-    font-size: 100%;
-    background-color: #fff;
-    margin: 0;
-	font-size: 1rem;	
-	display: block;
-	text-align: center;
-	line-height: 34px;
-	text-decoration: none;	
-}
-#poster{
-	box-sizing:border-box;
-	padding: 1%;
-}
-#poster img{
-	width: 100%;
-	height: 40%;
-	text-align: center;
-}
-.m-ins {
-	width: 273px;
-	height: 54px;
-	margin: 1.8rem auto;
-	background: url(../images/start_play.png);
-	background-size: 100%;
-	font-size: 1rem;
-	color: #fff;
-	display: block;
-	text-align: center;
-	line-height: 54px;
-	text-decoration: none;
-}
-
-.welcome_prize{
-	margin: 1.8rem auto;
+#div-welcome-page{
+    box-sizing:border-box;
+    background : #000000 url("../images/welcome.png") no-repeat bottom left;
+    background-size: 100% 100%;
+    min-height:100%;
 }
 
 
-.screen_code img{
-	width: auto !important; 
-	visibility: visible !important; 
-	height: auto !important;
-	max-width: 100%!important;
+.div-welcome-desc.head{    
+    padding-top: 100px !important;
+}
+
+.span-champion{
+    font-style: italic;
+    font-weight: bold;
+    font-size: 20px;
+}
+.div-welcome-desc{
+    padding-left: 8%;
+    font-size: 14px;
+    font-style: oblique;
+    font-weight: bold;
+    height: 24px;
+}
+
+.div-welcome-desc div{
+    margin-bottom: 0.16em;
+}
+
+.div-welcome-now{
+    margin-top: 48%;
+    margin-left: 35%;
+    font-size: 1.2em;
+}
+
+.span-welcome-now{
+    font-style: italic;
+}
+
+.div-welcome-code{
+    text-align: center;
+    font-size: 50px;
+    font-style: italic;
+    margin-top: 110px;
+}
+
+.div-welcome-go{    
+    text-align: center;
+    margin-top: 100%;
+    height: 40px;
+    border: 4px dashed red;
+    -ms-transform: rotate(1.3deg);
+    -webkit-transform: rotate(1.3deg);
+    transform: rotate(1.3deg);
+    width: 220px;
+    position: fixed;
+    bottom: 20px;
+    left: 20%;
+    margin: auto !important;
+}
+.div-welcome-gohomepage{    
+    margin: 0px auto;
+    height: 55px;
+    text-align: center;
+    bottom: 0px;
+    margin-top: 410px;
+}
+
+.div-welcome-bottom{
+    margin-top: 100px;
+    font-size:16px;
+    line-height: 26px;
+    text-align: center;
 }

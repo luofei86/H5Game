@@ -1,0 +1,21 @@
+#div_share_page{
+	background : #000000 url("../images/share.png") no-repeat bottom left;
+    background-size: 100% 100%;
+    min-height:100%;
+}
+
+.div-share-desc{
+	box-sizing:border-box;
+    padding-top: 36%;
+    padding-left: 22%;
+    font-weight: bold;
+    line-height: 34px;
+    font-size: 1.2em;
+}
+
+.div-share-bottom-desc{
+    position: fixed;
+    bottom: 20%;
+    left: 20%;
+    font-weight: bold;
+}

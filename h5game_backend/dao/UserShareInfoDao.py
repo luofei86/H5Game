@@ -28,7 +28,7 @@ class UserShareInfoDao:
 		with closing(dbConn.cursor()) as cur:
 			cur.execute(INSERT_SQL, (str(userId), str(activeId), str(shareCode), \
 					str(shareUrl), str(title), str(content)))
-		dbConn.commit()
+			dbConn.commit()
 
 	def updateResult(self, id, result):
 		dbConn = get_db()
@@ -45,7 +45,7 @@ class UserShareInfoDao:
 			return None		
 		return self._toObject(result)
 
-	def queryInfoByShareCode(self, shareCode):
+	def queryInfoByShareCode(self, shareCode):		
 		dbConn = get_db()		
 		with closing(dbConn.cursor()) as cur:
 			cur.execute(SHARCODE_UK_SQL, (str(shareCode),))

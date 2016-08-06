@@ -6,6 +6,8 @@ from services.DbService import get_db
 from contextlib import closing
 from models import UserShareLimitInfo
 
+from h5game_backend import LOGGER
+
 __author__ = 'luofei'
 
 TABLE_NAME = 'user_share_limit_info'
@@ -50,6 +52,7 @@ class UserShareLimitInfoDao:
 			cur.execute(INSERT_UPDATE_SQL, (str(userId), str(activeId), str(maxLimit)))
 			dbConn.commit()
 			result = cur.fetchone()
+		LOGGER.debug(result)
 		return result
 
 	def decrUpdateCount(self, userId, activeId):

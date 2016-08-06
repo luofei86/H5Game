@@ -9,42 +9,64 @@
         <meta name="format-detection" content="telephone=no, email=no"/>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <!-- <link rel="icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" />
-        <link rel="Shortcut Icon" type="image/ico" href="{{ url_for('static', filename='ios/mobile/images/favicon.ico') }}" /> -->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/welcome.css')}}">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/prized.css')}}">
-        <!-- {% assets "home_page_js" %}
-            <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-        {% endassets %}
-        {% assets "home_page_css" %}
-            <link rel="stylesheet" href="{{ ASSET_URL }}" />
-        {% endassets %} -->
-        <title>{{resp.activeInfo.title}}</title>            
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/prized.css')}}">
+        <style type="text/css">
+            .div-prizecode{
+                background-color: #000000;
+                border: 1px dashed red;
+                width: 220px;
+                margin: 0px auto;
+                text-align: center;
+                margin-top: 250px;
+            }
+            .div-prizedinfo-desc{
+                margin-top: 20px;
+                font-size: 16px;
+                line-height: 30px;
+                text-align: center;
+                margin: 0px auto;
+                font-weight: bold;
+            }
+            .div-prizedinfo-desc.head{
+                padding-top: 15px;
+            }
+            .div-prized-bottom{
+                margin-top: 20px;
+                font-size: 16px;
+                line-height: 30px;
+                text-align: center;
+                margin: 0px auto;  
+                padding-top: 15px;                              
+            }
+        </style>
+        <title>{{resp.activeInfo.title}}</title>
     </head>
     <body  id="main" unselectable="on" onselectstart="return false;">
-        <div id="poster">
-            <img src="{{resp.activeInfo.resourceUrl}}">
-        </div>
-        <!--海报区域-->
-        <div id="content">            
-            <div>恭喜您，全对了</div>
-        </div>
-        <!--开始区域-->
-        <div id="prize_code">
-            <div>您的抽奖码为:<b>{{resp.prizeInfo.prizeCode}}</b></div>
-        </div>
-        <!--奖品展示区域-->
-        <div id="prize_feedback" class="welcome_prize">
-            <div>获取结果将会微信联系您，请关注我们的推送消息</div>
-            <div>抽奖公布时间:<b>{{resp.activeInfo.prizeTime | timestamp_strftime}}</b></div>
-        </div>
-        <div class="more_game">
-            <div>关注我们<b>一刻talks</b></div>
-            <div>更多精彩奥运游戏，等你来玩</div>
-        </div>
-        <div class="screen_code">
-            <img data-type="gif" src="{{ url_for('static', filename='images/screen.gif')}}">
+        <div id="div-prized-page">
+            <div class="div-prized-desc head">你把冠军</div>
+            <div class="div-prized-desc">抢得连打车的都没有了，</div>
+            <div class="div-prized-desc">授予你</div>
+            <div class="div-prized-desc">”里约首席大佬“称号.</div>
+            <div class="div-prizecode">兑奖码：{{resp['prizeInfo']['prizeCode']}}</div>
+            <div class="div-prizedinfo-desc head">
+                物品兑换信息会在{{resp['activeInfo']['prizeTime']}}之后
+            </div>
+            <div class="div-prizedinfo-desc">
+                在一刻官方微信公布
+            </div>
+            <div class="div-prizedinfo-desc">
+                开奖要在48小时后开始
+            </div>
+            <div class="div-prizedinfo-desc">
+                结果在微信联系你
+            </div>
+            <div class="div-prizedinfo-desc">
+                请保存你的兑奖码
+            </div>
+            <div class="div-prized-bottom">
+                （关注微信,看看还有哪些冠军也在一刻talks）
+            </div>
         </div>
     </body>
 </html>
