@@ -144,6 +144,34 @@ class WeixinService:
 	# 		json_file.close()
 	# 	return jsapi_ticket
 
+	def getOpenInfo(self, code):
+		url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" \
+			% (self.appId, self.appSecret, code)
+		response = requests.get(url)
+		data = response.json()
+		LOGGER.debug(str(data))
+		if data is None:
+			return None
+		openId = data['openid']
+		accessToken = data['access_token']
+		if not openId or not accessToken:
+			return None
+		return data
+
+
+	def refreshOpenInfo(self, code, refreshCode):
+		url = "https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=%S&grant_type=refresh_token&refresh_token=%s"
+		response = requests.get(url)
+		data = response.json()
+		LOGGER.debug(str(data))
+		if data is None:
+			return None
+		openId = data['openid']
+		accessToken = data['access_token']
+		if not openId or not accessToken:
+			return None
+		return data
+
 	def getCurUserInfoByCode(self, code):
 		url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" \
 			% (self.appId, self.appSecret, code)
@@ -159,7 +187,7 @@ class WeixinService:
 		
 		return self._getUserInfo(openId, accessToken)
 
-	def _getUserInfo(self, openid, accessToken):
+	def getUserInfo(self, openid, accessToken):
 		url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" \
 				% (accessToken, openid)
 		response = requests.get(url)

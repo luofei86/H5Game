@@ -42,11 +42,20 @@ def callback():
 	if not code:
 		return render_template("404.html"), 404
 	###code access
-	userWeiXinInfo = weixinService.getCurUserInfoByCode(code)
+	userOpenInfo = weixinService.getOpenInfo(code)
+	if userOpenInfo is None:
+		return render_template("404.html"), 404
+
+	userWeiXinInfo = weixinService.getUserInfo(userOpenInfo['openid'], userOpenInfo['access_token'])
 	if userWeiXinInfo is None:
 		return render_template("404.html"), 404
+	if str(userWeiXinInfo.get('errcode')) == '40001':
+		userOpenInfo = weixinService.refreshOpenInfo(userOpenInfo['openid'], userOpenInfo['refresh_token'])
+		userWeiXinInfo = weixinService.getUserInfo(userOpenInfo['openid'], userOpenInfo['access_token'])
+	if userWeiXinInfo is None or str(userWeiXinInfo.get('errcode')):
+		return render_template("404.html"), 404
 	####Init user
-	# LOGGER.debug("code" + code + ",OpenId:" + openId)
+	LOGGER.debug("code" + code + ",userWeiXinInfo:" + str(userWeiXinInfo))
 	userInfoService.addInfo(userWeiXinInfo)
 
 	session['openId'] = openId
