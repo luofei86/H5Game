@@ -1,0 +1,15 @@
+html, body {
+	margin:0;
+	padding:0;
+	height: 100%;
+	color: #ffffff;
+	line-height: 34px;
+	font-size: 1.2em;
+}
+
+
+#div-error-page{            
+	background : #000000 url("../images/404.png") no-repeat bottom left;
+	background-size: 100% 100%;
+	min-height:100%;
+}
