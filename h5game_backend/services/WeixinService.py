@@ -152,7 +152,7 @@ class WeixinService:
 		LOGGER.debug(str(data))
 		if data is None:
 			return None
-		openId = data['openId']
+		openId = data['openid']
 		accessToken = data['access_token']
 		if not openId or not accessToken:
 			return None
