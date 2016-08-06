@@ -9,24 +9,7 @@
         <meta name="format-detection" content="telephone=no, email=no"/>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <style type="text/css">
-        html, body {
-		    margin:0;
-		    padding:0;
-		    height: 100%;
-		    color: #ffffff;
-		    line-height: 34px;
-		    font-size: 1.2em;
-		}
-
-		#div-error-page{
-		    box-sizing:border-box;
-		    background : #000000 url("../images/404.png") no-repeat bottom left;
-		    background-size: 100% 100%;
-		    min-height:100%;
-		}
-
-        </style>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/404.css')}}">
     </head>
     <body  id="main" unselectable="on" onselectstart="return false;">
         <div id="div-error-page">
