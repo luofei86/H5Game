@@ -1,6 +1,48 @@
-#div-game-page{
+#div-game-page-0{
     box-sizing:border-box;
-    background : #000000 url("../images/game_background.png") no-repeat bottom left;
+    background : #000000 url("../images/question_bg_1.png") no-repeat bottom left;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    min-height:100%;
+    padding-top: 10px;
+}
+
+#div-game-page-1{
+    box-sizing:border-box;
+    background : #000000 url("../images/question_bg_2.png") no-repeat bottom left;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    min-height:100%;
+    padding-top: 10px;    
+}
+#div-game-page-2{
+    box-sizing:border-box;
+    background : #000000 url("../images/question_bg_3.png") no-repeat bottom left;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    min-height:100%;
+    padding-top: 10px;
+}
+
+#div-game-page-3{
+    box-sizing:border-box;
+    background : #000000 url("../images/question_bg_4.png") no-repeat bottom left;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    min-height:100%;
+    padding-top: 10px;    
+}
+#div-game-page-4{
+    box-sizing:border-box;
+    background : #000000 url("../images/question_bg_5.png") no-repeat bottom left;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;

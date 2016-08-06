@@ -26,6 +26,6 @@ REDIS_CONF = {
 	"socket_keepalive": 7200 
 }
 
-APP_ID = ''
-APP_SECERT = ''
+APP_ID = 'wx4d1ff3f3dbe1505f'
+APP_SECERT = 'cf2c4d491c49b6a0fa8a4cfa47a6d8f8'
 WEIXIN_JS_URL = ''

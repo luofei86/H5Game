@@ -79,7 +79,7 @@ class GameBizService:
 			return self._handleIllegalResp()
 		return self._continuePlay(playInfo)
 
-	def _handleIllegalResp(failedType = 'illegal', message="data access failed"):
+	def _handleIllegalResp(self, failedType = 'illegal', message="data access failed"):
 		return {'success': False, 'failedType': failedType, 'message': message}
 #######
 	def playShareGame(self, userId, openId, activeId, shareCode):
@@ -125,15 +125,18 @@ class GameBizService:
 		##用户权限检测
 		activeInfo = self._gameActiveInfoService.getInfo(activeId)
 		if activeInfo is None:
+			LOGGER.debug("No active info")
 			return self._handleIllegalResp()
 		###是否中奖了		
 		prizeInfo = self._userPrizedInfoService.getUserPrizeInfo(userId, activeId)
 		if prizeInfo:
+			LOGGER.debug("No prize info")
 			return self._handlePrized(activeInfo, prizeInfo)
 
 		##用户上一次玩结束了吗
 		playInfo = self._userPlayOriginGameInfoService.getInfo(userId, activeId)
 		if playInfo is None:
+			LOGGER.debug("No playInfo info go to play origin game")
 			return self._playOriginGame(userId, activeId)
 		####查看用户玩分享过来的链接的情况
 		sharedPrePlayInfo = self._userPlayShareGameInfoService.getUserlastPlayInfo(userId, activeId)
@@ -161,7 +164,9 @@ class GameBizService:
 
 	def _playOriginGame(self, userId, activeId):###用户还能再玩
 		firstQuestion, randomQuestionIds = self._gameQuestionInfoService.randomAndGetUserFirstQuestion(activeId)
-		playInfo = self._userPlayOriginGameInfoService.addUserPlayInfo(userId, activeId, randomQuestionIds, firstQuestion['id'])
+		LOGGER.debug("First question:" + str(firstQuestion))
+		# LOGGER.debug("Random question ids:" + randomQuestionIds)
+		playInfo = self._userPlayOriginGameInfoService.addUserPlayInfo(userId, activeId, randomQuestionIds, firstQuestion['id'])		
 		if playInfo:
 			return self._continuePlay(playInfo, firstQuestion)
 		return self._handleIllegalResp(failedType="server")
@@ -314,10 +319,13 @@ class GameBizService:
 		answers = self._initQuestionPossibleAnswerInfo(question)
 		if answers is None or not answers:
 			return self._handleIllegalResp()
+		answerIdsStr = question['possibleAnswerIds']
+		answerIds = answerIdsStr.split(",")
+		numberIndex = answerIds.index(question['id'])
 		if 'shareCode' in playInfo:
-			return {'success': True, 'play': True, 'activeInfo': activeInfo, 'playInfo': playInfo, 'question': question, 'answers': answers, 'shareCode': playInfo['shareCode']}
+			return {'success': True, 'play': True, 'activeInfo': activeInfo, 'playInfo': playInfo, 'question': question, 'answers': answers, 'numberIndex': numberIndex, 'shareCode': playInfo['shareCode']}
 		else:
-			return {'success': True, 'play': True, 'activeInfo': activeInfo, 'playInfo': playInfo, 'question': question, 'answers': answers}
+			return {'success': True, 'play': True, 'activeInfo': activeInfo, 'playInfo': playInfo, 'question': question, 'answers': answers, 'numberIndex': numberIndex}
 
 	################originGame是否原生游戏#############
 	def _continuePlay(self, playInfo, question = None, activeInfo = None):

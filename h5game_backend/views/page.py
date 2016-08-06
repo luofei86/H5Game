@@ -32,32 +32,38 @@ userInfoService = UserInfoService.UserInfoService()
 
 @page.route("/welcome/callback")
 @page.route("/welcome/callback/")
-def callback():
-	sign = request.args.get("sign")
+@page.route("/welcome/callback/<string:sign>")
+def callback(sign = None):
+	if not sign:
+		sign = request.args.get("sign")
+	LOGGER.debug("Sign:" + sign)
 	if not sign:
 		return render_template("404.html"), 404
 	shareCode = request.args.get("shareCode")
 	code = request.args.get("code")
 	if not code:
 		return render_template("404.html"), 404
+	LOGGER.debug("Code:" + code)
 	###code access
 	userOpenInfo = weixinService.getOpenInfo(code)
 	if userOpenInfo is None:
 		return render_template("404.html"), 404
-
-	userWeiXinInfo = weixinService.getUserInfo(userOpenInfo['openid'], userOpenInfo['access_token'])
-	if userWeiXinInfo is None:
-		return render_template("404.html"), 404
-	if str(userWeiXinInfo.get('errcode')) == '40001':
-		userOpenInfo = weixinService.refreshOpenInfo(userOpenInfo['openid'], userOpenInfo['refresh_token'])
-		userWeiXinInfo = weixinService.getUserInfo(userOpenInfo['openid'], userOpenInfo['access_token'])
+	LOGGER.debug("UserOpenInfo:" + str(userOpenInfo))
+	openid = userOpenInfo['openid']
+	if not userInfoService.getUserId(openid):
+		userWeiXinInfo = weixinService.getUserInfo(openid, userOpenInfo['access_token'])
 		if userWeiXinInfo is None:
 			return render_template("404.html"), 404
+		if hasattr(userWeiXinInfo, 'errcode'):
+			userOpenInfo = weixinService.refreshOpenInfo(openid, userOpenInfo['refresh_token'])
+			userWeiXinInfo = weixinService.getUserInfo(openid, userOpenInfo['access_token'])
+			if userWeiXinInfo is None or hasattr(userWeiXinInfo, 'errcode'):
+				return render_template("404.html"), 404
 	####Init user
-	LOGGER.debug("code" + code + ",userWeiXinInfo:" + str(userWeiXinInfo))
-	userInfoService.addInfo(userWeiXinInfo)
+		LOGGER.debug("code" + code + ",userWeiXinInfo:" + str(userWeiXinInfo))
+		userInfoService.addInfo(userWeiXinInfo)
 
-	session['openId'] = userOpenInfo['openid']
+	session['openId'] = openid
 	return redirect(url_for('.welcome', signWord = sign, shareCode = shareCode))
 
 @page.route('/welcome/<string:signWord>')
@@ -117,48 +123,54 @@ def homepage(signWord, shareCode = None):
 @page.route('/play/<int:activeId>/', methods=['GET', 'POST'])
 @page.route('/play/<int:activeId>/<string:shareCode>', methods=['GET', 'POST'])
 def play(activeId, shareCode=None):
-	try:	
-		openId = session["openId"]
-		userId = userInfoService.getUserId(openId)
-		if userId is None:
-			return render_template("404.html"), 403
-		
-		if request.method == 'POST':
-			questionId = request.form['questionId']
-			answerId = request.form['answerId']
-			if questionId and answerId and shareCode:
-				return _playSharedWithAnswer(userId, openId, activeId, shareCode, questionId, answerId)
-				###共享游戏
-			elif questionId  and answerId:
-				return _playOriginWithAnswer(userId, openId, activeId, questionId, answerId)
-			else:
-				return render_template("404.html"),403
-		if shareCode:
-			return _playShareGame(userId, openId, activeId, shareCode)
-		resp = gameBizService.playGame(userId, activeId)
-		if not resp:
-			return render_template("404.html"), 403
-		if not resp.get('success'):
-			if resp.get('failedType') == 'server':###服务器压力过大，请稍候
-				return render_template("404.html"), 
-			elif resp.get('failedType') == 'illegal':####数据问题
-				return render_template("404.html"), 403
-			else:###达到用户限制，也无法分享
-				return render_template('share.html', resp = resp)
-		##可以玩
-		if(resp.get('play')):
-			return render_template("game.html", resp = resp)
-		##已中奖
-		elif(resp.get('prized')):
-			return render_template("prized.html", resp = resp)
-	##需要分享才能玩
-		elif(resp.get('needShare')):
-			return render_template("nomoreplay.html", resp = resp)
-		##当前游戏不能玩了，等待下次	
+	# try:	
+	openId = session["openId"]
+	userId = userInfoService.getUserId(openId)
+	if userId is None:
+		LOGGER.debug("Play User id is None")
+		return render_template("404.html"), 403
+	
+	if request.method == 'POST':
+		questionId = request.form['questionId']
+		answerId = request.form['answerId']
+		if questionId and answerId and shareCode:
+			return _playSharedWithAnswer(userId, openId, activeId, shareCode, questionId, answerId)
+			###共享游戏
+		elif questionId  and answerId:
+			return _playOriginWithAnswer(userId, openId, activeId, questionId, answerId)
 		else:
-			return render_template("nomoreplay.html", resp = resp)
-	except:
-	 	return render_template("404.html"), 500
+			LOGGER.debug("No questionId no answerId")
+			return render_template("404.html"),403
+	if shareCode:
+		return _playShareGame(userId, openId, activeId, shareCode)
+	resp = gameBizService.playGame(userId, activeId)
+	if not resp:
+		LOGGER.debug("Play game no resp.")
+		return render_template("404.html"), 403
+	if not resp.get('success'):
+		if resp.get('failedType') == 'server':###服务器压力过大，请稍候
+			LOGGER.debug("failedType == server," + str(resp))
+			return render_template("404.html"), 
+		elif resp.get('failedType') == 'illegal':####数据问题
+			LOGGER.debug("failedType == illegal," + str(resp))
+			return render_template("404.html"), 403
+		else:###达到用户限制，也无法分享
+			return render_template('share.html', resp = resp)
+	##可以玩
+	if(resp.get('play')):
+		return render_template("game.html", resp = resp)
+	##已中奖
+	elif(resp.get('prized')):
+		return render_template("prized.html", resp = resp)
+##需要分享才能玩
+	elif(resp.get('needShare')):
+		return render_template("nomoreplay.html", resp = resp)
+	##当前游戏不能玩了，等待下次	
+	else:
+		return render_template("nomoreplay.html", resp = resp)
+	# except:
+	# 	LOGGER.debug("Uncatch except.")
+	#  	return render_template("404.html"), 500
 
 def _playOriginWithAnswer(userId, openId, activeId, questionId, answerId):
 	resp = gameBizService.originGameNext(userId, activeId, questionId, answerId)

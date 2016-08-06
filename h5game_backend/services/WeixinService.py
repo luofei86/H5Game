@@ -18,13 +18,13 @@ class WeixinService:
 	def __init__(self, appId, appSecret):
 		self.appId = appId
 		self.appSecret = appSecret
-		self.ret = {
-			'nonceStr': self.__create_nonce_str(),
-			'jsapi_ticket': self._getJsApiTicket(),
-			'timestamp': self.__create_timestamp(),
-			'appId': appId,
-			'url': ''
-		}
+		# self.ret = {
+		# 	'nonceStr': self.__create_nonce_str(),
+		# 	'jsapi_ticket': self._getJsApiTicket(),
+		# 	'timestamp': self.__create_timestamp(),
+		# 	'appId': appId,
+		# 	'url': ''
+		# }
 
 	def __create_nonce_str(self):
 		return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(15))
@@ -78,7 +78,6 @@ class WeixinService:
 							(self.appId, self.appSecret)
 		response = requests.get(url)		
 		LOGGER.debug(response)
-		print response
 		access_token = json.loads(response.text)['access_token']
 		data ={}
 		data['access_token'] = access_token

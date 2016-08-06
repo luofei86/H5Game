@@ -18,6 +18,8 @@ class UserPlayOriginGameInfoService:
 
 	def addUserPlayInfo(self, userId, activeId, randomQuestionIds, playQuestionId):		
 		randomQuestionIdsStr = ', '.join(str(x) for x in randomQuestionIds)
+		LOGGER.debug("Question r answer ids:" + randomQuestionIdsStr);
+		LOGGER.debug("UserId:" + str(userId) + "ActiveId:" + str(activeId) + ", playQuestionId"+str(playQuestionId))
 		try:			
 			self._dao.insert(userId, activeId, randomQuestionIdsStr, playQuestionId)
 			return self.getInfo(userId, activeId)
