@@ -144,51 +144,20 @@ class WeixinService:
 	# 		json_file.close()
 	# 	return jsapi_ticket
 
-	def getTechUsers(self):
-		url = "https://api.weixin.qq.com/cgi-bin/user/tag/get?access_token=%s" % (self.getAccessToken())
-		payload = {'tagid': self.getTagId(), 'next_openid': ''}
-		headers = {'content-type': 'application/json'}
-		response = requests.post(url, data=json.dumps(payload), headers=headers)
-		data = response.json()
-		print data
-		openids = data['data']['openid']
-		return openids
-
-	def getTagId(self):
-		set_data = open('set_data.json')
-		data = json.load(set_data)
-		set_data.close()
-		if data['tagid']:
-			return data['tagid']
-		else:
-			return 101
-
-	def getUserInfo(self, openid):
-		# https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
-		url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" \
-			% (self.getAccessToken(), openid)
-		response = requests.get(url)
-		return response.json()
-
-	def getCurOpenId(self, code):
+	def getCurUserInfoByCode(self, code):
 		url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code" \
 			% (self.appId, self.appSecret, code)
 		response = requests.get(url)
 		data = response.json()
-		openid = data['openid']
-		return openid
+		openId = data['openId']
+		accessToken = data['access_token']
+		if not openId or not accessToken:
+			return None
+		LOGGER.debug(str(data))
+		return self._getUserInfo(openId, accessToken)
 
-	def getQcodeUrl(self, oid):
-		url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=%s" % (self.getAccessToken())
-		payload = {'expire_seconds': 2591999, 'action_name': 'QR_SCENE', 'action_info': {"scene": {"scene_id": oid}}}
-		headers = {'content-type': 'application/json'}
-		response = requests.post(url, data=json.dumps(payload), headers=headers)
-		data = response.json()
-		ticket = data['ticket']
-		# http://weixin.qq.com/q/zUipXRjlo7zaLJROUmaT
-		# print data['url']
-		url_qcode = "https://mp.weixin.qq.com/cgi-bin/showqrcode?"
-		params = {'ticket': ticket}
-		from urllib import urlencode
-		# Content-Type:image/jpg
-		return url_qcode + urlencode(params)
+	def _getUserInfo(self, openid, accessToken):
+		url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN" \
+				% (accessToken, openid)
+		response = requests.get(url)
+		return response.json()

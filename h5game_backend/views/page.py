@@ -14,6 +14,7 @@ parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.sys.path.insert(0,parentdir)
 
 from services import GameBizService
+from services import WeixinService
 from services import UserInfoService
 
 from models import *
@@ -26,8 +27,8 @@ page = Blueprint("page", __name__)
 
 
 gameBizService = GameBizService.GameBizService()
+weixinService = WeixinService.WeixinService(app.config.get("APP_ID"), app.config.get("APP_SECERT"))
 userInfoService = UserInfoService.UserInfoService()
-
 
 @page.route("/welcome/callback")
 @page.route("/welcome/callback/")
@@ -40,20 +41,25 @@ def callback():
 	code = request.args.get("code")
 	if not code:
 		return render_template("404.html"), 404
+	###code access
+	userWeiXinInfo = weixinService.getCurUserInfoByCode(code)
+	if userWeiXinInfo is None:
+		return render_template("404.html"), 404
 	####Init user
-	LOGGER.debug(code)
-	userInfoService.addInfo(code)
-	session['unionId'] = code
+	LOGGER.debug("code" + code + ",OpenId:" + openId)
+	userInfoService.addInfo(userWeiXinInfo)
+
+	session['openId'] = openId
 	return redirect(url_for('.welcome', signWord = sign, shareCode = shareCode))
 
 @page.route('/welcome/<string:signWord>')
 @page.route('/welcome/<string:signWord>/<string:shareCode>')
 def welcome(signWord, shareCode=None):
 	try:
-		unionId = session["unionId"]
-		if not unionId:
+		openId = session["openId"]
+		if not openId:
 			return render_template("404.html"), 404
-		if not userInfoService.getUserId(unionId):
+		if not userInfoService.getUserId(openId):
 			return render_template("404.html"), 404
 
 		resp = gameBizService.gameHomepageInfo(1, signWord)
@@ -61,7 +67,7 @@ def welcome(signWord, shareCode=None):
 			return render_template("404.html"), 404
 		if resp is not None and shareCode is not None:
 			resp['shareCode'] = shareCode
-		resp['unionId'] = unionId
+		resp['openId'] = openId
 		LOGGER.debug(str(resp))
 		if resp.get('success'):
 			if resp.get('prized'):
@@ -77,10 +83,10 @@ def welcome(signWord, shareCode=None):
 @page.route("/homepage/<string:signWord>/<string:shareCode>/")
 def homepage(signWord, shareCode = None):
 	try:
-		unionId = session["unionId"]
-		if not unionId:
+		openId = session["openId"]
+		if not openId:
 			return render_template("404.html"), 404
-		if not userInfoService.getUserId(unionId):
+		if not userInfoService.getUserId(openId):
 			return render_template("404.html"), 404
 
 		resp = gameBizService.gameHomepageInfo(1, signWord)
@@ -88,7 +94,7 @@ def homepage(signWord, shareCode = None):
 			return render_template("404.html"), 404
 		if resp is not None and shareCode is not None:
 			resp['shareCode'] = shareCode
-		resp['unionId'] = unionId
+		resp['openId'] = openId
 		if resp.get('success'):
 			if resp.get('prized'):
 				return render_template("prized.html", resp = resp)
@@ -103,23 +109,23 @@ def homepage(signWord, shareCode = None):
 @page.route('/play/<int:activeId>/<string:shareCode>', methods=['GET', 'POST'])
 def play(activeId, shareCode=None):
 	try:	
-		unionId = session["unionId"]
-		userId = userInfoService.getUserId(unionId)
+		openId = session["openId"]
+		userId = userInfoService.getUserId(openId)
 		if userId is None:
 			return render_template("404.html"), 403
-		LOGGER.debug(str(userId))
+		
 		if request.method == 'POST':
 			questionId = request.form['questionId']
 			answerId = request.form['answerId']
 			if questionId and answerId and shareCode:
-				return _playSharedWithAnswer(userId, unionId, activeId, shareCode, questionId, answerId)
+				return _playSharedWithAnswer(userId, openId, activeId, shareCode, questionId, answerId)
 				###共享游戏
 			elif questionId  and answerId:
-				return _playOriginWithAnswer(userId, unionId, activeId, questionId, answerId)
+				return _playOriginWithAnswer(userId, openId, activeId, questionId, answerId)
 			else:
 				return render_template("404.html"),403
 		if shareCode:
-			return _playShareGame(userId, unionId, activeId, shareCode)
+			return _playShareGame(userId, openId, activeId, shareCode)
 		resp = gameBizService.playGame(userId, activeId)
 		if not resp:
 			return render_template("404.html"), 403
@@ -145,7 +151,7 @@ def play(activeId, shareCode=None):
 	except:
 	 	return render_template("404.html"), 500
 
-def _playOriginWithAnswer(userId, unionId, activeId, questionId, answerId):
+def _playOriginWithAnswer(userId, openId, activeId, questionId, answerId):
 	resp = gameBizService.originGameNext(userId, activeId, questionId, answerId)
 	if not resp:
 		return render_template("404.html"), 
@@ -171,8 +177,10 @@ def _playOriginWithAnswer(userId, unionId, activeId, questionId, answerId):
 @page.route("/sharedtoplay/", methods=['GET', 'POST'])
 def sharedToPlay():
 	# try:
-	unionId = session["unionId"]
-	userId = userInfoService.getUserId(unionId)
+	openId = session["openId"]
+	userId = userInfoService.getUserId(openId)
+	if userId is None:
+		return render_template("404.html"), 403
 	id = request.form['id']
 	shareCode = request.form['shareCode']
 	resp = gameBizService.userShared(id, shareCode)
@@ -188,11 +196,11 @@ def sharedToPlay():
 		else:
 			return render_template("404.html"), 403
 
-def _playShareGame(userId, unionId, activeId, shareCode):
-	resp = gameBizService.playShareGame(userId, unionId, activeId, shareCode)	
+def _playShareGame(userId, openId, activeId, shareCode):
+	resp = gameBizService.playShareGame(userId, openId, activeId, shareCode)	
 	if not resp:
 		return render_template("404.html"), 
-	LOGGER.info(resp)
+
 	if not resp.get('success'):
 		####数据问题
 		if resp.get('failedType') == 'illegal':
@@ -214,9 +222,9 @@ def _playShareGame(userId, unionId, activeId, shareCode):
 		return render_template('nomoreplay.html', resp = resp)
 
 ###共享玩的
-def _playSharedWithAnswer(userId, unionId, activeId, shareCode, questionId, answerId):
+def _playSharedWithAnswer(userId, openId, activeId, shareCode, questionId, answerId):
 	resp = gameBizService.shareGameNext(userId, activeId, shareCode, questionId, answerId)
-	LOGGER.info(resp)
+	
 	if not resp:
 		return render_template("404.html"), 
 	if not resp.get('success'):

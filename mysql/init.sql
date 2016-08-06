@@ -113,19 +113,25 @@ CREATE TABLE `game_question_info` (
 DROP TABLE IF EXISTS `user_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+### COLUMN = "openid, nickname, sex, language, city, province, country, headimgurl, unionid  "
 CREATE TABLE `user_info` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `union_id` varchar(64) NOT NULL COMMENT 'weixin token id',
-  `nickname` varchar(64) NOT NULL,
+  `id` int unsigned not null AUTO_INCREMENT,
+  `open_id` varchar(64)  NOT NULL COMMENT 'weixin open id', 
+  `union_id` varchar(64) NOT NULL COMMENT 'weixin union id',
+  `nickname` blob comment 'weixin user nickname',
   `sex` varchar(10) DEFAULT NULL,
-  `city` varchar(255) DEFAULT NULL,
-  `headimgurl` varchar(255) DEFAULT NULL,
+  `language` varchar(20) DEFAULT NULL,
+  `city` varchar(100) DEFAULT NULL,
+  `province` varchar(100) DEFAULT NULL,
+  `country` varchar(100) DEFAULT NULL,
+  `headimgurl` varchar(500) DEFAULT NULL,
   `status` tinyint(4) NOT NULL COMMENT '0 ok -1 del',
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   `create_time` datetime NOT NULL COMMENT '记录创建时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UK_UI_OPENID` (`union_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),  
+  UNIQUE KEY `UK_UI_OPENID` (`open_id`),
+  UNIQUE KEY `UK_UI_UNIONID` (`union_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

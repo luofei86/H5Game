@@ -15,9 +15,10 @@ __author__ = 'luofei'
 #######id, keyword, signWord, url, title content, resource_url
 TABLE_NAME= " user_play_origin_game_info "
 COLUMNS = " id, user_id, active_id, question_ids, play_question_id, failed_count ,result "
-INSERT_SQL = '''INSERT INTO ''' + TABLE_NAME + '''(id, user_id, active_id, ''' \
-		+ '''question_ids, play_question_id, failed_count, result, status, update_time, create_time) ''' \
-		+ ''' VALUES (null, %s, %s, %s, %s, 0, 0, 0, now(), now())'''
+INSERT_UPDATE_SQL = '''INSERT INTO ''' + TABLE_NAME + ''' (openid, nickname, sex, ''' \
+			+ ''' language, city, province, country, headimgurl, unionid, status, update_time, create_time)''' \
+			+ ''' VALUES(NULL, %s, %s, %s, %s, %s, %s, %s, %s, %s, 0, now(), now()) ON DUPLICATE KEY UPDATE ''' \
+			+ ''' nickname = %s , headimgurl = %s '''
 UPDATE_QUESTIONID_SQL = ''' UPDATE ''' + TABLE_NAME + ''' SET play_question_id = %s WHERE id = %s'''
 UPDATE_RESULT_SQL = ''' UPDATE ''' + TABLE_NAME + ''' SET result = %s WHERE id = %s'''
 UPDATE_RESULT_FAILEDCOUNT_SQL = '''UPDATE ''' + TABLE_NAME + ''' SET result = %s, failed_count = failed_count + %s WHERE id = %s'''

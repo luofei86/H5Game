@@ -82,7 +82,7 @@ class GameBizService:
 	def _handleIllegalResp(failedType = 'illegal', message="data access failed"):
 		return {'success': False, 'failedType': failedType, 'message': message}
 #######
-	def playShareGame(self, userId, unionId, activeId, shareCode):
+	def playShareGame(self, userId, openId, activeId, shareCode):
 		##用户权限检测
 		activeInfo = self._gameActiveInfoService.getInfo(activeId)
 		if activeInfo is None:
@@ -183,11 +183,11 @@ class GameBizService:
 
 		if not info:
 			##获取用户分享的链接
-			unionId = self._userInfoService.getUserUnionId(userId)
-			if not unionId:
+			openId = self._userInfoService.getUserOpenId(userId)
+			if not openId:
 				return self._handleIllegalResp()
-			LOGGER.debug("_sharedToPlay unionId:" + unionId)
-			info = self._userShareInfoService.genShareInfo(userId, unionId, activeId, activeInfo['url'])
+			LOGGER.debug("_sharedToPlay openId:" + openId)
+			info = self._userShareInfoService.genShareInfo(userId, openId, activeId, activeInfo['url'])
 			if info is None:
 				return self._handleIllegalResp()
 			else:
@@ -339,6 +339,6 @@ class GameBizService:
 			answerIdList.append(answerId)
 		return self._gameAnswerInfoService.getInfos(answerIdList)
 
-	def _userId(self, unionId):
-		return self._userInfoService.getUserId(unionId)
+	def _userId(self, openId):
+		return self._userInfoService.getUserId(openId)
 

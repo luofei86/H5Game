@@ -16,13 +16,13 @@
     <body  id="main" unselectable="on" onselectstart="return false;">
         <div id="div-game-page">
             <div id="div-play-game-page">
-                <div class="title">{{resp['question']['title']}}</div>
+                <div class="title">{{resp['question']['title']}}
+                    <span class="tips">----({{resp['question']['tips']}})</span>
+                </div>
                 <div class="question">
                     <div class="inner-question">
                         {% if resp['question']['resourceType'] == 0 %}
                             <img src="{{resp['question']['resourceUrl']}}">
-                         <!--    <img src="{{ url_for('static', filename='images/drop_tips.png')}}">
-                            <div class="tips">{{resp['question']['tips']}}</div> -->
                         {% elif resp['question']['resourceType'] == 1%}
                             <video controls class="video">
                                 <source src="{{resp['question']['resourceUrl']}}" type="video/mp4">

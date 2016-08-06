@@ -50,19 +50,16 @@
             <div class="div-prized-desc">”里约首席大佬“称号.</div>
             <div class="div-prizecode">兑奖码：{{resp['prizeInfo']['prizeCode']}}</div>
             <div class="div-prizedinfo-desc head">
-                物品兑换信息会在{{resp['activeInfo']['prizeTime']}}之后
+                中奖信息会于{{resp['activeInfo']['prizeTime']|timestamp_strftime}}之后
             </div>
             <div class="div-prizedinfo-desc">
-                在一刻官方微信公布
-            </div>
-            <div class="div-prizedinfo-desc">
-                开奖要在48小时后开始
-            </div>
-            <div class="div-prizedinfo-desc">
-                结果在微信联系你
+                在一刻talks官方微信公布
             </div>
             <div class="div-prizedinfo-desc">
                 请保存你的兑奖码
+            </div>
+            <div class="div-prizedinfo-desc">
+                到时前来兑奖
             </div>
             <div class="div-prized-bottom">
                 （关注微信,看看还有哪些冠军也在一刻talks）

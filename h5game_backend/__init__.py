@@ -46,7 +46,6 @@ from views import *
 
 app.register_blueprint(page, url_prefix="/page")
 
-
 # add blue print views
 # from .views.error import *
 

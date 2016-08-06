@@ -7,53 +7,54 @@ import json
 from h5game_backend import POOL
 
 ID_INFO_KEY = "user:info:"
-UNIONID_ID_KEY = "user:unionid:id:"
-ID_UNIONID_KEY = "user:id:unionid:"
+OPENID_ID_KEY = "user:openId:id:"
+ID_OPENID_KEY = "user:id:openId:"
 
 class UserInfoService:
 	def __init__(self):
 		self._dao = UserInfoDao()
 
-	def addInfo(self, unionId):
+	def addInfo(self, weiXinInfo):
 		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
-			key = self._buildUnionIdReflectIdKey(unionId)
+			key = self._buildOpenIdReflectIdKey(openId)
 			result = r.get(key)
 			if result:
 				return
-		self._dao.insert(unionId)
-
+		self._dao.insert(weiXinInfo['openid'], weiXinInfo['unionid'], weiXinInfo['nickname'], \
+						 weiXinInfo['sex'], weiXinInfo['language'], weiXinInfo['city'], \
+						 weiXinInfo['province'], weiXinInfo['country'], weiXinInfo['headimgurl'])
 ##获取用户中奖信息
-	def getUserId(self, unionId):
+	def getUserId(self, openId):
 		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
-			key = self._buildUnionIdReflectIdKey(unionId)
+			key = self._buildOpenIdReflectIdKey(openId)
 			result = r.get(key)
 			if result:
 				return int(result)
-		id = self._dao.queryIdByUk(unionId)
+		id = self._dao.queryIdByUk(openId)
 		if id and not r:
 			self._initReflectInfo(r, key, id)
 		return id
 
-	def getUserUnionId(self, id):
+	def getUserOpenId(self, id):
 		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
-			key = self._buildIdReflectUnionIdKey(id)
+			key = self._buildIdReflectOpenIdKey(id)
 			result = r.get(key)
 			if result:
 				return int(result)
-		id = self._dao.queryUnionId(id)
+		id = self._dao.queryOpenId(id)
 		if id and not r:
 			self._initReflectInfo(r, key, id)
 		return id
 
 
-	def _buildUnionIdReflectIdKey(self, unionId):
-		return UNIONID_ID_KEY + unionId
+	def _buildOpenIdReflectIdKey(self, openId):
+		return OPENID_ID_KEY + openId
 
-	def _buildIdReflectUnionIdKey(self, id):
-		return ID_UNIONID_KEY + str(id)
+	def _buildIdReflectOpenIdKey(self, id):
+		return ID_OPENID_KEY + str(id)
 
 	def _initReflectInfo(self, r, key, id):
 		r.set(key, str(id))
