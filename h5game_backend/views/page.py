@@ -33,6 +33,7 @@ userInfoService = UserInfoService.UserInfoService()
 @page.route("/welcome/callback/")
 def callback():
 	sign = request.args.get("sign")
+	LOGGER.debug(sign)
 	if not sign:
 		return render_template("404.html"), 404
 	shareCode = request.args.get("shareCode")
@@ -40,6 +41,7 @@ def callback():
 	if not code:
 		return render_template("404.html"), 404
 	####Init user
+	LOGGER.debug(code)
 	userInfoService.addInfo(code)
 	session['unionId'] = code
 	return redirect(url_for('.welcome', signWord = sign, shareCode = shareCode))

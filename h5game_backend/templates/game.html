@@ -33,7 +33,7 @@
 
                 <div id="answer" class="answer">                
                 {% for answer in resp.answers %}
-                    <div id = "answer_sub_{{loop.index}}" answer-value="{{answer.id}}" class="answer_block">
+                    <div id = "answer_sub_{{loop.index}}" answer-value="{{answer.id}}" class="answer_block {% if loop.index % 2 == 0%} odd {% endif %}">
                     {% if loop.index == 1%}
                         <div class="answer-order">A 
                             <span>{{answer.title}}</span>
