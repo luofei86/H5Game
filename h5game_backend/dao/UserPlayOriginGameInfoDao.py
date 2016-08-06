@@ -29,7 +29,7 @@ class UserPlayOriginGameInfoDao:
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
 			cur.execute(INSERT_SQL, (str(userId), str(activeId), str(randomQuestionIds), str(playQuestionId)))
-			dbConn.commit()
+		dbConn.commit()
 
 	def queryInfo(self, userId, activeId):
 		dbConn = get_db()

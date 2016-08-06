@@ -121,9 +121,9 @@
 .answer_block img{
     display: inline-block;
     margin-left: 5px;
-    width: 100%;
-    height: 100%;
+    width: 145px;
     border: 4px solid black;
+    height: 95px;
 }
 
 .inner-question video{

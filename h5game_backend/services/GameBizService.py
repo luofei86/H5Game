@@ -321,7 +321,11 @@ class GameBizService:
 			return self._handleIllegalResp()
 		answerIdsStr = question['possibleAnswerIds']
 		answerIds = answerIdsStr.split(",")
-		numberIndex = answerIds.index(question['id'])
+		numberIndex = -1
+		for i_id in answerIds:
+			numberIndex = numberIndex + 1
+			if str(i_id) == str(question['id']):
+				break;
 		if 'shareCode' in playInfo:
 			return {'success': True, 'play': True, 'activeInfo': activeInfo, 'playInfo': playInfo, 'question': question, 'answers': answers, 'numberIndex': numberIndex, 'shareCode': playInfo['shareCode']}
 		else:
