@@ -44,7 +44,7 @@ from controller import *
 from views import *
 
 
-app.register_blueprint(page, url_prefix="/page")
+app.register_blueprint(game, url_prefix="/game")
 
 # add blue print views
 # from .views.error import *

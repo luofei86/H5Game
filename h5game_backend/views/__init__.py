@@ -1,4 +1,4 @@
-from page import *
+from game import *
 
 __author__ = 'luofei'
 

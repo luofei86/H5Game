@@ -22,7 +22,7 @@ start_online.sh
 数据库建表语句
 ###mysql/init.sql
 
-##访问其中page/welcome可根据需要配置####baskball数据库配置
-###${本机ip}:${绑定端口}/page/welcome/baskball
+##访问其中game/welcome可根据需要配置####baskball数据库配置
+###${本机ip}:${绑定端口}/game/welcome/baskball
 
 

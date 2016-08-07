@@ -8,6 +8,9 @@ import string
 import hashlib
 import redis
 
+from dao.WeiXinJsApiTicketDao import *
+from dao.WeiXinAccessTokenDao import *
+
 from h5game_backend import POOL
 from h5game_backend import LOGGER
 
@@ -23,6 +26,8 @@ WEIXIN_ACCESSTOKEN_KEY ="weixin:access_token"
 #         }
 class JsApiService:
 	def __init__(self, appId, appSecret):
+		self._ticketDao = WeiXinJsApiTicketDao()
+		self._accessTokenDao = WeiXinAccessTokenDao()
 		self.appId = appId
 		self.appSecret = appSecret
 		self.signStr = {
@@ -32,95 +37,116 @@ class JsApiService:
 			'url': ''		
 		}
 
-
-	def __create_nonce_str(self):
-		return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(15))
-
-	def __create_timestamp(self):
-		return int(time.time())
-
 	def sign(self, url):
 		if not url:
 			return self.signStr
+		if not self.signStr['jsapi_ticket']:
+			return None
 		self.signStr['url'] = url
 		string = '&'.join(['%s=%s' % (key.lower(), self.signStr[key]) for key in sorted(self.signStr)])
-		LOGGER.debug(string)
+		LOGGER.debug('Sign str:' + string)
 		self.signStr['signature'] = hashlib.sha1(string).hexdigest()
 		return self.signStr
 
-	def _getAccessToken(self):		
+	def _getAccessToken(self):
 		r = redis.StrictRedis(connection_pool = POOL)
-		if(r):
-			return self._getAccessTokenFromRedis(r)
-		else:
-			return self._getAccessTokenFromFile()
-
-	def _getAccessTokenFromFile(self):	
-		json_file = open('access_token.json')
-		data = json.load(json_file)
-		json_file.close()
-		access_token = data['access_token']
-		if data['expire_time'] < time.time():
-			data = self._getAccessTokenDataDirect()
-			return data['access_token']
-		return access_token
-
-	def _getAccessTokenFromRedis(self, r):		
-		key = self._buildAccessTokeKey()
-		result = r.get(key)
-		if result:
-			return result
-		else:
-			data = self._getAccessTokenDataDirect()
-			r.setex(key, 7000, data['access_token'])
-			return data['access_token']
-
-	def _buildJsApiTicketKey(self):
-		return WEINXIN_APITICKET_KEY
-
-	def _buildAccessTokeKey(self):
-		return WEIXIN_ACCESSTOKEN_KEY
+		accessToken = None
+		if r:
+			key = self._buildAccessTokeKey()
+			accessToken = r.get(key)
+		if not accessToken:
+			data = self._accessTokenDao.queryLatestInfo()
+			if data and int(data['expire_time']) > time.time():
+				accessToken = data['access_token']
+				if r:
+					self._initAndExpireKeyCacheInfo(r, key, accessToken, int(data['expire_time']) - time.time())				
+		if not accessToken:
+			while not self._lockToken():
+				time.sleep(5)
+				otherThreadData = self._getAccessToken()
+				if otherThreadData:
+					return otherThreadData
+			try:
+				apiData = self._getAccessTokenDataDirect()
+				if apiData:
+					accessToken = apiData['access_token']
+					self._accessTokenDao.insert(apiData['access_token'], apiData['expire_time'])
+					if r:
+						self._initAndExpireKeyCacheInfo(r, key, accessToken, int(apiData['expire_time']) - time.time())
+			finally:
+				self._unlockToken()
+		return accessToken
 
 	def _getAccessTokenDataDirect(self):
 		url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" %\
 							(self.appId, self.appSecret)
-		response = requests.get(url)		
-		LOGGER.debug(response)
-		access_token = json.loads(response.text)['access_token']
-		LOGGER.debug(access_token)
-		data ={}
-		data['access_token'] = access_token
-		data['expire_time'] = int(time.time()) + 7000
-		return data
+		response = requests.get(url)
+		LOGGER.debug("ticket api resp:" + str(response.text))
+		respData = json.loads(response.text)
+		if respData['access_token']:
+			data = {}
+			data['access_token'] = respData['access_token']
+			data['expire_time'] = int(time.time()) + int(respData['expires_in'])
+			return data
+		return None
 
-	def _getJsApiTicket(self):		
+	def _getJsApiTicket(self):
+		r = redis.StrictRedis(connection_pool = POOL)
+		jsApiTicet = None
+		if r:
+			key = self._buildJsApiTicketKey()
+			jsApiTicet = r.get(key)
+		if not jsApiTicet:
+			data = self._ticketDao.queryLatestInfo()
+			if data and int(data['expire_time']) > time.time():
+				jsApiTicet = data['jsapi_ticket']
+				if r:
+					self._initAndExpireKeyCacheInfo(r, key, jsApiTicet, int(data['expire_time']) - time.time())				
+		if not jsApiTicet:
+			while not self._lockTicket():
+				time.sleep(5)
+				otherThreadData = self._getJsApiTicket()
+				if otherThreadData:
+					return otherThreadData
+			try:				
+				apiData = self._getJsApiTicketDataDirect()
+				if apiData:
+					jsApiTicet = apiData['jsapi_ticket']
+					self._ticketDao.insert(apiData['jsapi_ticket'], apiData['expire_time'])
+					if r:
+						self._initAndExpireKeyCacheInfo(r, key, jsApiTicet, int(apiData['expire_time']) - time.time())
+			finally:
+				self._unlockTicket()
+		return jsApiTicet
+
+	def _lockTicket(self):
 		r = redis.StrictRedis(connection_pool = POOL)
 		if r:
-			return self._getJsApiTicketFromRedis(r)
-		else:
-			return self._getJsApiTicketFromFile()
+			key = "ticket_lock"
+			ret =  r.setnx(key, 1)
+			return int(ret) == 1
+		return True
 
-	def _getJsApiTicketFromFile(self):	
-		json_file = open('jsapi_ticket.json')
-		data = json.load(json_file)
-		json_file.close()
-		jsapi_ticket = data['jsapi_ticket']
-		if data['expire_time'] < time.time():
-			data =  self._getJsApiTicketDataDirect()
-			return data['jsapi_ticket']
-		return jsapi_ticket
+	def _unlockTicket(self):
+		r = redis.StrictRedis(connection_pool = POOL)
+		if r:
+			key = "ticket_lock"
+			ret =  r.delete(key)
 
-	def _getJsApiTicketFromRedis(self,r ):		
-		key = self._buildJsApiTicketKey()
-		result = r.get(key)
-		if result:
-			return result
-		else:
-			data = self._getJsApiTicketDataDirect()
-			###
-			r.setex(key, 7000, data['jsapi_ticket'])
-			return data['jsapi_ticket']
 
+	def _lockToken(self):
+		r = redis.StrictRedis(connection_pool = POOL)
+		if r:
+			key = "token_lock"
+			ret =  r.setnx(key, 1)
+			return int(ret) == 1
+		return True
+
+	def _unlockToken(self):
+		r = redis.StrictRedis(connection_pool = POOL)
+		if r:
+			key = "token_lock"
+			ret =  r.delete(key)
 
 #https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
 	def _getJsApiTicketDataDirect(self):
@@ -128,12 +154,30 @@ class JsApiService:
 				(self._getAccessToken())
 		LOGGER.debug("Get ticket from url:" + url)
 		response = requests.get(url)
-		LOGGER.debug("Api tickent resp" + str(response))
-		LOGGER.debug("Api tickent resp" + str(response.text))
-		print response
-		jsapi_ticket = json.loads(response.text)['ticket']
-		data = {}
-		data['jsapi_ticket'] = jsapi_ticket
-		data['expire_time'] = int(time.time()) + 7000
-		return data
+		LOGGER.debug("ticket api resp:" + str(response.text))
+		respData = json.loads(response.text)
+		if respData['ticket']:
+			data = {}
+			data['jsapi_ticket'] = respData['ticket']
+			data['expire_time'] = int(time.time()) + int(respData['expires_in'])
+			return data
+		return None
+
+	def _buildJsApiTicketKey(self):
+		return WEINXIN_APITICKET_KEY
+
+	def _buildAccessTokeKey(self):
+		return WEIXIN_ACCESSTOKEN_KEY
+
+	def _initAndExpireKeyCacheInfo(self, r, key, value, expireSeconds):
+		if int(expireSeconds) >0 and r:
+			r.setex(key, int(expireSeconds), value)
+
+
+	def __create_nonce_str(self):
+		return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(15))
+
+	def __create_timestamp(self):
+		return int(time.time())
+
 

@@ -269,6 +269,26 @@ CREATE TABLE `user_weixin_info` (
   UNIQUE KEY `UK_UWXI_OPENID` (`openid`),
   UNIQUE KEY `UK_UWXI_UNIONID` (`unionid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `weixin_accesstoken`(
+  `access_token` varchar(255) not null,
+  `expire_time` int not null,
+  `status` tinyint(4) NOT NULL COMMENT '0 ok -1 del',
+  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `create_time` datetime NOT NULL COMMENT '记录创建时间',
+  PRIMARY KEY (`access_token`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `weixin_apiticket`(
+  `jsapi_ticket` varchar(255) not null,
+  `expire_time` int not null,
+  `status` tinyint(4) NOT NULL COMMENT '0 ok -1 del',
+  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `create_time` datetime NOT NULL COMMENT '记录创建时间',
+  PRIMARY KEY (`jsapi_ticket`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

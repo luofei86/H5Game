@@ -24,7 +24,7 @@ from h5game_backend import app
 from h5game_backend import LOGGER
 
 
-page = Blueprint("page", __name__)
+game = Blueprint("game", __name__)
 
 
 gameBizService = GameBizService.GameBizService()
@@ -33,7 +33,7 @@ jsApiService = JsApiService.JsApiService(app.config.get("APP_ID"), app.config.ge
 userInfoService = UserInfoService.UserInfoService()
 
 
-@page.route("/welcome/share/callback/<string:shareCode>")
+@game.route("/welcome/share/callback/<string:shareCode>")
 def shareCallback(shareCode = None):
 	sign = request.args.get("sign")
 	if not sign:
@@ -44,9 +44,9 @@ def shareCallback(shareCode = None):
 	return redirect(url_for('.callback', sign = sign, shareCode = shareCode, code = code))
 
 
-@page.route("/welcome/callback")
-@page.route("/welcome/callback/")
-@page.route("/welcome/callback/<string:sign>")
+@game.route("/welcome/callback")
+@game.route("/welcome/callback/")
+@game.route("/welcome/callback/<string:sign>")
 def callback(sign = None):
 	try:
 		#FOR DEBUG
@@ -79,15 +79,14 @@ def callback(sign = None):
 			LOGGER.debug("code" + code + ",userWeiXinInfo:" + str(userWeiXinInfo))
 			userInfoService.addInfo(userWeiXinInfo)
 
-
 		session['openId'] = openid
 		return redirect(url_for('.welcome', signWord = sign, shareCode = shareCode))
 	except Exception as e:
-		LOGGER.debug(str(e))
+		LOGGER.debug("Uncatch exception:" + str(e))
 		return render_template("404.html")
 
-@page.route('/welcome/<string:signWord>')
-@page.route('/welcome/<string:signWord>/<string:shareCode>')
+@game.route('/welcome/<string:signWord>')
+@game.route('/welcome/<string:signWord>/<string:shareCode>')
 def welcome(signWord, shareCode=None):
 	try:
 		#FOR DEBUG
@@ -112,20 +111,21 @@ def welcome(signWord, shareCode=None):
 			resp['shareCode'] = shareCode		
 		_initUserShareContent(userId, openId, resp)
 		resp['openId'] = openId
-		LOGGER.debug(str(resp))
 		if resp.get('success'):
 			if resp.get('prized'):
+				LOGGER.debug("render to prized.html with resp:" + str(resp))
 				return render_template("prized.html", resp = resp)
 		resp['signWord'] = signWord
+		LOGGER.debug("render to welcome.html with resp:" + str(resp))
 		return render_template("welcome.html", resp = resp)
 	except Exception as e:
 		LOGGER.debug(str(e))
 		return render_template("404.html")
 
-@page.route("/homepage/<string:signWord>")
-@page.route("/homepage/<string:signWord>/")
-@page.route("/homepage/<string:signWord>/<string:shareCode>")
-@page.route("/homepage/<string:signWord>/<string:shareCode>/")
+@game.route("/homepage/<string:signWord>")
+@game.route("/homepage/<string:signWord>/")
+@game.route("/homepage/<string:signWord>/<string:shareCode>")
+@game.route("/homepage/<string:signWord>/<string:shareCode>/")
 def homepage(signWord, shareCode = None):
 	try:
 		###FOR DEUBG
@@ -157,9 +157,9 @@ def homepage(signWord, shareCode = None):
 
 
 ####由系统后台自动生成的供用户直接游戏的地址，在没有自有游戏的情况下，如有分享的游戏没玩完，则完分享的，否则告诉用户无法玩了
-@page.route('/play/<int:activeId>', methods=['GET', 'POST'])
-@page.route('/play/<int:activeId>/', methods=['GET', 'POST'])
-@page.route('/play/<int:activeId>/<string:shareCode>', methods=['GET', 'POST'])
+@game.route('/play/<int:activeId>', methods=['GET', 'POST'])
+@game.route('/play/<int:activeId>/', methods=['GET', 'POST'])
+@game.route('/play/<int:activeId>/<string:shareCode>', methods=['GET', 'POST'])
 def play(activeId, shareCode=None):
 	try:	
 		openId = session["openId"]
@@ -239,8 +239,8 @@ def _playOriginWithAnswer(userId, openId, activeId, questionId, answerId):
 	else:###达到用户限制，也无法分享
 		return render_template('nomoreplay.html', resp = resp)
 
-@page.route("/user/shared/<int:userId>/<string:shareCode>/<int:activeId>")
-@page.route("/user/shared/<int:userId>/<string:shareCode>/<int:activeId>/")
+@game.route("/user/shared/<int:userId>/<string:shareCode>/<int:activeId>")
+@game.route("/user/shared/<int:userId>/<string:shareCode>/<int:activeId>/")
 def userShared(userId, shareCode, activeId):
 	gameBizService.afterShared(userId, shareCode, activeId)
 	return jsonify(done=True)
@@ -307,7 +307,7 @@ def _initCurPageSignInfo(resp):
 	curPage = request.url
 	LOGGER.debug("Sign url:" + curPage)
 	weiXinSignInfo = jsApiService.sign(curPage)
-	weiXinSignInfo['appId'] = app.config.get("APP_ID")	
-	LOGGER.debug("Sign info:" + str(weiXinSignInfo))
-	resp['weiXinSignInfo'] = weiXinSignInfo
-
+	if weiXinSignInfo:
+		weiXinSignInfo['appId'] = app.config.get("APP_ID")
+		resp['weiXinSignInfo'] = weiXinSignInfo
+		

@@ -12,6 +12,9 @@ from UserShareInfo import *
 from UserShareLimitInfo import *
 from UserInfo import *
 
+from WeiXinAccessToken import *
+from WeiXinJsApiTicket import *
+
 
 from BizStatusUtils import *
 __author__ = 'luofei'

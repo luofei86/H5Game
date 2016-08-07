@@ -362,10 +362,10 @@ class GameBizService:
 
 #SHARE_TO_WEIXIN_PLAY_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect"
 #SHARE_TO_WEIXIN_REDIRECT_URL = "http://api.yiketalks.com/V2/command/wechatTokenSend?url=%s"
-#YIKE_REDIRECT_GAME_UR_AND_CURRENT_GAME_WEBISTE = "http://192.168.1.110:12123/page/welcome/callback/%s?sign=%s"
+#YIKE_REDIRECT_GAME_UR_AND_CURRENT_GAME_WEBISTE = "http://192.168.1.110:12123/game/welcome/callback/%s?sign=%s"
 	def _getShareUrl(self, shareCode, appId, signWord):
 		url = app.config.get("SHARE_TO_WEIXIN_PLAY_URL", "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect")
-		urlForYikeTalksRedirect = app.config.get("YIKE_REDIRECT_GAME_UR_AND_CURRENT_GAME_WEBISTE", "http://192.168.1.110:12123/page/welcome/callback/%s?sign=%s")
+		urlForYikeTalksRedirect = app.config.get("YIKE_REDIRECT_GAME_UR_AND_CURRENT_GAME_WEBISTE", "http://we.yiketalks.com/game/welcome/callback/%s?sign=%s")
 		urlForYikeTalksRedirect = urlForYikeTalksRedirect % (str(shareCode), str(signWord))
 		redirectUrl = app.config.get("SHARE_TO_WEIXIN_REDIRECT_URL", "http://api.yiketalks.com/V2/command/wechatTokenSend?url=%s")
 		redirectUrl =  redirectUrl % (str(urlForYikeTalksRedirect))
