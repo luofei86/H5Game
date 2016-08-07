@@ -47,39 +47,44 @@ def shareCallback(shareCode = None):
 @page.route("/welcome/callback")
 @page.route("/welcome/callback/")
 @page.route("/welcome/callback/<string:sign>")
-def callback(sign = None):	
-	if not sign:
-		sign = request.args.get("sign")
-	LOGGER.debug("Sign:" + sign)
-	if not sign:
-		return render_template("404.html"), 404
-	shareCode = request.args.get("shareCode")
-	code = request.args.get("code")
-	if not code:
-		return render_template("404.html"), 404
-	LOGGER.debug("Code:" + code)
-	###code access
-	userOpenInfo = weixinService.getOpenInfo(code)
-	if userOpenInfo is None:
-		return render_template("404.html"), 404
-	LOGGER.debug("UserOpenInfo:" + str(userOpenInfo))
-	openid = userOpenInfo['openid']
-	if not userInfoService.getUserId(openid):
-		userWeiXinInfo = weixinService.getUserInfo(openid, userOpenInfo['access_token'])
-		if userWeiXinInfo is None:
+def callback(sign = None):
+	try:
+		#FOR DEBUG
+		if not sign:
+			sign = request.args.get("sign")
+		LOGGER.debug("Sign:" + sign)
+		if not sign:
 			return render_template("404.html"), 404
-		if hasattr(userWeiXinInfo, 'errcode'):
-			userOpenInfo = weixinService.refreshOpenInfo(openid, userOpenInfo['refresh_token'])
+		shareCode = request.args.get("shareCode")
+		code = request.args.get("code")
+		if not code:
+			return render_template("404.html"), 404
+		LOGGER.debug("Code:" + code)
+		###code access
+		userOpenInfo = weixinService.getOpenInfo(code)
+		if userOpenInfo is None:
+			return render_template("404.html"), 404
+		LOGGER.debug("UserOpenInfo:" + str(userOpenInfo))
+		openid = userOpenInfo['openid']
+		if not userInfoService.getUserId(openid):
 			userWeiXinInfo = weixinService.getUserInfo(openid, userOpenInfo['access_token'])
-			if userWeiXinInfo is None or hasattr(userWeiXinInfo, 'errcode'):
+			if userWeiXinInfo is None:
 				return render_template("404.html"), 404
-	####Init user
-		LOGGER.debug("code" + code + ",userWeiXinInfo:" + str(userWeiXinInfo))
-		userInfoService.addInfo(userWeiXinInfo)
+			if hasattr(userWeiXinInfo, 'errcode'):
+				userOpenInfo = weixinService.refreshOpenInfo(openid, userOpenInfo['refresh_token'])
+				userWeiXinInfo = weixinService.getUserInfo(openid, userOpenInfo['access_token'])
+				if userWeiXinInfo is None or hasattr(userWeiXinInfo, 'errcode'):
+					return render_template("404.html"), 404
+		####Init user
+			LOGGER.debug("code" + code + ",userWeiXinInfo:" + str(userWeiXinInfo))
+			userInfoService.addInfo(userWeiXinInfo)
 
 
-	session['openId'] = openid
-	return redirect(url_for('.welcome', signWord = sign, shareCode = shareCode))
+		session['openId'] = openid
+		return redirect(url_for('.welcome', signWord = sign, shareCode = shareCode))
+	except Exception as e:
+		LOGGER.debug(str(e))
+		return render_template("404.html")
 
 @page.route('/welcome/<string:signWord>')
 @page.route('/welcome/<string:signWord>/<string:shareCode>')
