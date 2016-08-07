@@ -60,26 +60,9 @@ class GameBizService:
 		prizes = self._gameActivePrizeInfoService.getInfosByActiveId(activeInfo['id'])
 		return {'success': False, "activeInfo": activeInfo, 'failedType': 'limit', 'prizes': prizes}
 
-	def userShared(self, id, shareCode):
-		userShareInfo = self._userShareInfoService.getInfo(id)
-		if userShareInfo is None or userShareInfo['shareCode'] != shareCode:
-			return self._handleIllegalResp()		
-		###已经分享过了，则处理下是否能继续玩的问题，即用户失败次数是否大于3
-		if int(userShareInfo['result']) == BizStatusUtils.SHARED_SUCCESS:
-			playInfo = self._userPlayOriginGameInfoService.getInfo(userShareInfo['userId'], userShareInfo['activeId'])
-			if playInfo is None:
-				return self._handleIllegalResp()
-			if int(playInfo['failedCount']) <= BizStatusUtils.MAX_SELF_PLAY:
-				return self._continuePlay(playInfo)
-			else:
-				return self._handelNoMoreCanPlayResp(userShareInfo['activeId'])
-
-		self._userShareInfoService.modifyResult(id, BizStatusUtils.SHARED_SUCCESS)
-		###共享成功了，修改
-		playInfo = self._userPlayOriginGameInfoService.getInfo(userShareInfo['userId'], userShareInfo['activeId'])
-		if playInfo is None:
-			return self._handleIllegalResp()
-		return self._continuePlay(playInfo)
+#self.gameBizService.afterShared(userId, shareCode, activeId)
+	def afterShared(self, userId, shareCode, activeId):
+		self._userShareInfoService.modifyResult(userId, shareCode, activeId, BizStatusUtils.SHARED_SUCCESS)
 
 	def _handleIllegalResp(self, failedType = 'illegal', message="data access failed"):
 		return {'success': False, 'failedType': failedType, 'message': message}
@@ -356,13 +339,26 @@ class GameBizService:
 	def _userId(self, openId):
 		return self._userInfoService.getUserId(openId)
 
-	def getShareUrl(self, openId, appId, signWord):
-		url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect"
-		redirectUrl = "http://api.yiketalks.com/V2/command/wechatTokenSend?url=http://192.168.1.110:12123/page/welcome/callback/%s?sign=%s"
+	def genUserShareContent(self, userId, openId, activeId, appId, signWord):
+		shareInfo = self._userShareInfoService.getInfoByUserIdActiveId(userId, activeId)
+		if shareInfo:			
+			return shareInfo
 		shareCode = self._userShareInfoService.buildShareCode(openId)
-		LOGGER.debug("Get share code:" + str(shareCode))
-		redirectUrl = redirectUrl % (str(shareCode), str(signWord))
-		LOGGER.debug("Thre redirectUrl:" + str(redirectUrl))
+		shareUrl = self._getShareUrl(shareCode, appId, signWord)
+
+		##def genShareInfo(self, userId, openId, activeId, shareCode, shareUrl):
+		return self._userShareInfoService.genShareInfo(userId, openId, activeId, shareCode, shareUrl)
+
+
+#SHARE_TO_WEIXIN_PLAY_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect"
+#SHARE_TO_WEIXIN_REDIRECT_URL = "http://api.yiketalks.com/V2/command/wechatTokenSend?url=%s"
+#YIKE_REDIRECT_GAME_UR_AND_CURRENT_GAME_WEBISTE = "http://192.168.1.110:12123/page/welcome/callback/%s?sign=%s"
+	def _getShareUrl(self, shareCode, appId, signWord):
+		url = app.config.get("SHARE_TO_WEIXIN_PLAY_URL", "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect")
+		urlForYikeTalksRedirect = app.config.get("YIKE_REDIRECT_GAME_UR_AND_CURRENT_GAME_WEBISTE", "http://192.168.1.110:12123/page/welcome/callback/%s?sign=%s")
+		urlForYikeTalksRedirect = urlForYikeTalksRedirect % (str(shareCode), str(signWord))
+		redirectUrl = app.config.get("SHARE_TO_WEIXIN_REDIRECT_URL", "http://api.yiketalks.com/V2/command/wechatTokenSend?url=%s")
+		redirectUrl =  redirectUrl % (str(urlForYikeTalksRedirect))
 		redirectUrl = urllib.quote_plus(redirectUrl)
 		url = url % (str(appId), str(redirectUrl))
 		LOGGER.debug("The share url:" + url)

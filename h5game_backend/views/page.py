@@ -73,12 +73,6 @@ def callback(sign = None):
 @page.route('/welcome/<string:signWord>/<string:shareCode>')
 def welcome(signWord, shareCode=None):
 	try:
-		curPage = request.url
-		LOGGER.debug("Sign url:" + curPage)
-		weiXinSignInfo = jsApiService.sign("http://192.168.1.112:12123/page/welcome/zoukai")
-		weiXinSignInfo['appId'] = app.config.get("APP_ID")
-		
-		LOGGER.debug("Sign info:" + str(weiXinSignInfo))
 		#FOR DEBUG
 		if request.args.get("browser"):
 			openId = request.args.get("openId")
@@ -98,14 +92,9 @@ def welcome(signWord, shareCode=None):
 			return render_template("404.html"), 404
 		
 		if resp is not None and shareCode is not None:
-			resp['shareCode'] = shareCode
-		resp['weiXinSignInfo'] = weiXinSignInfo
-		#def getShareUrl(self, openId, appId, signWord):
-		LOGGER.debug("Get share url.")
-		shareUrl = gameBizService.getShareUrl(openId, app.config.get("APP_ID"), signWord)
-		LOGGER.debug("share url:" + str(shareUrl))
+			resp['shareCode'] = shareCode		
+		_initUserShareContent(userId, openId, resp)
 		resp['openId'] = openId
-		resp['shareUrl'] = shareUrl
 		LOGGER.debug(str(resp))
 		if resp.get('success'):
 			if resp.get('prized'):
@@ -139,12 +128,14 @@ def homepage(signWord, shareCode = None):
 			return render_template("404.html"), 404
 		if resp is not None and shareCode is not None:
 			resp['shareCode'] = shareCode
+		_initUserShareContent(userId, openId, resp)
 		resp['openId'] = openId
 		if resp.get('success'):
 			if resp.get('prized'):
 				return render_template("prized.html", resp = resp)
 		return render_template("homepage.html", resp = resp)
-	except:
+	except Exception as e:
+		LOGGER.debug(str(e))
 		return render_template("404.html")
 
 
@@ -153,54 +144,56 @@ def homepage(signWord, shareCode = None):
 @page.route('/play/<int:activeId>/', methods=['GET', 'POST'])
 @page.route('/play/<int:activeId>/<string:shareCode>', methods=['GET', 'POST'])
 def play(activeId, shareCode=None):
-	# try:	
-	openId = session["openId"]
-	userId = userInfoService.getUserId(openId)
-	if userId is None:
-		LOGGER.debug("Play User id is None")
-		return render_template("404.html"), 403
-	
-	if request.method == 'POST':
-		questionId = request.form['questionId']
-		answerId = request.form['answerId']
-		if questionId and answerId and shareCode:
-			return _playSharedWithAnswer(userId, openId, activeId, shareCode, questionId, answerId)
-			###共享游戏
-		elif questionId  and answerId:
-			return _playOriginWithAnswer(userId, openId, activeId, questionId, answerId)
-		else:
-			LOGGER.debug("No questionId no answerId")
-			return render_template("404.html"),403
-	if shareCode:
-		return _playShareGame(userId, openId, activeId, shareCode)
-	resp = gameBizService.playGame(userId, activeId)
-	if not resp:
-		LOGGER.debug("Play game no resp.")
-		return render_template("404.html"), 403
-	if not resp.get('success'):
-		if resp.get('failedType') == 'server':###服务器压力过大，请稍候
-			LOGGER.debug("failedType == server," + str(resp))
-			return render_template("404.html"), 
-		elif resp.get('failedType') == 'illegal':####数据问题
-			LOGGER.debug("failedType == illegal," + str(resp))
+	try:	
+		openId = session["openId"]
+		userId = userInfoService.getUserId(openId)
+		if userId is None:
+			LOGGER.debug("Play User id is None")
 			return render_template("404.html"), 403
-		else:###达到用户限制，也无法分享
-			return render_template('share.html', resp = resp)
-	##可以玩
-	if(resp.get('play')):
-		return render_template("game.html", resp = resp)
-	##已中奖
-	elif(resp.get('prized')):
-		return render_template("prized.html", resp = resp)
-##需要分享才能玩
-	elif(resp.get('needShare')):
-		return render_template("nomoreplay.html", resp = resp)
-	##当前游戏不能玩了，等待下次	
-	else:
-		return render_template("nomoreplay.html", resp = resp)
-	# except:
-	# 	LOGGER.debug("Uncatch except.")
-	#  	return render_template("404.html"), 500
+		
+		if request.method == 'POST':
+			questionId = request.form['questionId']
+			answerId = request.form['answerId']
+			if questionId and answerId and shareCode:
+				return _playSharedWithAnswer(userId, openId, activeId, shareCode, questionId, answerId)
+				###共享游戏
+			elif questionId  and answerId:
+				return _playOriginWithAnswer(userId, openId, activeId, questionId, answerId)
+			else:
+				LOGGER.debug("No questionId no answerId")
+				return render_template("404.html"),403
+		if shareCode:
+			return _playShareGame(userId, openId, activeId, shareCode)
+		resp = gameBizService.playGame(userId, activeId)
+		if not resp:
+			LOGGER.debug("Play game no resp.")
+			return render_template("404.html"), 403
+		if not resp.get('success'):
+			if resp.get('failedType') == 'server':###服务器压力过大，请稍候
+				LOGGER.debug("failedType == server," + str(resp))
+				return render_template("404.html"), 
+			elif resp.get('failedType') == 'illegal':####数据问题
+				LOGGER.debug("failedType == illegal," + str(resp))
+				return render_template("404.html"), 403
+			else:###达到用户限制，也无法分享
+				_initUserShareContent(userId, openId, resp)
+				return render_template('share.html', resp = resp)
+		_initUserShareContent(userId, openId, resp)
+		##可以玩
+		if(resp.get('play')):
+			return render_template("game.html", resp = resp)
+		##已中奖
+		elif(resp.get('prized')):
+			return render_template("prized.html", resp = resp)
+	##需要分享才能玩
+		elif(resp.get('needShare')):
+			return render_template("nomoreplay.html", resp = resp)
+		##当前游戏不能玩了，等待下次	
+		else:
+			return render_template("nomoreplay.html", resp = resp)
+	except:
+	 	LOGGER.debug("Uncatch except.")
+	  	return render_template("404.html"), 500
 
 def _playOriginWithAnswer(userId, openId, activeId, questionId, answerId):
 	resp = gameBizService.originGameNext(userId, activeId, questionId, answerId)
@@ -213,7 +206,11 @@ def _playOriginWithAnswer(userId, openId, activeId, questionId, answerId):
 			return render_template("404.html"), 403
 		else:###达到用户限制，也无法分享
 			LOGGER.debug(resp)
+			_initUserShareContent(userId, openId, resp)
 			return render_template('share.html', resp = resp)
+	
+	_initUserShareContent(userId, openId, resp)	
+		
 	if(resp.get('play')):
 		return render_template("game.html", resp = resp)
 	##已中奖
@@ -225,27 +222,10 @@ def _playOriginWithAnswer(userId, openId, activeId, questionId, answerId):
 	else:###达到用户限制，也无法分享
 		return render_template('nomoreplay.html', resp = resp)
 
-@page.route("/sharedtoplay/", methods=['GET', 'POST'])
-def sharedToPlay():
-	# try:
-	openId = session["openId"]
-	userId = userInfoService.getUserId(openId)
-	if userId is None:
-		return render_template("404.html"), 403
-	id = request.form['id']
-	shareCode = request.form['shareCode']
-	resp = gameBizService.userShared(id, shareCode)
-	if not resp:
-		return render_template("404.html"), 403
-	if resp.get('success'):
-		if(resp.get('play')):
-			return redirect("/page/play/" + str(resp.get('playInfo').get('activeId')), code=302)			
-		return render_template("404.html", resp = resp)	
-	else:
-		if resp.get("failedType") == 'limit':
-			return render_template('nomoreplay.html', resp = resp)
-		else:
-			return render_template("404.html"), 403
+@page.route("/user/shared")
+def userShared(userId, shareCode, activeId):
+	self.gameBizService.afterShared(userId, shareCode, activeId)
+	return jsonify(done=True)
 
 def _playShareGame(userId, openId, activeId, shareCode):
 	resp = gameBizService.playShareGame(userId, openId, activeId, shareCode)	
@@ -260,7 +240,9 @@ def _playShareGame(userId, openId, activeId, shareCode):
 		elif resp.get('failedType') == 'server':
 			return render_template("404.html"), 
 		else:###达到用户限制，也无法分享
+			_initUserShareContent(userId, openId, resp)
 			return render_template('share.html', resp =resp)
+	_initUserShareContent(userId, openId, resp)
 	if(resp.get('play')):
 		return render_template("game.html", resp = resp)
 	##已中奖
@@ -284,7 +266,9 @@ def _playSharedWithAnswer(userId, openId, activeId, shareCode, questionId, answe
 		elif resp.get('failedType') == 'illegal':####数据问题
 			return render_template("404.html"), 403
 		else:###达到用户限制，也无法分享
+			_initUserShareContent(userId, openId, resp)
 			return render_template('nomoreplay.html', resp = resp)
+	_initUserShareContent(userId, openId, resp)
 	if(resp.get('play')):
 		return render_template("game.html", resp = resp)
 	##已中奖
@@ -292,3 +276,21 @@ def _playSharedWithAnswer(userId, openId, activeId, shareCode, questionId, answe
 		return render_template("prized.html", resp = resp)
 	else:###达到用户限制，也无法分享
 		return render_template('nomoreplay.html', resp = resp)
+
+def _initUserShareContent(userId, openId, resp):
+	LOGGER.debug("Get share url by userId:"+ str(userId)+ ", openId:"+str(openId)+", resp:"+str(resp))
+	###def genUserShareContent(self, userId, openId, activeId, appId, signWord):
+	userShareInfo = gameBizService.genUserShareContent(userId, openId, \
+				resp['activeInfo']['id'], app.config.get("APP_ID"), resp['activeInfo']['signWord'])
+	LOGGER.debug("share url:" + str(userShareInfo))
+	resp['userShareInfo'] = userShareInfo
+	_initCurPageSignInfo(resp)
+
+def _initCurPageSignInfo(resp):	
+	curPage = request.url
+	LOGGER.debug("Sign url:" + curPage)
+	weiXinSignInfo = jsApiService.sign(curPage)
+	weiXinSignInfo['appId'] = app.config.get("APP_ID")	
+	LOGGER.debug("Sign info:" + str(weiXinSignInfo))
+	resp['weiXinSignInfo'] = weiXinSignInfo
+

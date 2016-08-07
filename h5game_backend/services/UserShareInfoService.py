@@ -76,23 +76,23 @@ class UserShareInfoService:
 		return dbValue.__dict__
 
 	#添加分享，在确认分享数量没问题后，调用此接口返回相关信息
-	def genShareInfo(self, userId, openId, activeId, activeUrl):
-		shareCode = self.buildShareCode(openId)
-		if str(activeUrl).endswith("/"):
-			shareUrl = activeUrl + shareCode
-		else:
-			shareUrl = activeUrl + "/" + shareCode
-		title = u"我发现一个好玩的游戏，你也快来吧"
-		content =u"精彩一夏奥运"
+	def genShareInfo(self, userId, openId, activeId, shareCode, shareUrl):
+		title = u"一刻talks-精彩一夏"
+		content =u"20位奥运冠军入住一刻talks，更有精美游戏和礼品相送，你也来吧。"
 		self._dao.insert(userId, activeId, shareCode, shareUrl, title, content)
 		return self.getInfoByShareCode(shareCode)
 
 
+
 	###在用户对分享有操作时，将操作结果返回
 	###如果操作有效且数据库存在数据，则设备此分享码对应的游戏id
-	def modifyResult(self, id, result):
-		self._dao.updateResult(id, result)
-		key = self._buildInfoKey(id)
+	###def afterShared(self, userId, shareCode, activeId):
+	def modifyResult(self, userId, shareCode, activeId, result):
+		shareInfo = self.getInfoByShareCode(shareCode)
+		if not shareInfo:
+			return None
+		self._dao.updateResult(userId, shareCode, activeId, result)
+		key = self._buildInfoKey(shareinfo["id"])
 		self._delInfo(key)
 
 	def _buildInfoKey(self, id):

@@ -6,6 +6,8 @@ from services.DbService import get_db
 from contextlib import closing
 from models import UserInfo
 
+from h5game_backend import LOGGER
+
 __author__ = 'luofei'
 
 TABLE_NAME= " user_info "
@@ -24,6 +26,7 @@ OPENID_SQL = '''SELECT open_id FROM ''' + TABLE_NAME + ''' WHERE status = 0 AND 
 
 class UserInfoDao:
 	def insert(self, openId, unionId, nickname, sex, language, city, province, country, headimgurl):
+		LOGGER.debug("Insert user info:" + str(nickname) + str(city) + str(province))
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
 			cur.execute(INSERT_SQL, (str(openId),str(unionId), str(nickname), str(sex), \

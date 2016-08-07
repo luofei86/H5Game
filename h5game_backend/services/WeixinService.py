@@ -51,6 +51,8 @@ class WeixinService:
 		url = "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN" \
 				% (accessToken, openid)
 		response = requests.get(url)
+		LOGGER.debug("response code:" + str(response.encoding))
+		response.encoding = "utf-8"
 		data = response.json()
 		LOGGER.debug("Get from info url:" + str(data))
 		return data

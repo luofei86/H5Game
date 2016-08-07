@@ -17,7 +17,8 @@ ID_SQL = '''SELECT ''' + COLUMNS + ''' FROM ''' + TABLE_NAME + ''' WHERE `id` = 
 INSERT_SQL = '''INSERT INTO ''' + TABLE_NAME + ''' (`id`, `user_id`, `active_id`, `share_code`, ''' \
 		 		+ '''`share_url`, `title`, `content`, `result`, `status`, update_time, create_time) ''' \
 				+ '''VALUES(NULL, %s, %s, %s, %s, %s, %s, 0, 0, now(), now())'''
-UPDATE_RESULT_SQL = '''UPDATE ''' + TABLE_NAME + ''' SET `result` = %s WHERE id = %s'''
+UPDATE_RESULT_SQL = '''UPDATE ''' + TABLE_NAME + ''' SET `result` = %s WHERE user_id = %s AND ''' \
+				+ ''' active_id = %s AND shareCode = %s '''
 
 class UserShareInfoDao:
 	
@@ -30,10 +31,10 @@ class UserShareInfoDao:
 					str(shareUrl), str(title), str(content)))
 			dbConn.commit()
 
-	def updateResult(self, id, result):
+	def updateResult(self, userId, activeId, shareCode, result):
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
-			cur.execute(UPDATE_RESULT_SQL, (str(result), str(id)))
+			cur.execute(UPDATE_RESULT_SQL, (str(result), str(userId), str(activeId), str(shareCode)))
 		dbConn.commit()
 
 	def queryInfo(self, id):
