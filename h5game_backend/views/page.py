@@ -32,6 +32,18 @@ weixinService = WeixinService.WeixinService(app.config.get("APP_ID"), app.config
 jsApiService = JsApiService.JsApiService(app.config.get("APP_ID"), app.config.get("APP_SECERT"))
 userInfoService = UserInfoService.UserInfoService()
 
+
+@page.route("/welcome/share/callback/<string:shareCode>")
+def shareCallback(shareCode = None):
+	sign = request.args.get("sign")
+	if not sign:
+		return render_template("404.html"), 404
+	code = request.args.get("code")
+	if not code:
+		return render_template("404.html"), 404
+	return redirect(url_for('.callback', sign = sign, shareCode = shareCode, code = code))
+
+
 @page.route("/welcome/callback")
 @page.route("/welcome/callback/")
 @page.route("/welcome/callback/<string:sign>")
@@ -191,8 +203,8 @@ def play(activeId, shareCode=None):
 		##当前游戏不能玩了，等待下次	
 		else:
 			return render_template("nomoreplay.html", resp = resp)
-	except:
-	 	LOGGER.debug("Uncatch except.")
+	except Exception as e:
+		LOGGER.debug(str(e))
 	  	return render_template("404.html"), 500
 
 def _playOriginWithAnswer(userId, openId, activeId, questionId, answerId):
@@ -222,9 +234,10 @@ def _playOriginWithAnswer(userId, openId, activeId, questionId, answerId):
 	else:###达到用户限制，也无法分享
 		return render_template('nomoreplay.html', resp = resp)
 
-@page.route("/user/shared")
+@page.route("/user/shared/<int:userId>/<string:shareCode>/<int:activeId>")
+@page.route("/user/shared/<int:userId>/<string:shareCode>/<int:activeId>/")
 def userShared(userId, shareCode, activeId):
-	self.gameBizService.afterShared(userId, shareCode, activeId)
+	gameBizService.afterShared(userId, shareCode, activeId)
 	return jsonify(done=True)
 
 def _playShareGame(userId, openId, activeId, shareCode):
@@ -257,7 +270,6 @@ def _playShareGame(userId, openId, activeId, shareCode):
 ###共享玩的
 def _playSharedWithAnswer(userId, openId, activeId, shareCode, questionId, answerId):
 	resp = gameBizService.shareGameNext(userId, activeId, shareCode, questionId, answerId)
-	
 	if not resp:
 		return render_template("404.html"), 
 	if not resp.get('success'):

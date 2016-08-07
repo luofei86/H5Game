@@ -92,7 +92,7 @@ class UserShareInfoService:
 		if not shareInfo:
 			return None
 		self._dao.updateResult(userId, shareCode, activeId, result)
-		key = self._buildInfoKey(shareinfo["id"])
+		key = self._buildInfoKey(shareInfo["id"])
 		self._delInfo(key)
 
 	def _buildInfoKey(self, id):

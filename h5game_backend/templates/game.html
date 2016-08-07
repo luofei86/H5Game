@@ -85,17 +85,17 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/game.js') }}"></script>
     <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script>
-         window.onload=function() {
-           document.getElementById("next_play").onclick=function() {
-            var answerInput = $("#input_answer");
-            var answerId = $(answerInput).val();
-            if (typeof answerId === 'undefined' || answerId == ''){
-                return false;
-            }
-             document.getElementById("form_hidden").submit();
-             return false; // cancel the actual link
-           };
-         }
+        window.onload=function() {
+            document.getElementById("next_play").onclick=function() {
+                var answerInput = $("#input_answer");
+                var answerId = $(answerInput).val();
+                if (typeof answerId === 'undefined' || answerId == ''){
+                    return false;
+                }
+                document.getElementById("form_hidden").submit();
+                return false; // cancel the actual link
+            };
+        }
         wx.config({
             debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
             appId: "{{resp.weiXinSignInfo.appId}}", // 必填，公众号的唯一标识
@@ -157,8 +157,8 @@
             var shareCode = "{{resp.userShareInfo.shareCode}}";
             var activeId =  "{{resp.userShareInfo.activeId}}";
             var userId = "{{resp.userShareInfo.userId}}"
-            var postUrl = "/page/user/shared";
-            var posting = $.post(postUrl, {'userId' : userId, "shareCode" : shareCode, "activeId" : activeId});            
+            var postUrl = "/page/user/shared/" + userId + "/" + shareCode + "/" + activeId;
+            var posting = $.post(postUrl, {});
         };
     </script>
 </html>

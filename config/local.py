@@ -36,4 +36,4 @@ SHARE_TO_WEIXIN_PLAY_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?
 SHARE_TO_WEIXIN_REDIRECT_URL = "http://api.yiketalks.com/V2/command/wechatTokenSend?url=%s"
 
 #####微信用户跳转到yike后，yike再跳转到游戏服务器
-YIKE_REDIRECT_GAME_UR_AND_CURRENT_GAME_WEBISTE = "http://192.168.1.110:12123/page/welcome/callback/%s?sign=%s"
+YIKE_REDIRECT_GAME_UR_AND_CURRENT_GAME_WEBISTE = "http://192.168.1.110:12123/page/welcome/share/callback/%s&sign=%s"

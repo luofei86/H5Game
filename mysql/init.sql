@@ -39,7 +39,7 @@ CREATE TABLE `game_active_info` (
   `create_time` datetime NOT NULL COMMENT '记录创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_GAI_SIGNWORD` (`sign_word`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -61,7 +61,7 @@ CREATE TABLE `game_active_prize_info` (
   `create_time` datetime NOT NULL COMMENT '记录创建时间',
   PRIMARY KEY (`id`),
   KEY `KEY_GAPI_SIGNWORD` (`active_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,7 +80,7 @@ CREATE TABLE `game_answer_info` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   `create_time` datetime NOT NULL COMMENT '记录创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -103,7 +103,7 @@ CREATE TABLE `game_question_info` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   `create_time` datetime NOT NULL COMMENT '记录创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -130,7 +130,7 @@ CREATE TABLE `user_info` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_UI_OPENID` (`open_id`),
   UNIQUE KEY `UK_UI_UNIONID` (`union_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -153,7 +153,7 @@ CREATE TABLE `user_play_origin_game_info` (
   `create_time` datetime NOT NULL COMMENT '记录创建时间',
   PRIMARY KEY (`id`),
   KEY `KEY_UPOG_UAS` (`user_id`,`active_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户玩系统推送的游戏的情况';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='用户玩系统推送的游戏的情况';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -196,7 +196,7 @@ CREATE TABLE `user_prize_info` (
   `create_time` datetime NOT NULL COMMENT '记录创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_UPI_UAID` (`user_id`,`active_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户中奖码信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='用户中奖码信息表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -221,7 +221,7 @@ CREATE TABLE `user_share_info` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_USI_SHARECODE` (`share_code`),
   UNIQUE KEY `UK_USI_UAID` (`user_id`,`active_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,6 +244,31 @@ CREATE TABLE `user_share_limit_info` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `user_weixin_info`
+--
+
+DROP TABLE IF EXISTS `user_weixin_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_weixin_info` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `openid` varchar(64) NOT NULL COMMENT 'weixin open id',
+  `unionid` varchar(64) NOT NULL COMMENT 'weixin union id',
+  `nickname` blob COMMENT 'weixin user nickname',
+  `sex` varchar(10) DEFAULT NULL,
+  `language` varchar(20) DEFAULT NULL,
+  `city` varchar(100) DEFAULT NULL,
+  `province` varchar(100) DEFAULT NULL,
+  `country` varchar(100) DEFAULT NULL,
+  `headimgurl` varchar(500) DEFAULT NULL,
+  `status` tinyint(4) NOT NULL COMMENT '0 ok -1 del',
+  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `create_time` datetime NOT NULL COMMENT '记录创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_UWXI_OPENID` (`openid`),
+  UNIQUE KEY `UK_UWXI_UNIONID` (`unionid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -255,4 +280,4 @@ CREATE TABLE `user_share_limit_info` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-08-06 20:39:46
+-- Dump completed on 2016-08-07 19:52:58

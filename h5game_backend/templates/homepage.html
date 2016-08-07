@@ -107,8 +107,8 @@
             var shareCode = "{{resp.userShareInfo.shareCode}}";
             var activeId =  "{{resp.userShareInfo.activeId}}";
             var userId = "{{resp.userShareInfo.userId}}"
-            var postUrl = "/page/user/shared";
-            var posting = $.post(postUrl, {'userId' : userId, "shareCode" : shareCode, "activeId" : activeId});            
+            var postUrl = "/page/user/shared/" + userId + "/" + shareCode + "/" + activeId;
+            var posting = $.post(postUrl, {});
         };
     </script>
 </html>

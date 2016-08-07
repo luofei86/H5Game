@@ -6,6 +6,8 @@ from services.DbService import get_db
 from contextlib import closing
 from models import UserShareInfo
 
+from h5game_backend import LOGGER
+
 __author__ = 'luofei'
 
 TABLE_NAME = " user_share_info "
@@ -18,7 +20,7 @@ INSERT_SQL = '''INSERT INTO ''' + TABLE_NAME + ''' (`id`, `user_id`, `active_id`
 		 		+ '''`share_url`, `title`, `content`, `result`, `status`, update_time, create_time) ''' \
 				+ '''VALUES(NULL, %s, %s, %s, %s, %s, %s, 0, 0, now(), now())'''
 UPDATE_RESULT_SQL = '''UPDATE ''' + TABLE_NAME + ''' SET `result` = %s WHERE user_id = %s AND ''' \
-				+ ''' active_id = %s AND shareCode = %s '''
+				+ ''' active_id = %s AND share_code = %s '''
 
 class UserShareInfoDao:
 	
@@ -31,7 +33,7 @@ class UserShareInfoDao:
 					str(shareUrl), str(title), str(content)))
 			dbConn.commit()
 
-	def updateResult(self, userId, activeId, shareCode, result):
+	def updateResult(self, userId, shareCode, activeId, result):
 		dbConn = get_db()
 		with closing(dbConn.cursor()) as cur:
 			cur.execute(UPDATE_RESULT_SQL, (str(result), str(userId), str(activeId), str(shareCode)))

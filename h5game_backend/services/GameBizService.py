@@ -204,6 +204,8 @@ class GameBizService:
 			if prizeInfo:
 				activeInfo = self._gameActiveInfoService.getInfo(activeId)
 				return self._handlePrized(activeInfo, prizeInfo)
+			if int(playInfo['result']) == BizStatusUtils.PLAY_RESULT_FAILED:
+				return self._handlePrePlay(playInfo)
 		rightAnswer = self._gameQuestionInfoService.checkAnswer(questionId, answerId)
 		if rightAnswer:
 			return self._gotoNext(userId, activeId, questionId, playInfo)
@@ -215,9 +217,17 @@ class GameBizService:
 
 	def shareGameNext(self, userId, activeId, shareCode, questionId, answerId):
 		playInfo = self._userPlayShareGameInfoService.getInfo(userId, activeId, shareCode)
-		if playInfo is None or int(playInfo['playQuestionId']) != int(questionId):
+		if playInfo is None:
 			return self._handleIllegalResp(message="No playinfo or the question id is wrong.")
 
+		###用户当前玩的问题和数据库数据不对，可能是微信客户端里点后退了
+		if int(playInfo['playQuestionId']) != int(questionId):
+			prizeInfo = self._userPrizedInfoService.getUserPrizeInfo(userId, activeId)
+			if prizeInfo:
+				activeInfo = self._gameActiveInfoService.getInfo(activeId)
+				return self._handlePrized(activeInfo, prizeInfo)
+			if int(playInfo['result']) == BizStatusUtils.PLAY_RESULT_FAILED:
+				return self._handlePrePlay(playInfo)
 		rightAnswer = self._gameQuestionInfoService.checkAnswer(questionId, answerId)
 		if rightAnswer:
 			return self._gotoSharedGameNext(userId, activeId, shareCode, questionId, playInfo)
