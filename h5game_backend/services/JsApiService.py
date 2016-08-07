@@ -55,11 +55,11 @@ class JsApiService:
 			key = self._buildAccessTokeKey()
 			accessToken = r.get(key)
 		if not accessToken:
-			data = self._accessTokenDao.queryLatestInfo()
-			if data and int(data['expire_time']) > time.time():
-				accessToken = data['access_token']
+			dbData = self._accessTokenDao.queryLatestInfo()
+			if dbData and int(dbData.expire_time) > time.time():
+				accessToken = dbData.access_token
 				if r:
-					self._initAndExpireKeyCacheInfo(r, key, accessToken, int(data['expire_time']) - time.time())				
+					self._initAndExpireKeyCacheInfo(r, key, accessToken, int(dbData.expire_time) - time.time())
 		if not accessToken:
 			while not self._lockToken():
 				time.sleep(5)
@@ -97,11 +97,11 @@ class JsApiService:
 			key = self._buildJsApiTicketKey()
 			jsApiTicet = r.get(key)
 		if not jsApiTicet:
-			data = self._ticketDao.queryLatestInfo()
-			if data and int(data['expire_time']) > time.time():
-				jsApiTicet = data['jsapi_ticket']
+			dbData = self._ticketDao.queryLatestInfo()
+			if dbData and int(dbData.expire_time) > time.time():
+				jsApiTicet = dbData.jsapi_ticket
 				if r:
-					self._initAndExpireKeyCacheInfo(r, key, jsApiTicet, int(data['expire_time']) - time.time())				
+					self._initAndExpireKeyCacheInfo(r, key, jsApiTicet, int(dbData.expire_time) - time.time())
 		if not jsApiTicet:
 			while not self._lockTicket():
 				time.sleep(5)
