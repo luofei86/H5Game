@@ -46,28 +46,28 @@
     <body  id="main" unselectable="on" onselectstart="return false;">
         <div id="div-prized-page">
             <div class="div-prized-desc head">你把冠军</div>
-            <div class="div-prized-desc">抢得连打车的钱都没有了，</div>
+            <div class="div-prized-desc">抢得连打车的钱都没了</div>
             <div class="div-prized-desc">授予你</div>
-            <div class="div-prized-desc">”里约首席大佬“称号.</div>
-            <div class="div-prizecode">兑奖码：{{resp['prizeInfo']['prizeCode']}}</div>
+            <div class="div-prized-desc">“里约首席大佬”称号.</div>
+            <div class="div-prizecode">赎金兑换码：{{resp['prizeInfo']['prizeCode']}}</div>
             <div class="div-prizedinfo-desc head">
-                中奖信息会于{{resp['activeInfo']['prizeTime']|timestamp_strftime}}之后
+                中奖信息将会于{{resp['activeInfo']['prizeTime']|timestamp_strftime}}
             </div>
             <div class="div-prizedinfo-desc">
                 在一刻talks官方微信公布
             </div>
             <div class="div-prizedinfo-desc">
-                请保存你的兑奖码
+                请关注官方微信消息
             </div>
             <div class="div-prizedinfo-desc">
-                到时前来兑奖
+                并妥善保存你的赎金兑换码
             </div>
             <div class="div-prized-bottom">
-                （点击右上角，分享给更多好友来玩^.^）
+                (还有其他冠军，通知更多兄弟来抢^.^)
             </div>
         </div>
     </body>
-    <% if resp.weiXinSignInfo %>
+    {% if resp.weiXinSignInfo %}
         <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
         <script>        
             wx.config({
@@ -135,5 +135,5 @@
                 var posting = $.post(postUrl, {});
             };
         </script>
-    <% endif %>
+    {% endif %}
 </html>

@@ -314,13 +314,15 @@ class GameBizService:
 		answers = self._initQuestionPossibleAnswerInfo(question)
 		if answers is None or not answers:
 			return self._handleIllegalResp()
-		answerIdsStr = question['possibleAnswerIds']
-		answerIds = answerIdsStr.split(",")
+
+		questionIdsStr = playInfo['questionIds']
+		questionIdList = self._initQuestionIds(questionIdsStr)
 		numberIndex = -1
-		for i_id in answerIds:
+
+		for i_id in questionIdList:
 			numberIndex = numberIndex + 1
 			if str(i_id) == str(question['id']):
-				break;
+				break
 		if 'shareCode' in playInfo:
 			return {'success': True, 'play': True, 'activeInfo': activeInfo, 'playInfo': playInfo, 'question': question, 'answers': answers, 'numberIndex': numberIndex, 'shareCode': playInfo['shareCode']}
 		else:

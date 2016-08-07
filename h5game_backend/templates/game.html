@@ -16,7 +16,12 @@
     <body  id="main" unselectable="on" onselectstart="return false;">
         <div id="div-game-page-{{resp['numberIndex']}}">
             <div id="div-play-game-page">
-                <div class="title">{{resp['question']['title']}}
+                <div class="title">
+                    {% if resp['numberIndex'] == 0 %}第一件
+                    {% elif resp['numberIndex'] == 1 %}第二件
+                    {% elif resp['numberIndex'] == 2 %}第三件
+                    {% elif resp['numberIndex'] == 3 %}第四件
+                    {% else %}最后一件{% endif %}{{resp['question']['title']}}
                     <span class="tips">----(提示{{resp['question']['tips']}})</span>
                 </div>
                 <div class="question">
@@ -34,19 +39,19 @@
                 <div id="answer" class="answer">                
                 {% for answer in resp.answers %}
                     <div id = "answer_sub_{{loop.index}}" answer-value="{{answer.id}}" class="answer_block {% if loop.index % 2 == 0%} odd {% endif %}">
-                    {% if loop.index == 1%}
+                    {% if loop.index == 1 %}
                         <div class="answer-order">A 
                             <span>{{answer.title}}</span>
                         </div>
-                    {% elif loop.index == 2%}
+                    {% elif loop.index == 2 %}
                         <div class="answer-order odds">B 
                             <span>{{answer.title}}</span>
                         </div>
-                    {% elif loop.index == 3%}
+                    {% elif loop.index == 3 %}
                         <div class="answer-order">C 
                             <span>{{answer.title}}</span>
                         </div>
-                    {% elif loop.index == 4%}
+                    {% elif loop.index == 4 %}
                         <div class="answer-order odds">D 
                             <span>{{answer.title}}</span>
                         </div>
@@ -97,7 +102,7 @@
             };
         }
     </script>
-    <% if resp.weiXinSignInfo %>
+    {% if resp.weiXinSignInfo %}
         <script>        
             wx.config({
                 debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -164,5 +169,5 @@
                 var posting = $.post(postUrl, {});
             };
         </script>
-    <% endif %>
+    {% endif %}
 </html>
