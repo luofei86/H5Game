@@ -28,4 +28,6 @@ REDIS_CONF = {
 
 APP_ID = 'wx4d1ff3f3dbe1505f'
 APP_SECERT = 'cf2c4d491c49b6a0fa8a4cfa47a6d8f8'
-WEIXIN_JS_URL = ''
+WEBSITE_ROOT = "http://192.168.1.110:12123/page"
+SHARE_PAGE = 'http://192.168.1.110:12123/page/welcome/callback&sign='
+NAV_URL = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=http://api.yiketalks.com/V2/command/wechatTokenSend?url=%s&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect'

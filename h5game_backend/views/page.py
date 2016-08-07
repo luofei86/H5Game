@@ -15,6 +15,7 @@ os.sys.path.insert(0,parentdir)
 
 from services import GameBizService
 from services import WeixinService
+from services import JsApiService
 from services import UserInfoService
 
 from models import *
@@ -28,12 +29,13 @@ page = Blueprint("page", __name__)
 
 gameBizService = GameBizService.GameBizService()
 weixinService = WeixinService.WeixinService(app.config.get("APP_ID"), app.config.get("APP_SECERT"))
+jsApiService = JsApiService.JsApiService(app.config.get("APP_ID"), app.config.get("APP_SECERT"))
 userInfoService = UserInfoService.UserInfoService()
 
 @page.route("/welcome/callback")
 @page.route("/welcome/callback/")
 @page.route("/welcome/callback/<string:sign>")
-def callback(sign = None):
+def callback(sign = None):	
 	if not sign:
 		sign = request.args.get("sign")
 	LOGGER.debug("Sign:" + sign)
@@ -63,6 +65,7 @@ def callback(sign = None):
 		LOGGER.debug("code" + code + ",userWeiXinInfo:" + str(userWeiXinInfo))
 		userInfoService.addInfo(userWeiXinInfo)
 
+
 	session['openId'] = openid
 	return redirect(url_for('.welcome', signWord = sign, shareCode = shareCode))
 
@@ -70,26 +73,47 @@ def callback(sign = None):
 @page.route('/welcome/<string:signWord>/<string:shareCode>')
 def welcome(signWord, shareCode=None):
 	try:
-		openId = session["openId"]
-		LOGGER.debug("openId" + str(openId))
+		curPage = request.url
+		LOGGER.debug("Sign url:" + curPage)
+		weiXinSignInfo = jsApiService.sign("http://192.168.1.112:12123/page/welcome/zoukai")
+		weiXinSignInfo['appId'] = app.config.get("APP_ID")
+		
+		LOGGER.debug("Sign info:" + str(weiXinSignInfo))
+		#FOR DEBUG
+		if request.args.get("browser"):
+			openId = request.args.get("openId")
+		else:
+			openId = session["openId"]
+		session['openId'] = openId
+		LOGGER.debug("openId:" + str(openId))
 		if not openId:
 			return render_template("404.html"), 404
-		if not userInfoService.getUserId(openId):
+		userId = userInfoService.getUserId(openId)
+		if not userId:
 			return render_template("404.html"), 404
 
-		resp = gameBizService.gameHomepageInfo(1, signWord)
+		resp = gameBizService.gameHomepageInfo(userId, signWord)
+		LOGGER.debug("gameHomepageInfo:" + str(resp))
 		if resp is None:
 			return render_template("404.html"), 404
+		
 		if resp is not None and shareCode is not None:
 			resp['shareCode'] = shareCode
+		resp['weiXinSignInfo'] = weiXinSignInfo
+		#def getShareUrl(self, openId, appId, signWord):
+		LOGGER.debug("Get share url.")
+		shareUrl = gameBizService.getShareUrl(openId, app.config.get("APP_ID"), signWord)
+		LOGGER.debug("share url:" + str(shareUrl))
 		resp['openId'] = openId
+		resp['shareUrl'] = shareUrl
 		LOGGER.debug(str(resp))
 		if resp.get('success'):
 			if resp.get('prized'):
 				return render_template("prized.html", resp = resp)
 		resp['signWord'] = signWord
 		return render_template("welcome.html", resp = resp)
-	except:
+	except Exception as e:
+		LOGGER.debug(str(e))
 		return render_template("404.html")
 
 @page.route("/homepage/<string:signWord>")
@@ -98,13 +122,19 @@ def welcome(signWord, shareCode=None):
 @page.route("/homepage/<string:signWord>/<string:shareCode>/")
 def homepage(signWord, shareCode = None):
 	try:
-		openId = session["openId"]
+		###FOR DEUBG
+		#openId = request.args.get("openId")		
+		if request.args.get("browser"):
+			openId = request.args.get("openId")
+		else:
+			openId = session["openId"]		
 		if not openId:
 			return render_template("404.html"), 404
-		if not userInfoService.getUserId(openId):
+		userId = userInfoService.getUserId(openId) 
+		if not userId:
 			return render_template("404.html"), 404
 
-		resp = gameBizService.gameHomepageInfo(1, signWord)
+		resp = gameBizService.gameHomepageInfo(userId, signWord)
 		if resp is None:
 			return render_template("404.html"), 404
 		if resp is not None and shareCode is not None:

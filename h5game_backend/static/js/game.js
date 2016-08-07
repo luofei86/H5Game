@@ -1,7 +1,9 @@
 function init_answer(answer_id){
 	$("#input_answer").val(answer_id);
 	$("#next_play").prop('disabled', false);
-	$("#next_play").removeClass("disabled");	
+	$("#next_play").removeClass("disabled");
+	$("#img_next_play_disabled").hide();
+	$("#img_next_play_enabled").show();
 }
 
 $("#answer_sub_1").on('touchstart', function(){

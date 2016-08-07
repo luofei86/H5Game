@@ -77,7 +77,7 @@ class UserShareInfoService:
 
 	#添加分享，在确认分享数量没问题后，调用此接口返回相关信息
 	def genShareInfo(self, userId, openId, activeId, activeUrl):
-		shareCode = self._buildShareCode(openId)
+		shareCode = self.buildShareCode(openId)
 		if str(activeUrl).endswith("/"):
 			shareUrl = activeUrl + shareCode
 		else:
@@ -117,5 +117,5 @@ class UserShareInfoService:
 	def _initUserIdActiveIdIdInfo(self, r, key, result):
 		r.set(key, result)
 
-	def _buildShareCode(self, openId):
+	def buildShareCode(self, openId):
 		return openId + "_" + str(time.time()) +str(time.clock())

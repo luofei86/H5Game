@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import urllib
+
 from services import GameActiveInfoService
 from services import GameQuestionInfoService
 from services import GameActivePrizeInfoService
@@ -45,12 +47,12 @@ class GameBizService:
 		prizes = self._gameActivePrizeInfoService.getInfosByActiveId(activeInfo['id'])
 		###check user prized
 		###是否中奖了
-		LOGGER.debug(str(userId))
-		LOGGER.debug(activeInfo['id'])
 		prizeInfo = self._userPrizedInfoService.getUserPrizeInfo(userId, activeInfo['id'])
 
 		if prizeInfo:
+			LOGGER.debug("User prized info:" + str(prizeInfo))
 			return self._handlePrized(activeInfo, prizeInfo)
+		LOGGER.info("Goto homepage.")
 		return {'success': True, 'welcome': True, 'activeInfo': activeInfo, 'prizes': prizes}
 
 	def _handelNoMoreCanPlayResp(self, activeId):
@@ -353,4 +355,16 @@ class GameBizService:
 
 	def _userId(self, openId):
 		return self._userInfoService.getUserId(openId)
+
+	def getShareUrl(self, openId, appId, signWord):
+		url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect"
+		redirectUrl = "http://api.yiketalks.com/V2/command/wechatTokenSend?url=http://192.168.1.110:12123/page/welcome/callback/%s?sign=%s"
+		shareCode = self._userShareInfoService.buildShareCode(openId)
+		LOGGER.debug("Get share code:" + str(shareCode))
+		redirectUrl = redirectUrl % (str(shareCode), str(signWord))
+		LOGGER.debug("Thre redirectUrl:" + str(redirectUrl))
+		redirectUrl = urllib.quote_plus(redirectUrl)
+		url = url % (str(appId), str(redirectUrl))
+		LOGGER.debug("The share url:" + url)
+		return url
 

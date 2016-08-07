@@ -74,7 +74,8 @@
             </form>
             
             <div id="next_play" class="div-next disabled" disabled>
-                <img src="{{url_for('static', filename='images/next_play.png')}}">
+                <img id = "img_next_play_disabled" class = "img_disabled" src="{{url_for('static', filename='images/next_play_disable.png')}}">
+                <img id = "img_next_play_enabled" class = "img_enabled" style="display:none;" src="{{url_for('static', filename='images/next_play.png')}}">
             </div>
         </div>
     </body>

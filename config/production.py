@@ -27,4 +27,4 @@ REDIS_CONF = {
 
 APP_ID = ''
 APP_SECERT = ''
-WEIXIN_JS_URL = ''
+SHARE_PAGE = ''

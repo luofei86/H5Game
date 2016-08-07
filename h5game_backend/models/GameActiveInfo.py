@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import datetime
+from time import mktime
+
 
 ###关键字----游戏地址模型
 ###用来用户在公众号里输入关键字后返回对应的url地址
@@ -18,4 +21,7 @@ class GameActiveInfo:
 		self.resourceUrl = resourceUrl
 		self.posterUrl = posterUrl
 		self.championUrl = championUrl
-		self.prizeTime = prizeTime
+		if isinstance(prizeTime, datetime.datetime):
+			self.prizeTime = int(mktime(prizeTime.timetuple()))
+		else:
+			self.prizeTime = prizeTime
