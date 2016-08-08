@@ -94,7 +94,7 @@ def callback(sign = None):
 			userInfoService.addInfo(userWeiXinInfo)
 
 		session['openId'] = openid
-		return redirect(url_for('.welcome', signWord = sign, shareCode = shareCode, openId = openId))
+		return redirect(url_for('.welcome', signWord = sign, shareCode = shareCode))
 	except Exception as e:
 		LOGGER.debug("Uncatch exception:" + str(e))
 		return render_template("404.html")
