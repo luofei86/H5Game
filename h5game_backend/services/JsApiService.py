@@ -34,7 +34,7 @@ class JsApiService:
 			'nonceStr': self.__create_nonce_str(),
 			'jsapi_ticket': self._getJsApiTicket(),
 			'timestamp': self.__create_timestamp(),
-			'url': ''		
+			'url': ''
 		}
 
 	def sign(self, url):
