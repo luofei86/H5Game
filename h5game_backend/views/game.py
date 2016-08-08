@@ -339,6 +339,5 @@ def _initCurPageSignInfo(resp):
 	LOGGER.debug("Sign url:" + curPage)
 	weiXinSignInfo = jsApiService.sign(curPage)
 	if weiXinSignInfo:
-		weiXinSignInfo['appId'] = app.config.get("APP_SHARED_ID")
 		resp['weiXinSignInfo'] = weiXinSignInfo
 		
