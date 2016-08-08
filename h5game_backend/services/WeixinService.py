@@ -22,7 +22,7 @@ class WeixinService:
 		response = requests.get(url)
 		data = response.json()
 		LOGGER.debug(str(data))
-		if data is None:
+		if data is None or hasattr(data, 'errcode'):
 			return None
 		openId = data['openid']
 		accessToken = data['access_token']
