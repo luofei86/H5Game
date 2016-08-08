@@ -43,10 +43,16 @@ class JsApiService:
 		if not self.signStr['jsapi_ticket']:
 			return None
 		self.signStr['url'] = url
-		string = '&'.join(['%s=%s' % (key.lower(), self.signStr[key]) for key in sorted(self.signStr)])
+		resp = {}
+		resp['nonceStr'] = self.__create_nonce_str()
+		resp['jsapi_ticket'] = self._getJsApiTicket()
+		resp['timestamp'] = self.__create_timestamp()
+		resp['url'] =  url
+		string = '&'.join(['%s=%s' % (key.lower(), resp[key]) for key in sorted(resp)])
 		LOGGER.debug('Sign str:' + string)
-		self.signStr['signature'] = hashlib.sha1(string).hexdigest()
-		return self.signStr
+		resp['signature'] = hashlib.sha1(string).hexdigest()
+		resp['appId'] = self.appId
+		return resp
 
 	def _getAccessToken(self):
 		r = redis.StrictRedis(connection_pool = POOL)
