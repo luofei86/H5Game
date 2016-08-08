@@ -90,12 +90,12 @@ class GameBizService:
 		sharePlayInfo = self._userPlayShareGameInfoService.getInfo(userId, activeId, shareCode)
 		if sharePlayInfo is not None:
 			playInfoResult = int(sharePlayInfo['result'])
-			if playInfoResult == BizStatusUtils.PLAY_RESULT_INIT:
-				return self._continuePlay(sharePlayInfo, activeInfo = activeInfo)
-			elif playInfoResult == BizStatusUtils.PLAY_RESULT_SUCCESS:
+			if playInfoResult == BizStatusUtils.PLAY_RESULT_SUCCESS:
 				return self._gotoRecivePrize(userId, activeId)
 			else:
-				return self._handelNoMoreCanPlayResp(activeId)
+				return self._continuePlay(sharePlayInfo, activeInfo = activeInfo)
+			# else:
+			# 	return self._handelNoMoreCanPlayResp(activeId)
 		####用户分享的且没有玩
 		firstQuestion, randomQuestionIds = self._gameQuestionInfoService.randomAndGetUserFirstQuestion(activeId)
 		#def addUserPlayInfo(self, userId, activeId, shareCode, randomQuestionIds, playQuestionId):
@@ -136,6 +136,9 @@ class GameBizService:
 			return self._gotoRecivePrize(playInfo['userId'], playInfo['activeId'])
 		####用户还能再玩,要么继续，要么在以前错误的上面继续
 		if int(playInfo.get('result')) == BizStatusUtils.PLAY_RESULT_INIT or int(playInfo['failedCount']) < BizStatusUtils.MAX_FAILED_NUMBER:
+			return self._continuePlay(playInfo)
+		####共享过来的 无限玩
+		if hasattr(playInfo, 'shareCode'):
 			return self._continuePlay(playInfo)
 		#####已达到个人最大可玩数,需要根据分享的情况来决定如何
 		if int(playInfo.get('failedCount')) == BizStatusUtils.MAX_SELF_PLAY:
