@@ -29,6 +29,9 @@ REDIS_CONF = {
 APP_ID = ''
 APP_SECERT = ''
 
+APP_SHARED_ID = ''
+APP_SHARED_SECERT = ''
+
 #####给微信用户跳转用的，无须变更
 SHARE_TO_WEIXIN_PLAY_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect"
 

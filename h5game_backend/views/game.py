@@ -30,9 +30,14 @@ game = Blueprint("game", __name__)
 
 gameBizService = GameBizService.GameBizService()
 weixinService = WeixinService.WeixinService(app.config.get("APP_ID"), app.config.get("APP_SECERT"))
-jsApiService = JsApiService.JsApiService(app.config.get("APP_ID"), app.config.get("APP_SECERT"))
+jsApiService = JsApiService.JsApiService(app.config.get("APP_SHARED_ID"), app.config.get("APP_SHARED_SECERT"))
 userInfoService = UserInfoService.UserInfoService()
 redisAdmin = RedisAdmin.RedisAdmin();
+
+
+@game.route("/test")
+def shareTestPage():
+	return render_template("sharetest.html")
 
 
 @game.route("/redirect/<string:signWord>")
