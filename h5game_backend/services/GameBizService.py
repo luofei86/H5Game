@@ -208,7 +208,9 @@ class GameBizService:
 			self._userPlayOriginGameInfoService.modifyResultFailedCount(playInfo['id'], \
 						userId, activeId, BizStatusUtils.PLAY_RESULT_FAILED, 1)			
 			playInfo = self._userPlayOriginGameInfoService.getInfo(userId, activeId)
-			return self._handlePrePlay(playInfo)
+			resp =  self._handlePrePlay(playInfo)
+			resp['answerFailed'] = True
+			return resp
 
 	def shareGameNext(self, userId, activeId, shareCode, questionId, answerId):
 		playInfo = self._userPlayShareGameInfoService.getInfo(userId, activeId, shareCode)
@@ -230,7 +232,9 @@ class GameBizService:
 			self._userPlayShareGameInfoService.modifyResult(playInfo['id'], \
 						userId, activeId, shareCode, BizStatusUtils.PLAY_RESULT_FAILED)
 			###失败了 没得玩
-			return self._handelNoMoreCanPlayResp(activeId)
+			resp = self._handelNoMoreCanPlayResp(activeId)
+			resp['answerFailed'] = True
+			return resp
 
 	def _initQuestionIds(self, questionIdsStr):
 		questionIds = questionIdsStr.split(",")

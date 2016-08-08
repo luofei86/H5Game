@@ -22,7 +22,7 @@
                     {% elif resp['numberIndex'] == 2 %}第三件
                     {% elif resp['numberIndex'] == 3 %}第四件
                     {% else %}最后一件{% endif %}{{resp['question']['title']}}
-                    <span class="tips">----(提示{{resp['question']['tips']}})</span>
+                    <span class="tips">----(提示：{{resp['question']['tips']}})</span>
                 </div>
                 <div class="question">
                     <div class="inner-question">
@@ -101,6 +101,11 @@
             };
         }
     </script>
+    {%  if resp.answerFailed %}
+        <script>
+            alert("回答错误，冠军已提高警惕，请谨慎答题。");
+        </script>
+    {% endif %}
     {% if resp.weiXinSignInfo %}    
         <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
         <script>        

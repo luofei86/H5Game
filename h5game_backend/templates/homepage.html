@@ -15,10 +15,14 @@
     </head>
     <body  id="main" unselectable="on" onselectstart="return false;">
         <div id="div-homepage-page">
-            <!--老爷子 你最喜欢的中国队邹凯 已经到里约了 我们可以下手了  -->
-
             <div class="div-homepage-desc head">
-                <img src="{{resp.activeInfo.championUrl}}">
+                {% if resp['activeInfo']['resourceUrl'] %}
+                    <video controls class="video">
+                        <source src="{{resp['activeInfo']['resourceUrl']}}" type="video/mp4">
+                    </video>
+                {% else %}
+                   <img src="{{resp.activeInfo.championUrl}}">
+                {% endif %}
             </div> 
             <div class="div-homepage-goplay">
                 <!--奖品展示区域-->
