@@ -31,20 +31,31 @@
 
             <div class="div-welcome-desc head">老爷子</div>
             <div class="div-welcome-desc">你最喜欢的中国队{{resp.activeInfo.championName}}</div>
-                <!-- <span class="span-champion">{{resp.activeInfo.championName}}</span></div> -->
             <div class="div-welcome-desc">已经到里约了</div>
             <div class="div-welcome-desc">我们可以下手了</div>
             <div class="div-welcome-gohomepage">
-            {% if resp.shareCode %}
-                <a href="{{ url_for('game.homepage', signWord = resp['signWord'], shareCode = resp['shareCode'])}}">
-            {% else %}
-                <a href="{{ url_for('game.homepage', signWord = resp['signWord'])}}">
-            {% endif %}
-                    <img src="{{url_for('static', filename='images/start_play.png')}}">
-                </a>
+                <img src="{{url_for('static', filename='images/start_play.png')}}">
             </div>
         </div>
     </body>
+    <script type="text/javascript">
+        window.onclick= function(){
+            {% if resp.shareCode %}
+                window.location.href = "{{ url_for('game.homepage', signWord = resp['signWord'], shareCode = resp['shareCode'])}}";
+            {% else %}
+                window.location.href = "{{ url_for('game.homepage', signWord = resp['signWord'])}}";
+            {% endif %}
+        }
+        window.addEventListener('load', function(){
+            document.body.addEventListener('touchstart', function(e){
+                 {% if resp.shareCode %}
+                    window.location.href = "{{ url_for('game.homepage', signWord = resp['signWord'], shareCode = resp['shareCode'])}}";
+                {% else %}
+                    window.location.href = "{{ url_for('game.homepage', signWord = resp['signWord'])}}";
+                {% endif %}
+            }, false)
+        }, false);
+    </script>
     {% if resp.weiXinSignInfo %}
         <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
         <script>        
