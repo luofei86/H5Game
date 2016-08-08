@@ -34,14 +34,6 @@ jsApiService = JsApiService.JsApiService(app.config.get("APP_SHARED_ID"), app.co
 userInfoService = UserInfoService.UserInfoService()
 redisAdmin = RedisAdmin.RedisAdmin();
 
-
-@game.route("/test")
-def shareTestPage():
-	resp = {}
-	_initCurPageSignInfo(resp)
-	return render_template("sharetest.html", resp =  resp)
-
-
 @game.route("/redirect/<string:signWord>")
 @game.route("/redirect/<string:signWord>/")
 @game.route("/redirect/<string:signWord>/<string:shareCode>")
@@ -49,10 +41,10 @@ def shareTestPage():
 def redirectShare(signWord, shareCode = None):
 	if not signWord:
 		return render_template("404.html"), 404
-	if not shareCode:
-		return redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4d1ff3f3dbe1505f&redirect_uri=http%3A%2F%2Fapi.yiketalks.com%2FV2%2Fcommand%2FwechatTokenSend%3Furl%3Dhttp%3A%2F%2Fh5.yiketalks.com/game%2Fwelcome%2Fcallback%26sign%3D" + signWord + "&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect", code = 302)
-	else:
+	if shareCode:
 		return redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4d1ff3f3dbe1505f&redirect_uri=http%3A%2F%2Fapi.yiketalks.com%2FV2%2Fcommand%2FwechatTokenSend%3Furl%3Dhttp%3A%2F%2Fh5.yiketalks.com/game%2Fwelcome%2Fshare%2Fcallback%2F "+ shareCode +" %26sign%3D" + signWord + "&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect", code = 302)
+	else:
+		return redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4d1ff3f3dbe1505f&redirect_uri=http%3A%2F%2Fapi.yiketalks.com%2FV2%2Fcommand%2FwechatTokenSend%3Furl%3Dhttp%3A%2F%2Fh5.yiketalks.com/game%2Fwelcome%2Fcallback%26sign%3D" + signWord + "&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect", code = 302)
 
 
 @game.route("/welcome/share/callback/<string:shareCode>")

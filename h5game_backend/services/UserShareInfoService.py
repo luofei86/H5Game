@@ -77,8 +77,8 @@ class UserShareInfoService:
 
 	#添加分享，在确认分享数量没问题后，调用此接口返回相关信息
 	def genShareInfo(self, userId, openId, activeId, shareCode, shareUrl):
-		title = u"一刻talks-精彩一夏"
-		content =u"20位奥运冠军入住一刻talks，更有精美游戏和礼品相送，你也来吧。"
+		title = u"这一刻抢冠军，拿赎金"
+		content = u"我在“里约大打劫”里获得首席大佬称号，你也来吧！"
 		self._dao.insert(userId, activeId, shareCode, shareUrl, title, content)
 		return self.getInfoByShareCode(shareCode)
 

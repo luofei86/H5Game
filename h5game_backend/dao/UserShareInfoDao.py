@@ -18,7 +18,7 @@ USER_ACTIVE_SQL = '''SELECT ''' + COLUMNS + ''' FROM ''' + TABLE_NAME + ''' WHER
 ID_SQL = '''SELECT ''' + COLUMNS + ''' FROM ''' + TABLE_NAME + ''' WHERE `id` = %s'''
 INSERT_SQL = '''INSERT INTO ''' + TABLE_NAME + ''' (`id`, `user_id`, `active_id`, `share_code`, ''' \
 		 		+ '''`share_url`, `title`, `content`, `result`, `status`, update_time, create_time) ''' \
-				+ '''VALUES(NULL, %s, %s, %s, %s, %s, %s, 0, 0, now(), now())'''
+				+ '''VALUES(NULL, %s, %s, %s, %s, %s, %s, 1, 0, now(), now())'''
 UPDATE_RESULT_SQL = '''UPDATE ''' + TABLE_NAME + ''' SET `result` = %s WHERE user_id = %s AND ''' \
 				+ ''' active_id = %s AND share_code = %s '''
 
