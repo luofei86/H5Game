@@ -11,6 +11,17 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}"> -->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/welcome.css')}}">
+        <style type="text/css">
+
+        #div-welcome-page{
+            box-sizing:border-box;
+            background : #000000 url("/images/welcome_{{resp['signWord']}}.png") no-repeat bottom left;
+            background-size: 100% 100%;
+            min-height:100%;
+        }
+
+
+        </style>
 
         <title>{{resp.activeInfo.title}}</title>
     </head>
@@ -19,7 +30,8 @@
             <!--老爷子 你最喜欢的中国队邹凯 已经到里约了 我们可以下手了  -->
 
             <div class="div-welcome-desc head">老爷子</div>
-            <div class="div-welcome-desc">你最喜欢的中国队<span class="span-champion">{{resp.activeInfo.championName}}</span></div>
+            <div class="div-welcome-desc">你最喜欢的中国队{{resp.activeInfo.championName}}</div>
+                <!-- <span class="span-champion">{{resp.activeInfo.championName}}</span></div> -->
             <div class="div-welcome-desc">已经到里约了</div>
             <div class="div-welcome-desc">我们可以下手了</div>
             <div class="div-welcome-gohomepage">

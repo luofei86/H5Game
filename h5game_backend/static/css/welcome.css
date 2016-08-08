@@ -6,23 +6,16 @@ html, body {
     font-family: MicrosoftYaHei,微软雅黑,Helvetica,STHeiti,Droid Sans Fallback;
 }
 
-#div-welcome-page{
-    box-sizing:border-box;
-    background : #000000 url("../images/welcome.png") no-repeat bottom left;
-    background-size: 100% 100%;
-    min-height:100%;
-}
-
 
 .div-welcome-desc.head{    
-    padding-top: 100px !important;
+    padding-top: 80px !important;
 }
 
-.span-champion{
+/*.span-champion{
     font-style: italic;
     font-weight: bold;
     font-size: 20px;
-}
+}*/
 .div-welcome-desc{
     padding-left: 8%;
     font-size: 14px;
@@ -35,49 +28,10 @@ html, body {
     margin-bottom: 0.16em;
 }
 
-.div-welcome-now{
-    margin-top: 48%;
-    margin-left: 35%;
-    font-size: 1.2em;
-}
-
-.span-welcome-now{
-    font-style: italic;
-}
-
-.div-welcome-code{
-    text-align: center;
-    font-size: 50px;
-    font-style: italic;
-    margin-top: 110px;
-}
-
-.div-welcome-go{    
-    text-align: center;
-    margin-top: 100%;
-    height: 40px;
-    border: 4px dashed red;
-    -ms-transform: rotate(1.3deg);
-    -webkit-transform: rotate(1.3deg);
-    transform: rotate(1.3deg);
-    width: 220px;
-    position: fixed;
-    bottom: 20px;
-    left: 20%;
-    margin: auto !important;
-}
 .div-welcome-gohomepage{    
-    margin: 0px auto;
-    height: 55px;
+    width: 100%;
+    position: fixed;
     text-align: center;
     bottom: 0px;
-    margin-top: 410px;
-    width: 177px;
-}
-
-.div-welcome-bottom{
-    margin-top: 100px;
-    font-size:16px;
-    line-height: 26px;
-    text-align: center;
+    height: 60px;
 }
