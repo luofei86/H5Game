@@ -63,7 +63,7 @@
 
                 wx.onMenuShareTimeline({
                     title: '{{resp.userShareInfo.title}}', // 分享标题
-                    link: '{{resp.userShareInfo.url}}', // 分享链接
+                    link: '{{resp.userShareInfo.shareUrl}}', // 分享链接
                     imgUrl: 'http://h5.yiketalks.com/images/logo.jpg', // 分享图标
                     success: function () {
                         afterShared();
@@ -75,7 +75,7 @@
 
                 wx.onMenuShareAppMessage({
                     title: '{{resp.userShareInfo.title}}', // 分享标题
-                    link: '{{resp.userShareInfo.url}}', // 分享链接
+                    link: '{{resp.userShareInfo.shareUrl}}', // 分享链接
                     imgUrl: 'http://h5.yiketalks.com/images/logo.jpg', // 分享图标
                     desc: '{{resp.userShareInfo.content}}', // 分享描述
                     type: 'link', // 分享类型,music、video或link，不填默认为link
@@ -91,7 +91,7 @@
                 wx.onMenuShareQQ({
                     title: '{{resp.userShareInfo.title}}', // 分享标题
                     // link: 'http://h5.yiketalks.com/game/redirect/zoukai/{{resp.userShareInfo.shareCode}}', // 分享链接
-                    link: '{{resp.userShareInfo.url}}', // 分享链接
+                    link: '{{resp.userShareInfo.shareUrl}}', // 分享链接
                     imgUrl: 'http://h5.yiketalks.com/images/logo.jpg', // 分享图标
                     desc: '{{resp.userShareInfo.content}}', // 分享描述
                     success: function () {
