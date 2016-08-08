@@ -17,6 +17,7 @@ from services import GameBizService
 from services import WeixinService
 from services import JsApiService
 from services import UserInfoService
+from services import RedisAdmin
 
 from models import *
 from utils import *
@@ -31,6 +32,7 @@ gameBizService = GameBizService.GameBizService()
 weixinService = WeixinService.WeixinService(app.config.get("APP_ID"), app.config.get("APP_SECERT"))
 jsApiService = JsApiService.JsApiService(app.config.get("APP_ID"), app.config.get("APP_SECERT"))
 userInfoService = UserInfoService.UserInfoService()
+redisAdmin = RedisAdmin.RedisAdmin();
 
 
 @game.route("/welcome/share/callback/<string:shareCode>")
@@ -244,6 +246,15 @@ def _playOriginWithAnswer(userId, openId, activeId, questionId, answerId):
 def userShared(userId, shareCode, activeId):
 	gameBizService.afterShared(userId, shareCode, activeId)
 	return jsonify(done=True)
+
+
+@game.route("/admin/flushcache/<string:pwd>")
+@game.route("/admin/flushcache/<string:pwd>/")
+def adminFlushcache(pwd):
+	if pwd and str(pwd) == "yiketalksflushcache":
+		redisAdmin.flushcache()
+		return jsonify(done=True)
+	return jsonify(done=False)
 
 def _playShareGame(userId, openId, activeId, shareCode):
 	resp = gameBizService.playShareGame(userId, openId, activeId, shareCode)	
