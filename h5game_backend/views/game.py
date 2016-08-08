@@ -136,7 +136,13 @@ def welcome(signWord, shareCode=None):
 		return render_template("welcome.html", resp = resp)
 	except Exception as e:
 		LOGGER.debug(str(e))
-		return render_template("404.html")
+		if not signWord:
+			return render_template("404.html")
+		if not openId:
+			return redirect(url_for('.redirectShare', signWord = signWord, shareCode = shareCode))
+		if openId and resp:
+			session['openId'] = openId
+			return redirect(url_for('.welcome', signWord = signWord, shareCode = shareCode))
 
 @game.route("/homepage/<string:signWord>")
 @game.route("/homepage/<string:signWord>/")
@@ -169,7 +175,13 @@ def homepage(signWord, shareCode = None):
 		return render_template("homepage.html", resp = resp)
 	except Exception as e:
 		LOGGER.debug(str(e))
-		return render_template("404.html")
+		if not signWord:
+			return render_template("404.html")
+		if not openId:
+			return redirect(url_for('.redirectShare', signWord = signWord, shareCode = shareCode))
+		if openId and resp:
+			session['openId'] = openId
+			return redirect(url_for('.homepage', signWord = signWord, shareCode = shareCode))
 
 
 ####由系统后台自动生成的供用户直接游戏的地址，在没有自有游戏的情况下，如有分享的游戏没玩完，则完分享的，否则告诉用户无法玩了
