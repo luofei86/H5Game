@@ -37,7 +37,9 @@ redisAdmin = RedisAdmin.RedisAdmin();
 
 @game.route("/test")
 def shareTestPage():
-	return render_template("sharetest.html")
+	resp = {}
+	_initCurPageSignInfo(resp)
+	return render_template("sharetest.html", resp =  resp)
 
 
 @game.route("/redirect/<string:signWord>")
@@ -327,7 +329,7 @@ def _initUserShareContent(userId, openId, resp):
 	LOGGER.debug("Get share url by userId:"+ str(userId)+ ", openId:"+str(openId)+", resp:"+str(resp))
 	###def genUserShareContent(self, userId, openId, activeId, appId, signWord):
 	userShareInfo = gameBizService.genUserShareContent(userId, openId, \
-				resp['activeInfo']['id'], app.config.get("APP_ID"), resp['activeInfo']['signWord'])
+				resp['activeInfo']['id'], app.config.get("APP_SHARED_ID"), resp['activeInfo']['signWord'])
 	LOGGER.debug("share url:" + str(userShareInfo))
 	resp['userShareInfo'] = userShareInfo
 	_initCurPageSignInfo(resp)
@@ -337,6 +339,6 @@ def _initCurPageSignInfo(resp):
 	LOGGER.debug("Sign url:" + curPage)
 	weiXinSignInfo = jsApiService.sign(curPage)
 	if weiXinSignInfo:
-		weiXinSignInfo['appId'] = app.config.get("APP_ID")
+		weiXinSignInfo['appId'] = app.config.get("APP_SHARED_ID")
 		resp['weiXinSignInfo'] = weiXinSignInfo
 		

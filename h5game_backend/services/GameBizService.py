@@ -13,7 +13,6 @@ from services import UserPlayShareGameInfoService
 from services import UserShareInfoService
 from services import UserShareLimitInfoService
 from services import UserPrizeInfoService
-from services import WeixinService
 
 
 from h5game_backend import LOGGER
@@ -36,7 +35,6 @@ class GameBizService:
 		self._userShareInfoService = UserShareInfoService.UserShareInfoService()
 		self._userShareLimitInfoService = UserShareLimitInfoService.UserShareLimitInfoService()
 		self._userInfoService = UserInfoService.UserInfoService()
-		self._weixinService = WeixinService.WeixinService(app.config.get('APP_ID', None), app.config.get('APP_SECERT', None))
 
 
 #####获取此Url或signWord对应的activeId
@@ -186,7 +184,6 @@ class GameBizService:
 	def _handleNeedShareThenPlayResp(self, activeInfo, shareInfo):
 		###需要分享才能玩
 		###
-		# self._weixinService.sign(app.config.get['weixin_js_url'])
 		return {'success': True, 'needShare': True, 'activeInfo': activeInfo, 'shareInfo': shareInfo}
 
 	#####开始在接口层面区分来自于共享的还是系统提供的游戏机会,此接口只供系统提供的游戏机会中调用
