@@ -72,12 +72,12 @@ def callback(sign = None):
 		shareCode = request.args.get("shareCode")
 		code = request.args.get("code")
 		if not code:
-			return render_template("404.html"), 404
+			return redirect(url_for('.redirectShare', signWord = sign, shareCode = shareCode))
 		LOGGER.debug("Code:" + code)
 		###code access
 		userOpenInfo = weixinService.getOpenInfo(code)
 		if userOpenInfo is None:
-			return render_template("404.html"), 404
+			return redirect(url_for('.redirectShare', signWord = sign, shareCode = shareCode))
 		LOGGER.debug("UserOpenInfo:" + str(userOpenInfo))
 		openid = userOpenInfo['openid']
 		if not userInfoService.getUserId(openid):
@@ -97,7 +97,7 @@ def callback(sign = None):
 		return redirect(url_for('.welcome', signWord = sign, shareCode = shareCode))
 	except Exception as e:
 		LOGGER.debug("Uncatch exception:" + str(e))
-		return render_template("404.html")
+		return redirect(url_for('.redirectShare', signWord = sign, shareCode = shareCode))
 
 @game.route('/welcome/<string:signWord>')
 @game.route('/welcome/<string:signWord>/<string:shareCode>')
