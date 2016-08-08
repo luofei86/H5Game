@@ -201,6 +201,7 @@ class GameBizService:
 				return self._handlePrized(activeInfo, prizeInfo)
 			if int(playInfo['result']) == BizStatusUtils.PLAY_RESULT_FAILED:
 				return self._handlePrePlay(playInfo)
+			return self._continuePlay(playinfo)
 		rightAnswer = self._gameQuestionInfoService.checkAnswer(questionId, answerId)
 		if rightAnswer:
 			return self._gotoNext(userId, activeId, questionId, playInfo)
@@ -224,7 +225,8 @@ class GameBizService:
 				activeInfo = self._gameActiveInfoService.getInfo(activeId)
 				return self._handlePrized(activeInfo, prizeInfo)
 			if int(playInfo['result']) == BizStatusUtils.PLAY_RESULT_FAILED:
-				return self._handlePrePlay(playInfo)
+				return self._handlePrePlay(playInfo)`
+			return self._continuePlay(playinfo)
 		rightAnswer = self._gameQuestionInfoService.checkAnswer(questionId, answerId)
 		if rightAnswer:
 			return self._gotoSharedGameNext(userId, activeId, shareCode, questionId, playInfo)
