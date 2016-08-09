@@ -56,7 +56,7 @@ def shareCallback(shareCode = None):
 		return render_template("404.html"), 404
 	code = request.args.get("code")
 	if not code:
-		LOGGER.debug("The shareCallback request dosen't has auth with code. Illegal request goto 404")
+		LOGGER.debug("The shareCallback request dosen't has auth with code. Illegal request goto redirectShare")
 		return redirect(url_for('.redirectShare', signWord = sign, shareCode = shareCode))
 	return redirect(url_for('.callback', sign = sign, shareCode = shareCode, code = code))
 
@@ -77,7 +77,7 @@ def callback(sign = None):
 		shareCode = request.args.get("shareCode")
 		code = request.args.get("code")
 		if not code:
-			LOGGER.debug("The callback request dosen't has auth with code. Illegal request goto 404")
+			LOGGER.debug("The callback request dosen't has auth with code. Illegal request goto redirectShare")
 			return redirect(url_for('.redirectShare', signWord = signWord, shareCode = shareCode))
 		LOGGER.debug("Code:" + code)
 		###code access
@@ -94,6 +94,9 @@ def callback(sign = None):
 				return redirect(url_for('.redirectShare', signWord = signWord, shareCode = shareCode))
 			if hasattr(userWeiXinInfo, 'errcode'):
 				userOpenInfo = weixinService.refreshOpenInfo(openId, userOpenInfo['refresh_token'])
+				if userOpenInfo is None:
+					LOGGER.debug("The callback request dosen't has user open info with refresh token: %s. Illegal request goto redirectShare." % (str(userOpenInfo['refresh_token'])))
+					return redirect(url_for('.redirectShare', signWord = signWord, shareCode = shareCode))
 				userWeiXinInfo = weixinService.getUserInfo(openId, userOpenInfo['access_token'])
 				if userWeiXinInfo is None or hasattr(userWeiXinInfo, 'errcode'):
 					LOGGER.debug("The callback request dosen't has user weixin info by openId: %s and reresh token. Illegal request goto redirectShare" % (str(openId)))
@@ -158,7 +161,7 @@ def welcome(signWord, shareCode=None):
 		if openId and resp:
 			####页面错误
 			LOGGER.debug("The welcome request has openId: %s and resp: %s but occured a exception " \
-						" may by the page exception check it. Goto 404" % (str(openId), str(resp)))	
+						" maybe is the page exception check it. Goto 404" % (str(openId), str(resp)))
 			return render_template("404.html"), 404
 
 @game.route("/homepage/<string:signWord>")
@@ -208,7 +211,7 @@ def homepage(signWord, shareCode = None):
 		if openId and resp:
 			####页面错误
 			LOGGER.debug("The homepage request has openId: %s and resp: %s but occured a exception " \
-						" may by the page exception check it. Goto 404" % (str(openId), str(resp)))			
+						" maybe is the page exception check it. Goto 404" % (str(openId), str(resp)))
 			return render_template("404.html"), 404
 
 
