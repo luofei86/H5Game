@@ -11,45 +11,18 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common.css')}}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/prized.css')}}">
-        <style type="text/css">
-            .div-prizecode{
-                background-color: #000000;
-                border: 1px dashed red;
-                width: 220px;
-                margin: 0px auto;
-                text-align: center;
-                margin-top: 250px;
-            }
-            .div-prizedinfo-desc{
-                margin-top: 20px;
-                font-size: 16px;
-                line-height: 30px;
-                text-align: center;
-                margin: 0px auto;
-                font-weight: bold;
-            }
-            .div-prizedinfo-desc.head{
-                padding-top: 15px;
-            }
-            .div-prized-bottom{
-                margin-top: 20px;
-                font-size: 16px;
-                line-height: 30px;
-                text-align: center;
-                margin: 0px auto;  
-                padding-top: 15px;                              
-            }
-        </style>
         <title>{{resp.activeInfo.title}}</title>
         
     </head>
     <body  id="main" unselectable="on" onselectstart="return false;">
         <div id="div-prized-page">
-            <div class="div-prized-desc head">你把冠军</div>
-            <div class="div-prized-desc">抢得连打车的钱都没了</div>
-            <div class="div-prized-desc">授予你</div>
-            <div class="div-prized-desc">“里约首席大佬”称号.</div>
+            <div class="div-welldone-desc head">你把冠军</div>
+            <div class="div-welldone-desc">抢得连打车的钱都没了</div>
+            <div class="div-welldone-desc">授予你</div>
+            <div class="div-welldone-desc">“<span class="font-welldone-title">里约首席大佬</span>”</div>
+            <div class="div-welldone-desc">称号</div>
             <div class="div-prizecode">赎金兑换码：{{resp['prizeInfo']['prizeCode']}}</div>
+            <div><img class="img-screencode" src="{{url_for('static', filename='images/screencode.jpg')}}"></div>
             <div class="div-prizedinfo-desc head">
                 中奖信息将会于{{resp['activeInfo']['prizeTime']|timestamp_strftime}}
             </div>
@@ -57,13 +30,13 @@
                 在一刻talks官方微信公布
             </div>
             <div class="div-prizedinfo-desc">
-                请关注官方微信消息
+                长按二维码关注我们
             </div>
             <div class="div-prizedinfo-desc">
-                并妥善保存你的赎金兑换码
+                并截图保存你的赎金兑换码
             </div>
             <div class="div-prized-bottom">
-                <span>还有其他冠军，点击右上角</span><img style="height:20px;" src="{{url_for('static', filename='images/share_press.png')}}">通知更多兄弟来抢</span>
+                <span>还有其他冠军，</span><img style="height:20px;" src="{{url_for('static', filename='images/share_press.png')}}">通知更多兄弟来抢</span>
             </div>
         </div>
     </body>
