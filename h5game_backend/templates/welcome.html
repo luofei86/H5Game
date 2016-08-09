@@ -32,10 +32,12 @@
             <div class="div-welcome-desc">已经到里约了</div>
             <div class="div-welcome-desc">我们可以下手了</div>
             <div class="div-welcome-gohomepage">
-                <img src="{{url_for('static', filename='images/start_play.png')}}">
+                <img id = "hightlight-img" src="{{url_for('static', filename='images/start_play.png')}}">
             </div>
         </div>
     </body>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.11.3.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-ui.js') }}"></script>
     <script type="text/javascript">
         window.onclick= function(){
             {% if resp.shareCode %}
@@ -53,6 +55,11 @@
                 {% endif %}
             }, false)
         }, false);
+        function resizeImg(){
+            $("#hightlight-img").animate({width: "70%"});
+            $("#hightlight-img").animate({width: "60%"});
+        }
+        setInterval(resizeImg, 1000);
     </script>
     {% if resp.weiXinSignInfo %}
         <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
