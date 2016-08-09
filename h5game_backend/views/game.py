@@ -40,6 +40,7 @@ redisAdmin = RedisAdmin.RedisAdmin();
 @game.route("/redirect/<string:signWord>/<string:shareCode>/")
 def redirectShare(signWord, shareCode = None):
 	if not signWord:
+		LOGGER.debug("The redirectShare request dosen't has sign word. Illegal request goto 404")
 		return render_template("404.html"), 404
 	if shareCode:
 		return redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4d1ff3f3dbe1505f&redirect_uri=http%3A%2F%2Fapi.yiketalks.com%2FV2%2Fcommand%2FwechatTokenSend%3Furl%3Dhttp%3A%2F%2Fh5.yiketalks.com/game%2Fwelcome%2Fshare%2Fcallback%2F"+ shareCode +"%26sign%3D" + signWord + "&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect", code = 302)
@@ -51,10 +52,12 @@ def redirectShare(signWord, shareCode = None):
 def shareCallback(shareCode = None):
 	sign = request.args.get("sign")
 	if not sign:
+		LOGGER.debug("The shareCallback request dosen't has sign word. Illegal request goto 404")
 		return render_template("404.html"), 404
 	code = request.args.get("code")
 	if not code:
-		return render_template("404.html"), 404
+		LOGGER.debug("The shareCallback request dosen't has auth with code. Illegal request goto 404")
+		return redirect(url_for('.redirectShare', signWord = sign, shareCode = shareCode))
 	return redirect(url_for('.callback', sign = sign, shareCode = shareCode, code = code))
 
 
@@ -68,35 +71,42 @@ def callback(sign = None):
 			sign = request.args.get("sign")
 		LOGGER.debug("Sign:" + sign)
 		if not sign:
+			LOGGER.debug("The callback request dosen't has signWord. Illegal request goto 404")
 			return render_template("404.html"), 404
+		signWord = sign
 		shareCode = request.args.get("shareCode")
 		code = request.args.get("code")
 		if not code:
-			return redirect(url_for('.redirectShare', signWord = sign, shareCode = shareCode))
+			LOGGER.debug("The callback request dosen't has auth with code. Illegal request goto 404")
+			return redirect(url_for('.redirectShare', signWord = signWord, shareCode = shareCode))
 		LOGGER.debug("Code:" + code)
 		###code access
 		userOpenInfo = weixinService.getOpenInfo(code)
 		if userOpenInfo is None:
-			return redirect(url_for('.redirectShare', signWord = sign, shareCode = shareCode))
+			LOGGER.debug("The callback request dosen't has user open info. Illegal request goto redirectShare")
+			return redirect(url_for('.redirectShare', signWord = signWord, shareCode = shareCode))
 		LOGGER.debug("UserOpenInfo:" + str(userOpenInfo))
-		openid = userOpenInfo['openid']
-		if not userInfoService.getUserId(openid):
-			userWeiXinInfo = weixinService.getUserInfo(openid, userOpenInfo['access_token'])
+		openId = userOpenInfo['openid']
+		if not userInfoService.getUserId(openId):
+			userWeiXinInfo = weixinService.getUserInfo(openId, userOpenInfo['access_token'])
 			if userWeiXinInfo is None:
-				return render_template("404.html"), 404
+				LOGGER.debug("The callback request dosen't has user weixin info with openId: %s. Illegal request goto redirectShare" % (str(openId)))
+				return redirect(url_for('.redirectShare', signWord = signWord, shareCode = shareCode))
 			if hasattr(userWeiXinInfo, 'errcode'):
-				userOpenInfo = weixinService.refreshOpenInfo(openid, userOpenInfo['refresh_token'])
-				userWeiXinInfo = weixinService.getUserInfo(openid, userOpenInfo['access_token'])
+				userOpenInfo = weixinService.refreshOpenInfo(openId, userOpenInfo['refresh_token'])
+				userWeiXinInfo = weixinService.getUserInfo(openId, userOpenInfo['access_token'])
 				if userWeiXinInfo is None or hasattr(userWeiXinInfo, 'errcode'):
-					return render_template("404.html"), 404
+					LOGGER.debug("The callback request dosen't has user weixin info by openId: %s and reresh token. Illegal request goto redirectShare" % (str(openId)))
+					return redirect(url_for('.redirectShare', signWord = signWord, shareCode = shareCode))
 		####Init user
 			LOGGER.debug("code" + code + ",userWeiXinInfo:" + str(userWeiXinInfo))
 			userInfoService.addInfo(userWeiXinInfo)
 
-		session['openId'] = openid
-		return redirect(url_for('.welcome', signWord = sign, shareCode = shareCode))
+		session['openId'] = openId
+		return redirect(url_for('.welcome', signWord = signWord, shareCode = shareCode))
 	except Exception as e:
-		LOGGER.debug("Uncatch exception:" + str(e))
+		LOGGER.debug("Callbac request uncatch exception:" + str(e))
+		LOGGER.debug("The callback request occured a exception. Goto redirectShare")
 		return redirect(url_for('.redirectShare', signWord = sign, shareCode = shareCode))
 
 @game.route('/welcome/<string:signWord>')
@@ -111,16 +121,19 @@ def welcome(signWord, shareCode=None):
 		if not openId:
 			openId = request.args.get("openId")
 			if not openId:
+				LOGGER.debug("The welcome request dosen't has openId. Illegal request goto redirectShare")
 				return redirect(url_for('.redirectShare', signWord = signWord, shareCode = shareCode))
 		LOGGER.debug("openId:" + str(openId))
 		session['openId'] = openId
 		userId = userInfoService.getUserId(openId)
 		if not userId:
-			return render_template("404.html"), 404
+			LOGGER.debug("The welcome request dosen't has userId with openId: %s. Illegal request goto redirectShare" % (str(openId)))
+			return redirect(url_for('.redirectShare', signWord = signWord, shareCode = shareCode))
 
 		resp = gameBizService.gameHomepageInfo(userId, signWord)
 		LOGGER.debug("gameHomepageInfo:" + str(resp))
 		if resp is None:
+			LOGGER.debug("The welcome request dosen't has homepage info with userId: %s and signWord: %s. Illegal request goto 404" % (str(userId), str(signWord)))
 			return render_template("404.html"), 404
 		
 		if resp is not None and shareCode is not None:
@@ -135,14 +148,18 @@ def welcome(signWord, shareCode=None):
 		LOGGER.debug("render to welcome.html with resp:" + str(resp))
 		return render_template("welcome.html", resp = resp)
 	except Exception as e:
-		LOGGER.debug(str(e))
+		LOGGER.debug("Welcome request uncatch exception" + str(e))
 		if not signWord:
+			LOGGER.debug("The welcome request dosen't has signWord. Illegal request goto 404")
 			return render_template("404.html")
 		if not openId:
+			LOGGER.debug("The welcome request dosen't has openId. Illegal request goto redirectShare")
 			return redirect(url_for('.redirectShare', signWord = signWord, shareCode = shareCode))
 		if openId and resp:
-			session['openId'] = openId
-			return redirect(url_for('.welcome', signWord = signWord, shareCode = shareCode))
+			####页面错误
+			LOGGER.debug("The welcome request has openId: %s and resp: %s but occured a exception " \
+						" may by the page exception check it. Goto 404" % (str(openId), str(resp)))	
+			return render_template("404.html"), 404
 
 @game.route("/homepage/<string:signWord>")
 @game.route("/homepage/<string:signWord>/")
@@ -157,31 +174,42 @@ def homepage(signWord, shareCode = None):
 		else:
 			openId = session["openId"]		
 		if not openId:
-			return render_template("404.html"), 404
+			LOGGER.debug("The homepage request dosen't has openId. Illegal request goto redirectShare")
+			return redirect(url_for('.redirectShare', signWord = signWord, shareCode = shareCode))
 		userId = userInfoService.getUserId(openId) 
 		if not userId:
-			return render_template("404.html"), 404
+			LOGGER.debug("The homepage request dosen't has userId with openId: %s. Illegal request goto redirectShare" % (str(openId)))
+			return redirect(url_for('.redirectShare', signWord = signWord, shareCode = shareCode))
 
 		resp = gameBizService.gameHomepageInfo(userId, signWord)
 		if resp is None:
+			LOGGER.debug("The homepage request dosen't has homepage info with userId: %s and signWord: %s. Illegal request " \
+						"goto 404" % (str(userId), str(signWord)))
 			return render_template("404.html"), 404
 		if resp is not None and shareCode is not None:
 			resp['shareCode'] = shareCode
 		_initUserShareContent(userId, openId, resp)
+		LOGGER.debug("Homepage request after init user share conent goto next.")
 		resp['openId'] = openId
 		if resp.get('success'):
 			if resp.get('prized'):
+				LOGGER.debug("Homepage request after init user share conent goto render prized html.")
 				return render_template("prized.html", resp = resp)
+		LOGGER.debug("Homepage request after init user share conent goto render homepage html.")
 		return render_template("homepage.html", resp = resp)
 	except Exception as e:
-		LOGGER.debug(str(e))
+		LOGGER.debug("Homepage request uncatch exception" + str(e))
 		if not signWord:
+			LOGGER.debug("The homepage request dosen't has signWord. Illegal request goto 404")
 			return render_template("404.html")
 		if not openId:
+			LOGGER.debug("The homepage request dosen't has openId. Illegal request goto redirectShare")
 			return redirect(url_for('.redirectShare', signWord = signWord, shareCode = shareCode))
 		if openId and resp:
-			session['openId'] = openId
-			return redirect(url_for('.homepage', signWord = signWord, shareCode = shareCode))
+			####页面错误
+			LOGGER.debug("The homepage request has openId: %s and resp: %s but occured a exception " \
+						" may by the page exception check it. Goto 404" % (str(openId), str(resp)))			
+			return render_template("404.html"), 404
 
 
 ####由系统后台自动生成的供用户直接游戏的地址，在没有自有游戏的情况下，如有分享的游戏没玩完，则完分享的，否则告诉用户无法玩了
