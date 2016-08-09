@@ -19,9 +19,6 @@ from h5game_backend import LOGGER
 INFO_KEY = "shareinfo:id:"
 USER_ACTIVEID_ID_KEY = "user:active:id:"
 SHARECODE_ID_KEY ="sharecode:id:key:"
-SHARED_OK = 1
-SHARED_FAILED = -1
-SHARED_INIT = 0
 
 class UserShareInfoService:
 	def __init__(self):
