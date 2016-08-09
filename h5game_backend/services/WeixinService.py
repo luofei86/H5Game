@@ -21,7 +21,7 @@ class WeixinService:
 			% (self.appId, self.appSecret, code)
 		response = requests.get(url)
 		data = response.json()
-		LOGGER.debug(str(data))
+		LOGGER.debug("Get open info with code: %s return: %s." % (str(code), str(data)))
 		if data is None or hasattr(data, 'errcode'):
 			return None
 		openId = data['openid']
@@ -37,7 +37,7 @@ class WeixinService:
 			% (self.appId, refreshCode)
 		response = requests.get(url)
 		data = response.json()
-		LOGGER.debug(str(data))
+		LOGGER.debug("Refresh open info by code: %s and refreshCode %s  return: %s." % (str(code), str(refreshCode), str(data)))
 		if data is None:
 			return None
 		openId = data['openid']
@@ -47,12 +47,11 @@ class WeixinService:
 		return data
 
 #https://api.weixin.qq.com/sns/userinfo?access_token=WyaAVSk-C-mA1aHSzcO-H4rZ9zFTeWWoWh-j5ZO_nmX9VIXnN1M3jXxpeeKWU-Au8QMIcbD4McWcLlQ0hiBFUTDl6Cqlt8dRWyw7enPJCPQ&openid=o8Y11v1BJZx0vCCML56YBPonoo2U&lang=zh_CN
-	def getUserInfo(self, openid, accessToken):
+	def getUserInfo(self, openId, accessToken):
 		url = "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN" \
-				% (accessToken, openid)
+				% (accessToken, openId)
 		response = requests.get(url)
-		LOGGER.debug("response code:" + str(response.encoding))
 		response.encoding = "utf-8"
 		data = response.json()
-		LOGGER.debug("Get from info url:" + str(data))
+		LOGGER.debug("Get user info with openId: %s and accessToken: %s return: %s." % (str(openId), str(accessToken), str(data)))
 		return data
