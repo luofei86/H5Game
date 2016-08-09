@@ -38,13 +38,6 @@
     margin-top: 110px;
 }
 
-.div-prized-bottom{
-    margin-top: 100px;
-    font-size:16px;
-    line-height: 26px;
-    text-align: center;
-}
-
 .left-arrow{
     background-color: #000000;
     border: 1px dashed red;
@@ -69,7 +62,8 @@
 }
 .div-prizedinfo-desc{
     margin-top: 20px;
-    font-size: 16px;
+    font-size: 12px !important;
+    color: #dddddd !important;
     line-height: 30px;
     text-align: center;
     margin: 0px auto;
@@ -79,10 +73,18 @@
     padding-top: 15px;
 }
 .div-prized-bottom{
+    color: #dddddd !important;
+    margin-top: 100px;
+    font-size: 10px !important;
+    text-align: center;
     margin-top: 20px;
-    font-size: 16px;
+    font-size: 10px;
     line-height: 30px;
     text-align: center;
     margin: 0px auto;  
     padding-top: 15px;                              
+}
+.div-prized-bottom img{
+    display: inline-block;
+    height: 20px;
 }
