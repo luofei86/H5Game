@@ -8,16 +8,20 @@
 .div-homepage-desc{
     text-align: center;
     margin: 0px auto;
+    padding: 1%;
+    padding-top: 36px;
 }
 
 .div-homepage-desc img{
     width: 98%;
     height: 260px;
-    border: 4px solid black;
+    border: 4px solid #000000;
 }
 
 .video{
-    width: 100%;
+    min-height: 202px;
+    width: 98%;
+    border: 4px solid #000000;
 }
 
 .div-homepage-prize{
