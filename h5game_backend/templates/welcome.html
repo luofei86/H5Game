@@ -39,27 +39,29 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.11.3.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-ui.js') }}"></script>
     <script type="text/javascript">
-        window.onclick= function(){
+        function resizeImg(){
+            $("#hightlight-img").animate({width: "70%"});
+            $("#hightlight-img").animate({width: "60%"});
+        }
+        $(".div-welcome-gohomepage").bind("touchstart", function(){
             {% if resp.shareCode %}
                 window.location.href = "{{ url_for('game.homepage', signWord = resp['signWord'], shareCode = resp['shareCode'])}}";
             {% else %}
                 window.location.href = "{{ url_for('game.homepage', signWord = resp['signWord'])}}";
             {% endif %}
-        }
-        window.addEventListener('load', function(){
-            document.body.addEventListener('touchstart', function(e){
-                 {% if resp.shareCode %}
-                    window.location.href = "{{ url_for('game.homepage', signWord = resp['signWord'], shareCode = resp['shareCode'])}}";
-                {% else %}
-                    window.location.href = "{{ url_for('game.homepage', signWord = resp['signWord'])}}";
-                {% endif %}
-            }, false)
-        }, false);
-        function resizeImg(){
-            $("#hightlight-img").animate({width: "70%"});
-            $("#hightlight-img").animate({width: "60%"});
-        }
-        setInterval(resizeImg, 1000);
+        });
+        $(".div-welcome-gohomepage").bind("click", function(){
+            {% if resp.shareCode %}
+                window.location.href = "{{ url_for('game.homepage', signWord = resp['signWord'], shareCode = resp['shareCode'])}}";
+            {% else %}
+                window.location.href = "{{ url_for('game.homepage', signWord = resp['signWord'])}}";
+            {% endif %}
+        });
+        $(document).ready(
+            function(){
+                setInterval(resizeImg, 1000);
+            }
+        );
     </script>
     {% if resp.weiXinSignInfo %}
         <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
