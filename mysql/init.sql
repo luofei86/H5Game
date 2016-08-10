@@ -244,31 +244,6 @@ CREATE TABLE `user_share_limit_info` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `user_weixin_info`
---
-
-DROP TABLE IF EXISTS `user_weixin_info`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user_weixin_info` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `openid` varchar(64) NOT NULL COMMENT 'weixin open id',
-  `unionid` varchar(64) NOT NULL COMMENT 'weixin union id',
-  `nickname` blob COMMENT 'weixin user nickname',
-  `sex` varchar(10) DEFAULT NULL,
-  `language` varchar(20) DEFAULT NULL,
-  `city` varchar(100) DEFAULT NULL,
-  `province` varchar(100) DEFAULT NULL,
-  `country` varchar(100) DEFAULT NULL,
-  `headimgurl` varchar(500) DEFAULT NULL,
-  `status` tinyint(4) NOT NULL COMMENT '0 ok -1 del',
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
-  `create_time` datetime NOT NULL COMMENT '记录创建时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UK_UWXI_OPENID` (`openid`),
-  UNIQUE KEY `UK_UWXI_UNIONID` (`unionid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `weixin_accesstoken`(
   `access_token` varchar(255) not null,
