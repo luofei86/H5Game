@@ -223,11 +223,11 @@ INSERT INTO `game_active_info` VALUES(3, '周琦', 'http://h5.yiketalks.com/imag
 INSERT INTO `game_active_prize_info` values(7, 3, 1, '一等奖', '红米手机+冠军签名明信片一套', 1, 0, now(), now());
 INSERT INTO `game_active_prize_info` values(8, 3, 2, '二等奖', '小米手环+签名照一套', 1, 0, now(), now());
 INSERT INTO `game_active_prize_info` values(9, 3, 3, '三等奖', '签名明信片一套', 1, 0, now(), now());
-INSERT INTO `game_question_info` values(11, 3, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhouqi/5.jpg', 0, '41,42,43,44', 1, '运动物品', 41, now(), now());
-INSERT INTO `game_question_info` values(12, 3, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhouqi/4.jpg', 0, '45,46,47,48', 1, '最爱的人', 48, now(), now());
-INSERT INTO `game_question_info` values(13, 3, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhouqi/3.jpg', 0, '49,50,51,52', 1, '训练', 50, now(), now());
-INSERT INTO `game_question_info` values(14, 3, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhouqi/2.jpg', 0, '53,54,55,56', 1, '漫画', 55, now(), now());
-INSERT INTO `game_question_info` values(15, 3, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhouqi/1.jpg', 0, '57,58,59,60', 1, '宠物', 58, now(), now());
+INSERT INTO `game_question_info` values(11, 3, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhouqi/5.jpg', 0, '41,42,43,44', 41, '运动物品', 0, now(), now());
+INSERT INTO `game_question_info` values(12, 3, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhouqi/4.jpg', 0, '45,46,47,48', 48, '最爱的人', 0, now(), now());
+INSERT INTO `game_question_info` values(13, 3, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhouqi/3.jpg', 0, '49,50,51,52', 50, '训练', 0, now(), now());
+INSERT INTO `game_question_info` values(14, 3, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhouqi/2.jpg', 0, '53,54,55,56', 55, '漫画', 0, now(), now());
+INSERT INTO `game_question_info` values(15, 3, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhouqi/1.jpg', 0, '57,58,59,60', 58, '宠物', 0, now(), now());
 INSERT INTO `game_answer_info` values(41, '篮球', 'http://h5.yiketalks.com/images/zhouqi_answer/1.jpg', 0,  0, now(), now());
 INSERT INTO `game_answer_info` values(42, '球鞋', 'http://h5.yiketalks.com/images/zhouqi_answer/2.jpg', 0,  0, now(), now());
 INSERT INTO `game_answer_info` values(43, '运动耳机', 'http://h5.yiketalks.com/images/zhouqi_answer/3.jpg', 0,  0, now(), now());
