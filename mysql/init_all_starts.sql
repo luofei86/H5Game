@@ -14,11 +14,11 @@ INSERT INTO `game_active_info` VALUES(7, '黄雪辰', 'http://h5.yiketalks.com/i
 INSERT INTO `game_active_prize_info` values(19, 7, 1, '一等奖', '红米手机+冠军签名明信片一套', 1, 0, now(), now());
 INSERT INTO `game_active_prize_info` values(20, 7, 2, '二等奖', '小米手环+签名照一套', 1, 0, now(), now());
 INSERT INTO `game_active_prize_info` values(21, 7, 3, '三等奖', '签名明信片一套', 1, 0, now(), now());
-INSERT INTO `game_question_info` values(31, 7, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/huangxuechen/5.jpg', 0, '121,122,123,124', 122, '护肤', 0, now(), now());
-INSERT INTO `game_question_info` values(32, 7, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/huangxuechen/4.jpg', 0, '125,126,127,128', 128, '饰品', 0, now(), now());
-INSERT INTO `game_question_info` values(33, 7, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/huangxuechen/3.jpg', 0, '129,130,131,132', 132, '写字', 0, now(), now());
-INSERT INTO `game_question_info` values(34, 7, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/huangxuechen/2.jpg', 0, '133,134,135,136', 135, '呼吸', 0, now(), now());
-INSERT INTO `game_question_info` values(35, 7, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/huangxuechen/1.jpg', 0, '137,138,139,140', 138, '比赛', 0, now(), now());
+INSERT INTO `game_question_info` values(31, 7, '最爱物品是', 'http://h5.yiketalks.com/images/huangxuechen/5.jpg', 0, '121,122,123,124', 122, '护肤', 0, now(), now());
+INSERT INTO `game_question_info` values(32, 7, '最爱物品是', 'http://h5.yiketalks.com/images/huangxuechen/4.jpg', 0, '125,126,127,128', 128, '饰品', 0, now(), now());
+INSERT INTO `game_question_info` values(33, 7, '最爱物品是', 'http://h5.yiketalks.com/images/huangxuechen/3.jpg', 0, '129,130,131,132', 132, '写字', 0, now(), now());
+INSERT INTO `game_question_info` values(34, 7, '最爱物品是', 'http://h5.yiketalks.com/images/huangxuechen/2.jpg', 0, '133,134,135,136', 135, '呼吸', 0, now(), now());
+INSERT INTO `game_question_info` values(35, 7, '最爱物品是', 'http://h5.yiketalks.com/images/huangxuechen/1.jpg', 0, '137,138,139,140', 138, '比赛', 0, now(), now());
 INSERT INTO `game_answer_info` values(121, '精油', 'http://h5.yiketalks.com/images/huangxuechen_answer/1.jpg', 0,  0, now(), now());
 INSERT INTO `game_answer_info` values(122, '身体乳', 'http://h5.yiketalks.com/images/huangxuechen_answer/2.jpg', 0,  0, now(), now());
 INSERT INTO `game_answer_info` values(123, '沙滩', 'http://h5.yiketalks.com/images/huangxuechen_answer/3.jpg', 0,  0, now(), now());
@@ -44,11 +44,11 @@ INSERT INTO `game_active_info` VALUES(8, '惠若琪', 'http://h5.yiketalks.com/i
 INSERT INTO `game_active_prize_info` values(22, 8, 1, '一等奖', '红米手机+冠军签名明信片一套', 1, 0, now(), now());
 INSERT INTO `game_active_prize_info` values(23, 8, 2, '二等奖', '小米手环+签名照一套', 1, 0, now(), now());
 INSERT INTO `game_active_prize_info` values(24, 8, 3, '三等奖', '签名明信片一套', 1, 0, now(), now());
-INSERT INTO `game_question_info` values(36, 8, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/huiruoqi/5.jpg', 0, '141,142,143,144', 141, '运动物品', 0, now(), now());
-INSERT INTO `game_question_info` values(37, 8, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/huiruoqi/4.jpg', 0, '145,146,147,148', 148, '动漫', 0, now(), now());
-INSERT INTO `game_question_info` values(38, 8, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/huiruoqi/3.jpg', 0, '149,150,151,152', 150, '照片', 0, now(), now());
-INSERT INTO `game_question_info` values(39, 8, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/huiruoqi/2.jpg', 0, '153,154,155,156', 155, '音乐', 0, now(), now());
-INSERT INTO `game_question_info` values(40, 8, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/huiruoqi/1.jpg', 0, '157,158,159,160', 158, '艺术', 0, now(), now());
+INSERT INTO `game_question_info` values(36, 8, '最爱物品是', 'http://h5.yiketalks.com/images/huiruoqi/5.jpg', 0, '141,142,143,144', 141, '运动物品', 0, now(), now());
+INSERT INTO `game_question_info` values(37, 8, '最爱物品是', 'http://h5.yiketalks.com/images/huiruoqi/4.jpg', 0, '145,146,147,148', 148, '动漫', 0, now(), now());
+INSERT INTO `game_question_info` values(38, 8, '最爱物品是', 'http://h5.yiketalks.com/images/huiruoqi/3.jpg', 0, '149,150,151,152', 150, '照片', 0, now(), now());
+INSERT INTO `game_question_info` values(39, 8, '最爱物品是', 'http://h5.yiketalks.com/images/huiruoqi/2.jpg', 0, '153,154,155,156', 155, '音乐', 0, now(), now());
+INSERT INTO `game_question_info` values(40, 8, '最爱物品是', 'http://h5.yiketalks.com/images/huiruoqi/1.jpg', 0, '157,158,159,160', 158, '艺术', 0, now(), now());
 INSERT INTO `game_answer_info` values(141, '排球', 'http://h5.yiketalks.com/images/huiruoqi_answer/1.jpg', 0,  0, now(), now());
 INSERT INTO `game_answer_info` values(142, '球鞋', 'http://h5.yiketalks.com/images/huiruoqi_answer/2.jpg', 0,  0, now(), now());
 INSERT INTO `game_answer_info` values(143, '运动耳机', 'http://h5.yiketalks.com/images/huiruoqi_answer/3.jpg', 0,  0, now(), now());
@@ -75,11 +75,11 @@ INSERT INTO `game_active_info` VALUES(5, '史冬鹏', 'http://h5.yiketalks.com/i
 INSERT INTO `game_active_prize_info` values(13, 5, 1, '一等奖', '红米手机+冠军签名明信片一套', 1, 0, now(), now());
 INSERT INTO `game_active_prize_info` values(14, 5, 2, '二等奖', '小米手环+签名照一套', 1, 0, now(), now());
 INSERT INTO `game_active_prize_info` values(15, 5, 3, '三等奖', '签名明信片一套', 1, 0, now(), now());
-INSERT INTO `game_question_info` values(21, 5, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/shidongpeng/5.jpg', 0, '81,82,83,84', 84, '运动物品', 0, now(), now());
-INSERT INTO `game_question_info` values(22, 5, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/shidongpeng/4.jpg', 0, '85,86,87,88', 87, '纪念品', 0, now(), now());
-INSERT INTO `game_question_info` values(23, 5, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/shidongpeng/3.jpg', 0, '89,90,91,92', 90, '跑步', 0, now(), now());
-INSERT INTO `game_question_info` values(24, 5, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/shidongpeng/2.jpg', 0, '93,94,95,96', 95, '家', 0, now(), now());
-INSERT INTO `game_question_info` values(25, 5, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/shidongpeng/1.jpg', 0, '97,98,99,100', 98, '数字', 0, now(), now());
+INSERT INTO `game_question_info` values(21, 5, '最爱物品是', 'http://h5.yiketalks.com/images/shidongpeng/5.jpg', 0, '81,82,83,84', 84, '运动物品', 0, now(), now());
+INSERT INTO `game_question_info` values(22, 5, '最爱物品是', 'http://h5.yiketalks.com/images/shidongpeng/4.jpg', 0, '85,86,87,88', 87, '纪念品', 0, now(), now());
+INSERT INTO `game_question_info` values(23, 5, '最爱物品是', 'http://h5.yiketalks.com/images/shidongpeng/3.jpg', 0, '89,90,91,92', 90, '跑步', 0, now(), now());
+INSERT INTO `game_question_info` values(24, 5, '最爱物品是', 'http://h5.yiketalks.com/images/shidongpeng/2.jpg', 0, '93,94,95,96', 95, '家', 0, now(), now());
+INSERT INTO `game_question_info` values(25, 5, '最爱物品是', 'http://h5.yiketalks.com/images/shidongpeng/1.jpg', 0, '97,98,99,100', 98, '数字', 0, now(), now());
 INSERT INTO `game_answer_info` values(81, '足球', 'http://h5.yiketalks.com/images/shidongpeng_answer/1.jpg', 0,  0, now(), now());
 INSERT INTO `game_answer_info` values(82, '球鞋', 'http://h5.yiketalks.com/images/shidongpeng_answer/2.jpg', 0,  0, now(), now());
 INSERT INTO `game_answer_info` values(83, '跑道', 'http://h5.yiketalks.com/images/shidongpeng_answer/3.jpg', 0,  0, now(), now());
@@ -106,11 +106,11 @@ INSERT INTO `game_active_info` VALUES(6, '吴静钰', 'http://h5.yiketalks.com/i
 INSERT INTO `game_active_prize_info` values(16, 6, 1, '一等奖', '红米手机+冠军签名明信片一套', 1, 0, now(), now());
 INSERT INTO `game_active_prize_info` values(17, 6, 2, '二等奖', '小米手环+签名照一套', 1, 0, now(), now());
 INSERT INTO `game_active_prize_info` values(18, 6, 3, '三等奖', '签名明信片一套', 1, 0, now(), now());
-INSERT INTO `game_question_info` values(26, 6, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/wujingyu/5.jpg', 0, '101,102,103,104', 101, '荣誉', 0, now(), now());
-INSERT INTO `game_question_info` values(27, 6, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/wujingyu/4.jpg', 0, '105,106,107,108', 108, '传递', 0, now(), now());
-INSERT INTO `game_question_info` values(28, 6, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/wujingyu/3.jpg', 0, '109,110,111,112', 111, '保护', 0, now(), now());
-INSERT INTO `game_question_info` values(29, 6, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/wujingyu/2.jpg', 0, '113,114,115,116', 115, '清醒', 0, now(), now());
-INSERT INTO `game_question_info` values(30, 6, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/wujingyu/1.jpg', 0, '117,118,119,120', 118, '饰品', 0, now(), now());
+INSERT INTO `game_question_info` values(26, 6, '最爱物品是', 'http://h5.yiketalks.com/images/wujingyu/5.jpg', 0, '101,102,103,104', 101, '荣誉', 0, now(), now());
+INSERT INTO `game_question_info` values(27, 6, '最爱物品是', 'http://h5.yiketalks.com/images/wujingyu/4.jpg', 0, '105,106,107,108', 108, '传递', 0, now(), now());
+INSERT INTO `game_question_info` values(28, 6, '最爱物品是', 'http://h5.yiketalks.com/images/wujingyu/3.jpg', 0, '109,110,111,112', 111, '保护', 0, now(), now());
+INSERT INTO `game_question_info` values(29, 6, '最爱物品是', 'http://h5.yiketalks.com/images/wujingyu/2.jpg', 0, '113,114,115,116', 115, '清醒', 0, now(), now());
+INSERT INTO `game_question_info` values(30, 6, '最爱物品是', 'http://h5.yiketalks.com/images/wujingyu/1.jpg', 0, '117,118,119,120', 118, '饰品', 0, now(), now());
 INSERT INTO `game_answer_info` values(101, '2015年最佳女子运动员奖杯', 'http://h5.yiketalks.com/images/wujingyu_answer/1.jpg', 0,  0, now(), now());
 INSERT INTO `game_answer_info` values(102, '跆拳道道服', 'http://h5.yiketalks.com/images/wujingyu_answer/2.jpg', 0,  0, now(), now());
 INSERT INTO `game_answer_info` values(103, '奖状', 'http://h5.yiketalks.com/images/wujingyu_answer/3.jpg', 0,  0, now(), now());
@@ -137,11 +137,11 @@ INSERT INTO `game_active_info` VALUES(4, '张继科', 'http://h5.yiketalks.com/i
 INSERT INTO `game_active_prize_info` values(10, 4, 1, '一等奖', '红米手机+冠军签名明信片一套', 1, 0, now(), now());
 INSERT INTO `game_active_prize_info` values(11, 4, 2, '二等奖', '小米手环+签名照一套', 1, 0, now(), now());
 INSERT INTO `game_active_prize_info` values(12, 4, 3, '三等奖', '签名明信片一套', 1, 0, now(), now());
-INSERT INTO `game_question_info` values(16, 4, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhangjike/5.jpg', 0, '61,62,63,64', 61, '他的取胜利器', 0, now(), now());
-INSERT INTO `game_question_info` values(17, 4, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhangjike/4.jpg', 0, '65,66,67,68', 66, '阅读', 0, now(), now());
-INSERT INTO `game_question_info` values(18, 4, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhangjike/3.jpg', 0, '69,70,71,72', 71, '他从不迟到', 0, now(), now());
-INSERT INTO `game_question_info` values(19, 4, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhangjike/2.jpg', 0, '73,74,75,76', 75, '感恩', 0, now(), now());
-INSERT INTO `game_question_info` values(20, 4, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhangjike/1.jpg', 0, '77,78,79,80', 78, '他的运动项目', 0, now(), now());
+INSERT INTO `game_question_info` values(16, 4, '最爱物品是', 'http://h5.yiketalks.com/images/zhangjike/5.jpg', 0, '61,62,63,64', 61, '他的取胜利器', 0, now(), now());
+INSERT INTO `game_question_info` values(17, 4, '最爱物品是', 'http://h5.yiketalks.com/images/zhangjike/4.jpg', 0, '65,66,67,68', 66, '阅读', 0, now(), now());
+INSERT INTO `game_question_info` values(18, 4, '最爱物品是', 'http://h5.yiketalks.com/images/zhangjike/3.jpg', 0, '69,70,71,72', 71, '他从不迟到', 0, now(), now());
+INSERT INTO `game_question_info` values(19, 4, '最爱物品是', 'http://h5.yiketalks.com/images/zhangjike/2.jpg', 0, '73,74,75,76', 75, '感恩', 0, now(), now());
+INSERT INTO `game_question_info` values(20, 4, '最爱物品是', 'http://h5.yiketalks.com/images/zhangjike/1.jpg', 0, '77,78,79,80', 78, '他的运动项目', 0, now(), now());
 INSERT INTO `game_answer_info` values(61, '乒乓球拍', 'http://h5.yiketalks.com/images/zhangjike_answer/1.jpg', 0,  0, now(), now());
 INSERT INTO `game_answer_info` values(62, '足球', 'http://h5.yiketalks.com/images/zhangjike_answer/2.jpg', 0,  0, now(), now());
 INSERT INTO `game_answer_info` values(63, '幸运手环', 'http://h5.yiketalks.com/images/zhangjike_answer/3.jpg', 0,  0, now(), now());
@@ -175,14 +175,14 @@ INSERT INTO `game_active_prize_info` values(5, 2, 2, '二等奖', '小米手环+
 INSERT INTO `game_active_prize_info` values(6, 2, 3, '三等奖', '签名明信片一套', 1, 0, now(), now());
 
 
-INSERT INTO `game_question_info` values(6, 2, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhangpeimeng/2.jpg', 0, '21,22,23,24', '21', '成绩', 0, now(), now());
+INSERT INTO `game_question_info` values(6, 2, '最爱物品是', 'http://h5.yiketalks.com/images/zhangpeimeng/2.jpg', 0, '21,22,23,24', '21', '成绩', 0, now(), now());
 
 INSERT INTO `game_answer_info`  values(21,'世锦赛4x100米银牌','http://h5.yiketalks.com/images/zhangpeimeng_answer/1.png',0,0,now(),now());
 INSERT INTO `game_answer_info`  values(22,'国家队队服','http://h5.yiketalks.com/images/zhangpeimeng_answer/2.png',0,0,now(),now());
 INSERT INTO `game_answer_info`  values(23,'手表','http://h5.yiketalks.com/images/zhangpeimeng_answer/3.png',0,0,now(),now());
 INSERT INTO `game_answer_info`  values(24,'签名版篮球','http://h5.yiketalks.com/images/zhangpeimeng_answer/4.png',0,0,now(),now());
 
-INSERT INTO `game_question_info` values(7, 2, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhangpeimeng/3.jpg', 0, '25,26,27,28', '27', '速度', 0, now(), now());
+INSERT INTO `game_question_info` values(7, 2, '最爱物品是', 'http://h5.yiketalks.com/images/zhangpeimeng/3.jpg', 0, '25,26,27,28', '27', '速度', 0, now(), now());
 
 
 
@@ -192,7 +192,7 @@ INSERT INTO `game_answer_info`  values(27,'跑鞋','http://h5.yiketalks.com/imag
 INSERT INTO `game_answer_info`  values(28,'各国徽章','http://h5.yiketalks.com/images/zhangpeimeng_answer/8.png',0,0,now(),now());
 
 
-INSERT INTO `game_question_info` values(8, 2, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhangpeimeng/4.jpg', 0, '29,30,31,32', '29', '高空', 0, now(), now());
+INSERT INTO `game_question_info` values(8, 2, '最爱物品是', 'http://h5.yiketalks.com/images/zhangpeimeng/4.jpg', 0, '29,30,31,32', '29', '高空', 0, now(), now());
 
 
 INSERT INTO `game_answer_info`  values(29,'航拍器','http://h5.yiketalks.com/images/zhangpeimeng_answer/9.png',0,0,now(),now());
@@ -201,7 +201,7 @@ INSERT INTO `game_answer_info`  values(31,'茶壶茶杯','http://h5.yiketalks.co
 INSERT INTO `game_answer_info`  values(32,'粉丝送的画册','http://h5.yiketalks.com/images/zhangpeimeng_answer/12.png',0,0,now(),now());
 
 
-INSERT INTO `game_question_info` values(9, 2, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhangpeimeng/5.jpg', 0, '33,34,35,36', '33', '模型', 0, now(), now());
+INSERT INTO `game_question_info` values(9, 2, '最爱物品是', 'http://h5.yiketalks.com/images/zhangpeimeng/5.jpg', 0, '33,34,35,36', '33', '模型', 0, now(), now());
 
 
 INSERT INTO `game_answer_info`  values(33,'车模','http://h5.yiketalks.com/images/zhangpeimeng_answer/13.png',0,0,now(),now());
@@ -211,7 +211,7 @@ INSERT INTO `game_answer_info`  values(36,'跳棋','http://h5.yiketalks.com/imag
 
 
 
-INSERT INTO `game_question_info` values(10, 2, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhangpeimeng/1.jpg', 0, '37,38,39,40', '37', '张培萌的狗狗', 0, now(), now());
+INSERT INTO `game_question_info` values(10, 2, '最爱物品是', 'http://h5.yiketalks.com/images/zhangpeimeng/1.jpg', 0, '37,38,39,40', '37', '张培萌的狗狗', 0, now(), now());
 
 
 INSERT INTO `game_answer_info`  values(37,'泰迪','http://h5.yiketalks.com/images/zhangpeimeng_answer/17.png',0,0,now(),now());
@@ -223,11 +223,11 @@ INSERT INTO `game_active_info` VALUES(3, '周琦', 'http://h5.yiketalks.com/imag
 INSERT INTO `game_active_prize_info` values(7, 3, 1, '一等奖', '红米手机+冠军签名明信片一套', 1, 0, now(), now());
 INSERT INTO `game_active_prize_info` values(8, 3, 2, '二等奖', '小米手环+签名照一套', 1, 0, now(), now());
 INSERT INTO `game_active_prize_info` values(9, 3, 3, '三等奖', '签名明信片一套', 1, 0, now(), now());
-INSERT INTO `game_question_info` values(11, 3, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhouqi/5.jpg', 0, '41,42,43,44', 41, '运动物品', 0, now(), now());
-INSERT INTO `game_question_info` values(12, 3, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhouqi/4.jpg', 0, '45,46,47,48', 48, '最爱的人', 0, now(), now());
-INSERT INTO `game_question_info` values(13, 3, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhouqi/3.jpg', 0, '49,50,51,52', 50, '训练', 0, now(), now());
-INSERT INTO `game_question_info` values(14, 3, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhouqi/2.jpg', 0, '53,54,55,56', 55, '漫画', 0, now(), now());
-INSERT INTO `game_question_info` values(15, 3, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zhouqi/1.jpg', 0, '57,58,59,60', 58, '宠物', 0, now(), now());
+INSERT INTO `game_question_info` values(11, 3, '最爱物品是', 'http://h5.yiketalks.com/images/zhouqi/5.jpg', 0, '41,42,43,44', 41, '运动物品', 0, now(), now());
+INSERT INTO `game_question_info` values(12, 3, '最爱物品是', 'http://h5.yiketalks.com/images/zhouqi/4.jpg', 0, '45,46,47,48', 48, '最爱的人', 0, now(), now());
+INSERT INTO `game_question_info` values(13, 3, '最爱物品是', 'http://h5.yiketalks.com/images/zhouqi/3.jpg', 0, '49,50,51,52', 50, '训练', 0, now(), now());
+INSERT INTO `game_question_info` values(14, 3, '最爱物品是', 'http://h5.yiketalks.com/images/zhouqi/2.jpg', 0, '53,54,55,56', 55, '漫画', 0, now(), now());
+INSERT INTO `game_question_info` values(15, 3, '最爱物品是', 'http://h5.yiketalks.com/images/zhouqi/1.jpg', 0, '57,58,59,60', 58, '宠物', 0, now(), now());
 INSERT INTO `game_answer_info` values(41, '篮球', 'http://h5.yiketalks.com/images/zhouqi_answer/1.jpg', 0,  0, now(), now());
 INSERT INTO `game_answer_info` values(42, '球鞋', 'http://h5.yiketalks.com/images/zhouqi_answer/2.jpg', 0,  0, now(), now());
 INSERT INTO `game_answer_info` values(43, '运动耳机', 'http://h5.yiketalks.com/images/zhouqi_answer/3.jpg', 0,  0, now(), now());
@@ -255,7 +255,7 @@ values(1, '邹凯', 'http://h5.yiketalks.com/images/zoukai/1.jpg',
 '奥运5金王邹凯开挂送礼，速来抢','', 'http://talks.ufile.ucloud.com.cn/podcast/4.mp4', '', '2016-08-14', 0, now(), now());
 
 
-INSERT INTO `game_question_info` values(1, 1, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zoukai/2.jpg', 0, '1,2,3,4', '1', '训练', 0, now(), now());
+INSERT INTO `game_question_info` values(1, 1, '最爱物品是', 'http://h5.yiketalks.com/images/zoukai/2.jpg', 0, '1,2,3,4', '1', '训练', 0, now(), now());
 
 INSERT INTO `game_active_prize_info` values(1, 1, 1, '一等奖', '红米手机+冠军签名明信片一套', 1, 0, now(), now());
 INSERT INTO `game_active_prize_info` values(2, 1, 2, '二等奖', '小米手环+签名照', 1, 0, now(), now());
@@ -266,7 +266,7 @@ INSERT INTO `game_answer_info`  values(2,'国家队队服','http://h5.yiketalks.
 INSERT INTO `game_answer_info`  values(3,'便携播放器','http://h5.yiketalks.com/images/zoukai_answer/3.png',0,0,now(),now());
 INSERT INTO `game_answer_info`  values(4,'书','http://h5.yiketalks.com/images/zoukai_answer/4.png',0,0,now(),now());
 
-INSERT INTO `game_question_info` values(2, 1, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zoukai/3.jpg', 0, '5,6,7,8', '8', '祝福', 0, now(), now());
+INSERT INTO `game_question_info` values(2, 1, '最爱物品是', 'http://h5.yiketalks.com/images/zoukai/3.jpg', 0, '5,6,7,8', '8', '祝福', 0, now(), now());
 
 
 
@@ -276,7 +276,7 @@ INSERT INTO `game_answer_info`  values(7,'奥运金牌','http://h5.yiketalks.com
 INSERT INTO `game_answer_info`  values(8,'教练签名的背包','http://h5.yiketalks.com/images/zoukai_answer/8.png',0,0,now(),now());
 
 
-INSERT INTO `game_question_info` values(3, 1, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zoukai/4.jpg', 0, '9,10,11,12', '10', '家', 0, now(), now());
+INSERT INTO `game_question_info` values(3, 1, '最爱物品是', 'http://h5.yiketalks.com/images/zoukai/4.jpg', 0, '9,10,11,12', '10', '家', 0, now(), now());
 
 
 INSERT INTO `game_answer_info`  values(9,'航拍器','http://h5.yiketalks.com/images/zoukai_answer/9.png',0,0,now(),now());
@@ -285,7 +285,7 @@ INSERT INTO `game_answer_info`  values(11,'茶壶茶杯','http://h5.yiketalks.co
 INSERT INTO `game_answer_info`  values(12,'粉丝送的画册','http://h5.yiketalks.com/images/zoukai_answer/12.png',0,0,now(),now());
 
 
-INSERT INTO `game_question_info` values(4, 1, '猜冠军最爱赢奖品', 'http://h5.yiketalks.com/images/zoukai/5.jpg', 0, '13,14,15,16', '15', '速度', 0, now(), now());
+INSERT INTO `game_question_info` values(4, 1, '最爱物品是', 'http://h5.yiketalks.com/images/zoukai/5.jpg', 0, '13,14,15,16', '15', '速度', 0, now(), now());
 
 
 INSERT INTO `game_answer_info`  values(13,'篮球','http://h5.yiketalks.com/images/zoukai_answer/13.png',0,0,now(),now());
