@@ -120,7 +120,7 @@ def welcome(signWord, shareCode=None):
 		if request.args.get("browser"):
 			openId = request.args.get("openId")
 		else:
-			openId = session["openId"]
+			openId = session.get("openId")
 		if not openId:
 			openId = request.args.get("openId")
 			if not openId:
@@ -175,7 +175,7 @@ def homepage(signWord, shareCode = None):
 		if request.args.get("browser"):
 			openId = request.args.get("openId")
 		else:
-			openId = session["openId"]		
+			openId = session.get("openId")
 		if not openId:
 			LOGGER.debug("The homepage request dosen't has openId. Illegal request goto redirectShare")
 			return redirect(url_for('.redirectShare', signWord = signWord, shareCode = shareCode))
@@ -221,7 +221,7 @@ def homepage(signWord, shareCode = None):
 @game.route('/play/<int:activeId>/<string:shareCode>', methods=['GET', 'POST'])
 def play(activeId, shareCode=None):
 	try:	
-		openId = session["openId"]
+		openId = session.get("openId")
 		userId = userInfoService.getUserId(openId)
 		if userId is None:
 			LOGGER.debug("Play User id is None")
